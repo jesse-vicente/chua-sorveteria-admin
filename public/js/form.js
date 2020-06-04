@@ -32,10 +32,6 @@ $(document).ready(function() {
         }
     });
 
-    // $(document).on("click", ".modal .btn-search", function(e) {
-    //     e.preventDefault();
-    // });
-
     var route = null;
 
     $(document).on("click", ".btn-search", function(e) {
