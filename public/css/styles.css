@@ -1,0 +1,16 @@
+/* .form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+} */
+
+label:not(.form-check-label):not(.custom-file-label) {
+    font-weight: 600 !important;
+}
+
+.form-group.required label:not(:empty)::after {
+    content: ' *';
+    color: #ff0000;
+}
+
+.col-form-label-sm span.required {
+    color: #ff0000;
+}

@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-hover">
+    <table class="table table-hover" id="table">
         <thead>
             <tr>
                 <th>Cód.</th>
@@ -12,23 +12,19 @@
         <tbody>
             @forelse ($cidades as $cidade)
             <tr>
-                <td>{{ $cidade->id }}</td>
-                <td class="white-space">{{ $cidade->cidade }}</td>
-                <td>{{ $cidade->ddd }}</td>
-                <td>{{ $cidade->estado }}</td>
+                <td>{{ $cidade->getId() }}</td>
+                <td>{{ $cidade->getCidade() }}</td>
+                <td>{{ $cidade->getDDD() }}</td>
+                <td>{{ $cidade->getEstado()->getEstado() }}</td>
                 <td class="text-center">
                     <div class="row no-gutters d-flex justify-content-center">
-                        <a class="btn btn-sm btn-spinner btn-primary mr-2" href="{{ route('cidades.edit', $cidade->id) }}">
+                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('cidades.edit', $cidade->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <form action="{{ route('cidades.destroy', $cidade->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="fa fa-trash-alt"></i>
-                            </button>
-                        </form>
+                        <a class="btn btn-sm btn-danger" href="{{ route('cidades.show', $cidade->getId()) }}">
+                            <i class="fa fa-trash-alt"></i>
+                        </a>
                     </div>
                 </td>
             </tr>

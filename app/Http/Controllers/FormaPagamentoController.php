@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\FormaPagamentoRequest;
 
-use App\Models\FormaPagamento;
+use App\Http\Dao\DaoFormaPagamento;
 
 class FormaPagamentoController extends Controller
 {
+    private DaoFormaPagamento $daoFormaPagamento;
+
+    public function __construct(DaoFormaPagamento $daoFormaPagamento)
+    {
+        $this->daoFormaPagamento = $daoFormaPagamento;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,7 @@ class FormaPagamentoController extends Controller
      */
     public function index()
     {
-        $formasPagamento = FormaPagamento::all();
+        $formasPagamento = $this->daoFormaPagamento->all();
         return view('formas-pagamento.index', compact('formasPagamento'));
     }
 
@@ -32,12 +40,19 @@ class FormaPagamentoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\FormaPagamentoRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FormaPagamentoRequest $request)
     {
-        //
+        $formaPagamento = $this->daoFormaPagamento->create($request->all());
+
+        $store = $this->daoFormaPagamento->store($formaPagamento);
+
+        if ($store)
+            return redirect('formas-pagamento') ->with('success', 'Registro inserido com sucesso!');
+
+        return redirect('formas-pagamento')->with('error', 'Erro ao inserir registro.');
     }
 
     /**
@@ -48,7 +63,8 @@ class FormaPagamentoController extends Controller
      */
     public function show($id)
     {
-        //
+        $formaPagamento = $this->daoFormaPagamento->find($id);
+        return view('formas-pagamento.show', compact('formaPagamento'));
     }
 
     /**
@@ -59,19 +75,25 @@ class FormaPagamentoController extends Controller
      */
     public function edit($id)
     {
-        //
+        $formaPagamento = $this->daoFormaPagamento->find($id);
+        return view('formas-pagamento.create', compact('formaPagamento'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\FormaPagamentoRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(FormaPagamentoRequest $request, $id)
     {
-        //
+        $update = $this->daoFormaPagamento->update($request, $id);
+
+        if ($update)
+            return redirect('formas-pagamento') ->with('success', 'Registro alterado com sucesso!');
+
+        return redirect('formas-pagamento')->with('error', 'Erro ao alterar registro.');
     }
 
     /**
@@ -82,6 +104,34 @@ class FormaPagamentoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delete = $this->daoFormaPagamento->delete($id);
+
+        if ($delete)
+            return redirect('formas-pagamento')->with('success', 'Registro removido com sucesso!');
+
+        return redirect('formas-pagamento')->with('error', 'Este registro não pode ser removido.');
+    }
+
+    /**
+     * Search for the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request) {
+        $q = $request->q;
+
+        $formasPagamento = $this->daoFormaPagamento->search($q);
+
+        return view('formas-pagamento.search', compact('formasPagamento'));
+    }
+
+    public function find($id) {
+        $formaPagamento = $this->daoFormaPagamento->find($id);
+
+        if ($formaPagamento != null)
+            return ["nome" => $formaPagamento->getFormaPagamento()];  
+
+        return null;
     }
 }

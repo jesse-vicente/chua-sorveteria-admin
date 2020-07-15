@@ -3,14 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\EstadoRequest;
 
-use App\Models\Estado;
-use App\Models\Pais;
-
-use Illuminate\Support\Facades\DB;
+use App\Http\Dao\DaoEstado;
 
 class EstadoController extends Controller
 {
+    private $daoEstado;
+
+    public function __construct(DaoEstado $daoEstado)
+    {
+        $this->daoEstado = $daoEstado;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +23,7 @@ class EstadoController extends Controller
      */
     public function index()
     {
-        $estados = Estado::all();
+        $estados = $this->daoEstado->all();
         return view('estados.index', compact('estados'));
     }
 
@@ -35,14 +40,19 @@ class EstadoController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\EstadoRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EstadoRequest $request)
     {
-        Estado::create($request->all());
+        $estado = $this->daoEstado->create($request->all());
 
-        return redirect('estados')->withSuccess('Estado cadastrado com sucesso!');
+        $store = $this->daoEstado->store($estado);
+
+        if ($store)
+            return redirect('estados') ->with('success', 'Registro inserido com sucesso!');
+
+        return redirect('estados')->with('error', 'Erro ao inserir registro.');
     }
 
     /**
@@ -53,7 +63,8 @@ class EstadoController extends Controller
      */
     public function show($id)
     {
-        //
+        $estado = $this->daoEstado->find($id);
+        return view('estados.show', compact('estado'));
     }
 
     /**
@@ -64,24 +75,29 @@ class EstadoController extends Controller
      */
     public function edit($id)
     {
-        $estado = Estado::find($id);
-        $pais = Pais::find($estado->getAttribute('pais_id'));
+        $estado = $this->daoEstado->find($id);
 
-        $estado->setAttribute('pais', $pais->getAttribute('pais'));
+        if ($estado)
+            return view('estados.create', compact('estado'));
 
-        return view('estados.create', compact('estado'));
+        return redirect('estados')->with('error', 'Registro não encontrado.');
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\EstadoRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EstadoRequest $request, $id)
     {
-        //
+        $update = $this->daoEstado->update($request, $id);
+
+        if ($update)
+            return redirect('estados') ->with('success', 'Registro alterado com sucesso!');
+
+        return redirect('estados')->with('error', 'Erro ao alterar registro.');
     }
 
     /**
@@ -92,8 +108,12 @@ class EstadoController extends Controller
      */
     public function destroy($id)
     {
-        Estado::destroy($id);
-        return redirect('estados')->withSuccess('Estado excluído com sucesso!');
+        $delete = $this->daoEstado->delete($id);
+
+        if ($delete)
+            return redirect('estados')->with('success', 'Registro removido com sucesso!');
+
+        return redirect('estados')->with('error', 'Este registro não pode ser removido.');
     }
 
     /**
@@ -105,10 +125,17 @@ class EstadoController extends Controller
     public function search(Request $request) {
         $q = $request->q;
 
-        $estados = (!is_null($q))
-            ? DB::select(DB::raw("SELECT id, estado, uf, pais_id FROM estados WHERE id LIKE '$q' OR estado LIKE '$q%'"))
-            : DB::select(DB::raw("SELECT id, estado, uf, pais_id FROM estados LIMIT 10"));
+        $estados = $this->daoEstado->search($q);
 
         return view('estados.search', compact('estados'));
+    }
+
+    public function find($id) {
+        $estado = $this->daoEstado->find($id);
+
+        if ($estado != null)
+            return ["nome" => $estado->getEstado()];  
+
+        return null;
     }
 }

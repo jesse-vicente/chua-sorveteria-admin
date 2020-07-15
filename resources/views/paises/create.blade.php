@@ -1,5 +1,5 @@
 @extends('adminlte::page')
 
 @section('content')
-    @include('paises.fields')
+    @include('paises.form')
 @endsection

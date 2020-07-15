@@ -4184,7 +4184,8 @@
                         <input type="search" class="form-control ml-0" />
                         <div class="input-group-append">
                             <button class="btn btn-primary btn-search">
-                                <i class="fa fa-search"></i> Buscar
+                                <i class="fa fa-search mr-1"></i>
+                                <span>Buscar</span>
                             </button>
                         </div>
                     </div>`;

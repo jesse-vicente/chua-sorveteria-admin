@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-hover">
+    <table class="table table-hover" id="table">
         <thead>
             <tr>
                 <th>Cód.</th>
@@ -11,34 +11,23 @@
         <tbody>
         @forelse ($fornecedores as $fornecedor)
             <tr>
-                <td>{{ $fornecedor->id }}</td>
-                <td>{{ $fornecedor->fornecedor }}</td>
-                <td>{{ $fornecedor->whatsapp }}</td>
+                <td>{{ $fornecedor->getId() }}</td>
+                <td>{{ $fornecedor->getRazaoSocial() }}</td>
+                <td>{{ $fornecedor->getWhatsapp() }}</td>
                 <td class="text-center">
                     <div class="row no-gutters d-flex justify-content-center">
-                        <a class="btn btn-sm btn-spinner btn-primary mr-2" href="{{ route('fornecedores.edit', $fornecedor->id) }}">
+                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('fornecedores.edit', $fornecedor->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <form action="{{ route('fornecedores.destroy', $fornecedor->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="fa fa-trash-alt"></i>
-                            </button>
-                        </form>
+                        <a class="btn btn-sm btn-danger" href="{{ route('fornecedores.show', $fornecedor->getId()) }}">
+                            <i class="fa fa-trash-alt"></i>
+                        </a>
                     </div>
                 </td>
             </tr>
         @empty
-            <!-- <tr>
-                <td colspan="8">
-                    <div class="alert alert-danger text-center">
-                        <i class="fa fa-exclamation-triangle"></i>
-                        Nenhum registro encontrado!
-                    </div>
-                </td>
-            </tr> -->
+
         @endforelse
         </tbody>
     </table>

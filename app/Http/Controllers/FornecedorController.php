@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\FornecedorRequest;
 
-use App\Models\Fornecedor;
+use App\Http\Dao\DaoFornecedor;
 
 class FornecedorController extends Controller
 {
+    private DaoFornecedor $daoFornecedor;
+
+    public function __construct(DaoFornecedor $daoFornecedor)
+    {
+        $this->daoFornecedor = $daoFornecedor;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,7 @@ class FornecedorController extends Controller
      */
     public function index()
     {
-        $fornecedores = Fornecedor::all();
+        $fornecedores = $this->daoFornecedor->all();
         return view('fornecedores.index', compact('fornecedores'));
     }
 
@@ -32,12 +40,19 @@ class FornecedorController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\FornecedorRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FornecedorRequest $request)
     {
-        //
+        $fornecedor = $this->daoFornecedor->create($request->all());
+
+        $store = $this->daoFornecedor->store($fornecedor);
+
+        if ($store)
+            return redirect('fornecedores') ->with('success', 'Registro inserido com sucesso!');
+
+        return redirect('fornecedores')->with('error', 'Erro ao inserir registro.');
     }
 
     /**
@@ -48,7 +63,8 @@ class FornecedorController extends Controller
      */
     public function show($id)
     {
-        //
+        $fornecedor = $this->daoFornecedor->find($id);
+        return view('fornecedores.show', compact('fornecedor'));
     }
 
     /**
@@ -59,20 +75,25 @@ class FornecedorController extends Controller
      */
     public function edit($id)
     {
-        $fornecedores = Fornecedor::findOrFail($id);
-        return view('fornecedores.create', compact('fornecedores'));
+        $fornecedor = $this->daoFornecedor->find($id);
+        return view('fornecedores.create', compact('fornecedor'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\FornecedorRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(FornecedorRequest $request, $id)
     {
-        //
+        $update = $this->daoFornecedor->update($request, $id);
+
+        if ($update)
+            return redirect('fornecedores') ->with('success', 'Registro alterado com sucesso!');
+
+        return redirect('fornecedores')->with('error', 'Erro ao alterar registro.');
     }
 
     /**
@@ -83,6 +104,34 @@ class FornecedorController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delete = $this->daoFornecedor->delete($id);
+
+        if ($delete)
+            return redirect('fornecedores')->with('success', 'Registro removido com sucesso!');
+
+        return redirect('fornecedores')->with('error', 'Este registro não pode ser removido.');
+    }
+
+    /**
+     * Search for the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request) {
+        $q = $request->q;
+
+        $fornecedores = $this->daoFornecedor->search($q);
+
+        return view('fornecedores.search', compact('fornecedores'));
+    }
+
+    public function find($id) {
+        $fornecedor = $this->daoFornecedor->find($id);
+
+        if ($fornecedor != null)
+            return ["nome" => $fornecedor->getRazaoSocial()];  
+
+        return null;
     }
 }

@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\CidadeRequest;
 
-use App\Models\Cidade;
+use App\Http\Dao\DaoCidade;
 
 class CidadeController extends Controller
 {
+    private DaoCidade $daoCidade;
+
+    public function __construct(DaoCidade $daoCidade)
+    {
+        $this->daoCidade = $daoCidade;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,7 @@ class CidadeController extends Controller
      */
     public function index()
     {
-        $cidades = Cidade::all();
+        $cidades = $this->daoCidade->all();
         return view('cidades.index', compact('cidades'));
     }
 
@@ -32,14 +40,19 @@ class CidadeController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\CidadeRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CidadeRequest $request)
     {
-        Cidade::create($request->all());
+        $cidade = $this->daoCidade->create($request->all());
 
-        return redirect('cidades')->withSuccess('Cidade cadastrada com sucesso!');
+        $store = $this->daoCidade->store($cidade);
+
+        if ($store)
+            return redirect('cidades') ->with('success', 'Registro inserido com sucesso!');
+
+        return redirect('cidades')->with('error', 'Erro ao inserir registro.');
     }
 
     /**
@@ -50,7 +63,8 @@ class CidadeController extends Controller
      */
     public function show($id)
     {
-        //
+        $cidade = $this->daoCidade->find($id);
+        return view('cidades.show', compact('cidade'));
     }
 
     /**
@@ -61,20 +75,25 @@ class CidadeController extends Controller
      */
     public function edit($id)
     {
-        $cidade = Cidade::findOrFail($id);
+        $cidade = $this->daoCidade->find($id);
         return view('cidades.create', compact('cidade'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\CidadeRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CidadeRequest $request, $id)
     {
-        //
+        $update = $this->daoCidade->update($request, $id);
+
+        if ($update)
+            return redirect('cidades') ->with('success', 'Registro alterado com sucesso!');
+
+        return redirect('cidades')->with('error', 'Erro ao alterar registro.');
     }
 
     /**
@@ -85,6 +104,34 @@ class CidadeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delete = $this->daoCidade->delete($id);
+
+        if ($delete)
+            return redirect('cidades')->with('success', 'Registro removido com sucesso!');
+
+        return redirect('cidades')->with('error', 'Este registro não pode ser removido.');
+    }
+
+    /**
+     * Search for the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request) {
+        $q = $request->q;
+
+        $cidades = $this->daoCidade->search($q);
+
+        return view('cidades.search', compact('cidades'));
+    }
+
+    public function find($id) {
+        $cidade = $this->daoCidade->find($id);
+
+        if ($cidade != null)
+            return ["nome" => $cidade->getCidade()];  
+
+        return null;
     }
 }

@@ -1,5 +1,5 @@
 
-<table class="table table-hover">
+<table class="table table-hover" id="table">
     <thead>
         <tr>
             <th>Cód.</th>
@@ -11,10 +11,10 @@
     <tbody>
     @forelse ($estados as $estado)
         <tr>
-            <td>{{ $estado->id }}</td>
-            <td class="white-space">{{ $estado->estado }}</td>
-            <td>{{ $estado->uf }}</td>
-            <td>{{ $estado->pais_id }}</td>
+            <td>{{ $estado->getId() }}</td>
+            <td>{{ $estado->getEstado() }}</td>
+            <td>{{ $estado->getUF() }}</td>
+            <td>{{ $estado->getPais()->getPais() }}</td>
         </tr>
     @empty
         <!-- <tr>

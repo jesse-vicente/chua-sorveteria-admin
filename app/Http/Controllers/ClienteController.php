@@ -3,11 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\ClienteRequest;
 
-use App\Models\Cliente;
+use App\Http\Dao\DaoCliente;
 
 class ClienteController extends Controller
 {
+    private DaoCliente $daoCliente;
+
+    public function __construct()
+    {
+        $this->daoCliente = new DaoCliente();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,7 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        $clientes = Cliente::all();
+        $clientes = $this->daoCliente->all();
         return view('clientes.index', compact('clientes'));
     }
 
@@ -32,12 +40,19 @@ class ClienteController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\ClienteRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClienteRequest $request)
     {
-        //
+        $cliente = $this->daoCliente->create($request->all());
+
+        $store = $this->daoCliente->store($cliente);
+
+        if ($store)
+            return redirect('clientes') ->with('success', 'Registro inserido com sucesso!');
+
+        return redirect('clientes')->with('error', 'Erro ao inserir registro.');
     }
 
     /**
@@ -48,7 +63,8 @@ class ClienteController extends Controller
      */
     public function show($id)
     {
-        //
+        $cliente = $this->daoCliente->find($id);
+        return view('clientes.show', compact('cliente'));
     }
 
     /**
@@ -59,20 +75,25 @@ class ClienteController extends Controller
      */
     public function edit($id)
     {
-        $clientes = Cliente::findOrFail($id);
-        return view('clientes.create', compact('clientes'));
+        $cliente = $this->daoCliente->find($id);
+        return view('clientes.create', compact('cliente'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\ClienteRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ClienteRequest $request, $id)
     {
-        //
+        $update = $this->daoCliente->update($request, $id);
+
+        if ($update)
+            return redirect('clientes') ->with('success', 'Registro alterado com sucesso!');
+
+        return redirect('clientes')->with('error', 'Erro ao alterar registro.');
     }
 
     /**
@@ -83,6 +104,25 @@ class ClienteController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delete = $this->daoCliente->delete($id);
+
+        if ($delete)
+            return redirect('clientes')->with('success', 'Registro removido com sucesso!');
+
+        return redirect('clientes')->with('error', 'Este registro não pode ser removido.');
+    }
+
+    /**
+     * Search for the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request) {
+        $q = $request->q;
+
+        $clientes = $this->daoCliente->search($q);
+
+        return view('clientes.search', compact('clientes'));
     }
 }

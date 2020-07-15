@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-hover">
+    <table class="table table-hover" id="table">
         <thead>
             <tr>
                 <th>Cód.</th>
@@ -13,23 +13,19 @@
         @if (isset($paises))
             @foreach ($paises as $pais)
             <tr>
-                <td>{{ $pais->id }}</td>
-                <td class="white-space">{{ $pais->pais }}</td>
-                <td>{{ $pais->sigla }}</td>
-                <td>{{ $pais->ddi }}</td>
+                <td>{{ $pais->getId() }}</td>
+                <td>{{ $pais->getPais() }}</td>
+                <td>{{ $pais->getSigla() }}</td>
+                <td>+{{ $pais->getDDI() }}</td>
                 <td class="text-center">
                     <div class="row no-gutters d-flex justify-content-center">
-                        <a class="btn btn-sm btn-spinner btn-primary mr-2" href="{{ route('paises.edit',$pais->id) }}">
+                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('paises.edit',$pais->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <form action="{{ route('paises.destroy',$pais->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="fa fa-trash-alt"></i>
-                            </button>
-                        </form>
+                        <a class="btn btn-sm btn-danger" href="{{ route('paises.show', $pais->getId()) }}">
+                            <i class="fa fa-trash-alt"></i>
+                        </a>
                     </div>
                 </td>
             </tr>

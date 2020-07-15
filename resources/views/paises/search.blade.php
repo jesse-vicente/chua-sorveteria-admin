@@ -1,5 +1,4 @@
-
-<table class="table table-hover">
+<table class="table table-hover" id="table">
     <thead>
         <tr>
             <th>Cód.</th>
@@ -11,13 +10,13 @@
     <tbody>
     @forelse ($paises as $pais)
         <tr>
-            <td>{{ $pais->id }}</td>
-            <td class="white-space">{{ $pais->pais }}</td>
-            <td>{{ $pais->sigla }}</td>
-            <td>{{ $pais->ddi }}</td>
+            <td>{{ $pais->getId() }}</td>
+            <td>{{ $pais->getPais() }}</td>
+            <td>{{ $pais->getSigla() }}</td>
+            <td>+{{ $pais->getDDI() }}</td>
         </tr>
     @empty
-        <tr>
+        <!-- <tr>
             <td colspan="8">
                 <div class="alert alert-danger text-center">
                     <i class="fa fa-exclamation-triangle"></i>
@@ -27,7 +26,7 @@
             <td class="d-none"></td>
             <td class="d-none"></td>
             <td class="d-none"></td>
-        </tr>
+        </tr> -->
     @endforelse
     </tbody>
 </table>

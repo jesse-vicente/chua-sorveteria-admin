@@ -1,5 +1,5 @@
 
-<table class="table table-hover">
+<table class="table table-hover" id="table">
     <thead>
         <tr>
             <th>Cód.</th>
@@ -9,8 +9,8 @@
     <tbody>
     @forelse ($formasPagamento as $formaPagamento)
         <tr>
-            <td>{{ $formaPagamento->id }}</td>
-            <td class="white-space">{{ $formaPagamento->formaPagamento }}</td>
+            <td>{{ $formaPagamento->getId() }}</td>
+            <td>{{ $formaPagamento->getFormaPagamento() }}</td>
         </tr>
     @empty
         <tr>

@@ -3,12 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\PaisRequest;
 
-use App\Models\Pais;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+
+use App\Http\Dao\DaoPais;
 
 class PaisController extends Controller
 {
+    private DaoPais $daoPais;
+
+    public function __construct(DaoPais $daoPais)
+    {
+        $this->daoPais = $daoPais;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +25,7 @@ class PaisController extends Controller
      */
     public function index()
     {
-        $paises = Pais::all();
+        $paises = $this->daoPais->all();
         return view('paises.index', compact('paises'));
     }
 
@@ -33,15 +42,19 @@ class PaisController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\PaisRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PaisRequest $request)
     {
-        Pais::create($request->all());
+        $pais = $this->daoPais->create($request->all());
 
-        return redirect('paises')
-            ->withSuccess('País cadastrado com sucesso!');
+        $store = $this->daoPais->store($pais);
+
+        if ($store)
+            return redirect('paises') ->with('success', 'Registro inserido com sucesso!');
+
+        return redirect('paises')->with('error', 'Erro ao inserir registro.');
     }
 
     /**
@@ -52,7 +65,8 @@ class PaisController extends Controller
      */
     public function show($id)
     {
-        //
+        $pais = $this->daoPais->find($id);
+        return view('paises.show', compact('pais'));
     }
 
     /**
@@ -63,20 +77,25 @@ class PaisController extends Controller
      */
     public function edit($id)
     {
-        $pais = Pais::findOrFail($id);
+        $pais = $this->daoPais->find($id);
         return view('paises.create', compact('pais'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\PaisRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(PaisRequest $request, $id)
     {
-        //
+        $update = $this->daoPais->update($request, $id);
+
+        if ($update)
+            return redirect('paises') ->with('success', 'Registro alterado com sucesso!');
+
+        return redirect('paises')->with('error', 'Erro ao alterar registro.');
     }
 
     /**
@@ -87,7 +106,12 @@ class PaisController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delete = $this->daoPais->delete($id);
+
+        if ($delete)
+            return redirect('paises')->with('success', 'Registro removido com sucesso!');
+
+        return redirect()->back()->with('error', 'Este registro não pode ser removido!');
     }
 
     /**
@@ -97,12 +121,17 @@ class PaisController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function search(Request $request) {
-        $q = $request->q;
-
-        $paises = (!is_null($q))
-            ? DB::select(DB::raw("SELECT id, pais, sigla, ddi FROM paises WHERE id LIKE '$q' OR pais LIKE '$q%'"))
-            : DB::select(DB::raw("SELECT id, pais, sigla, ddi FROM paises LIMIT 10"));
+        $paises = $this->daoPais->search($request->q);
 
         return view('paises.search', compact('paises'));
+    }
+
+    public function find($id) {
+        $pais = $this->daoPais->find($id);
+
+        if ($pais != null)
+            return ["nome" => $pais->getPais()];  
+
+        return null;
     }
 }

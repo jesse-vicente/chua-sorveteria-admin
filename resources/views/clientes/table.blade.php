@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-hover">
+    <table class="table table-hover" id="table">
         <thead>
             <tr>
                 <th>Cód.</th>
@@ -11,22 +11,18 @@
         <tbody>
         @forelse ($clientes as $cliente)
             <tr>
-                <td>{{ $cliente->id }}</td>
-                <td>{{ $cliente->cliente }}</td>
-                <td>{{ $cliente->whatsapp }}</td>
+                <td>{{ $cliente->getId() }}</td>
+                <td>{{ $cliente->getNome() }}</td>
+                <td>{{ $cliente->getWhatsapp() }}</td>
                 <td class="text-center">
                     <div class="row no-gutters d-flex justify-content-center">
-                        <a class="btn btn-sm btn-spinner btn-primary mr-2" href="{{ route('clientes.edit', $cliente->id) }}">
+                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('clientes.edit', $cliente->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="fa fa-trash-alt"></i>
-                            </button>
-                        </form>
+                        <a class="btn btn-sm btn-danger" href="{{ route('clientes.show', $cliente->getId()) }}">
+                            <i class="fa fa-trash-alt"></i>
+                        </a>
                     </div>
                 </td>
             </tr>

@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-hover">
+    <table class="table table-hover" id="table">
         <thead>
             <tr>
                 <th>Cód.</th>
@@ -12,38 +12,24 @@
         <tbody>
             @forelse ($estados as $estado)
             <tr>
-                <td>{{ $estado->id }}</td>
-                <td class="white-space">{{ $estado->estado }}</td>
-                <td>{{ $estado->uf }}</td>
-                <td>{{ $estado->pais }}</td>
+                <td>{{ $estado->getId() }}</td>
+                <td>{{ $estado->getEstado() }}</td>
+                <td>{{ $estado->getUf() }}</td>
+                <td>{{ $estado->getPais()->getPais() }}</td>
                 <td class="text-center">
                     <div class="row no-gutters d-flex justify-content-center">
-                        <a class="btn btn-sm btn-spinner btn-primary mr-2" href="{{ route('estados.edit', $estado->id) }}">
+                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('estados.edit', $estado->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <form action="{{ route('estados.destroy', $estado->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="fa fa-trash-alt"></i>
-                            </button>
-                        </form>
+                        <a class="btn btn-sm btn-danger" href="{{ route('estados.show', $estado->getId()) }}">
+                            <i class="fa fa-trash-alt"></i>
+                        </a>
                     </div>
                 </td>
             </tr>
             @empty
-            <tr>
-                <td colspan="8">
-                    <div class="alert alert-danger text-center">
-                        <i class="fa fa-exclamation-triangle"></i>
-                        Nenhum registro encontrado!
-                    </div>
-                </td>
-                <td class="d-none"></td>
-                <td class="d-none"></td>
-                <td class="d-none"></td>
-            </tr>
+
             @endforelse
         </tbody>
     </table>

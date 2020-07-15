@@ -107,7 +107,7 @@ return [
     'classes_brand_text' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
+    'classes_sidebar' => 'sidebar-dark-primary elevation-3',
     'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand-md',
@@ -228,103 +228,86 @@ return [
         //     'label_color' => 'success',
         // ],
         [
-            'text'        => 'Países',
-            'url'         => 'paises',
-            'icon'        => 'far fa-fw fa-file',
+            'text'    => 'Cadastros',
+            'icon'    => 'mr-1 fas fa-fw fa-folder-open',
+            'submenu' => [
+                [
+                    'text'    => 'Financeiro',
+                    'icon'    => 'mr-1 fas fa-fw fa-dollar-sign',
+                    'submenu' => [
+                        [
+                            'text'        => 'Formas de Pagamento',
+                            'url'         => 'formas-pagamento',
+                            'icon'        => 'mr-1 fas fa-fw fa-credit-card',
+                        ],
+                        [
+                            'text'        => 'Condições de Pagamento',
+                            'url'         => 'condicoes-pagamento',
+                            'icon'        => 'mr-1 fas fa-comments-dollar',
+                        ],
+                    ],
+                ],
+                
+                [
+                    'text'        => 'Funcionários',
+                    'url'         => 'funcionarios',
+                    'icon'        => 'mr-1 fas fa-fw fa-address-card',
+                ],
+                [
+                    'text'        => 'Fornecedores',
+                    'url'         => 'fornecedores',
+                    'icon'        => 'mr-1 fas fa-fw fa-truck',
+                ],
+                [
+                    'text'        => 'Clientes',
+                    'url'         => 'clientes',
+                    'icon'        => 'mr-1 fas fa-fw fa-users',
+                ],
+                [
+                    'text'        => 'Categorias',
+                    'url'         => 'categorias',
+                    'icon'        => 'mr-1 fas fa-fw fa-layer-group',
+                ],
+                [
+                    'text'        => 'Produtos',
+                    'url'         => 'produtos',
+                    'icon'        => 'mr-1 fas fa-fw fa-box',
+                ],
+
+                [
+                    'text'    => 'Países, Estados & Cidades',
+                    'icon'    => 'mr-1 fas fa-fw fa-map-marker-alt',
+                    'submenu' => [
+                        [
+                            'text' => 'Países',
+                            'url'  => 'paises',
+                            'icon' => 'mr-1 fas fa-fw fa-location-arrow',
+                        ],
+                        [
+                            'text' => 'Estados',
+                            'url'  => 'estados',
+                            'icon' => 'mr-1 fas fa-fw fa-location-arrow',
+                        ],
+                        [
+                            'text' => 'Cidades',
+                            'url'  => 'cidades',
+                            'icon' => 'mr-1 fas fa-fw fa-location-arrow',
+                        ],
+                    ],
+                ],
+            ],
         ],
-        [
-            'text'        => 'Estados',
-            'url'         => 'estados',
-            'icon'        => 'far fa-fw fa-file',
-        ],
-        [
-            'text'        => 'Cidades',
-            'url'         => 'cidades',
-            'icon'        => 'far fa-fw fa-file',
-        ],
-        [
-            'text'        => 'Formas de Pagamento',
-            'url'         => 'formas-pagamento',
-            'icon'        => 'far fa-fw fa-file',
-        ],
-        [
-            'text'        => 'Condições de Pagamento',
-            'url'         => 'condicoes-pagamento',
-            'icon'        => 'far fa-fw fa-file',
-        ],
-        [
-            'text'        => 'Funcionários',
-            'url'         => 'funcionarios',
-            'icon'        => 'far fa-fw fa-file',
-        ],
-        [
-            'text'        => 'Fornecedores',
-            'url'         => 'fornecedores',
-            'icon'        => 'far fa-fw fa-file',
-        ],
-        [
-            'text'        => 'Clientes',
-            'url'         => 'clientes',
-            'icon'        => 'far fa-fw fa-file',
-        ],
-        [
-            'text'        => 'Categorias',
-            'url'         => 'categorias',
-            'icon'        => 'far fa-fw fa-file',
-        ],
-        [
-            'text'        => 'Produtos',
-            'url'         => 'produtos',
-            'icon'        => 'far fa-fw fa-file',
-        ],
+        
         // ['header' => 'account_settings'],
         // [
         //     'text' => 'profile',
         //     'url'  => 'admin/settings',
-        //     'icon' => 'fas fa-fw fa-user',
+        //     'icon' => 'mr-1 fas fa-fw fa-user',
         // ],
         // [
         //     'text' => 'change_password',
         //     'url'  => 'admin/settings',
-        //     'icon' => 'fas fa-fw fa-lock',
-        // ],
-        // [
-        //     'text'    => 'multilevel',
-        //     'icon'    => 'fas fa-fw fa-share',
-        //     'submenu' => [
-        //         [
-        //             'text' => 'level_one',
-        //             'url'  => '#',
-        //         ],
-        //         [
-        //             'text'    => 'level_one',
-        //             'url'     => '#',
-        //             'submenu' => [
-        //                 [
-        //                     'text' => 'level_two',
-        //                     'url'  => '#',
-        //                 ],
-        //                 [
-        //                     'text'    => 'level_two',
-        //                     'url'     => '#',
-        //                     'submenu' => [
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url'  => '#',
-        //                         ],
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url'  => '#',
-        //                         ],
-        //                     ],
-        //                 ],
-        //             ],
-        //         ],
-        //         [
-        //             'text' => 'level_one',
-        //             'url'  => '#',
-        //         ],
-        //     ],
+        //     'icon' => 'mr-1 fas fa-fw fa-lock',
         // ],
         // ['header' => 'labels'],
         // [
@@ -378,6 +361,22 @@ return [
 
     'plugins' => [
         [
+            'name' => 'Toastr',
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js',
+                ],
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css',
+                ],
+            ],
+        ],
+        [
             'name' => 'Datatables',
             'active' => true,
             'files' => [
@@ -390,12 +389,17 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js',
+                    'location' => '//cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js',
                 ],
                 [
                     'type' => 'css',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css',
+                    'location' => '//cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css',
                 ],
                 [
                     'type' => 'js',
@@ -446,6 +450,22 @@ return [
                     'asset' => false,
                     'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
                 ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '/js/masks.js',
+                ]
+            ],
+        ],
+        [
+            'name' => 'InputMask',
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js',
+                ],
             ],
         ],
         [
@@ -469,9 +489,19 @@ return [
             'active' => true,
             'files' => [
                 [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => '/css/styles.css',
+                ],
+                [
                     'type' => 'js',
                     'asset' => true,
                     'location' => '/js/form.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '/js/table.js',
                 ],
             ],
         ],

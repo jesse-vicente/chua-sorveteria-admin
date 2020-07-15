@@ -1,44 +1,35 @@
 <div class="table-responsive">
-    <table class="table table-hover">
+    <table class="table table-hover" id="table">
         <thead>
             <tr>
                 <th>Cód.</th>
                 <th>Funcionário</th>
                 <th>WhatsApp</th>
+                <th>Endereço</th>
                 <th class="text-center">Ações</th>
             </tr>
         </thead>
         <tbody>
         @forelse ($funcionarios as $funcionario)
             <tr>
-                <td>{{ $funcionario->id }}</td>
-                <td>{{ $funcionario->funcionario }}</td>
-                <td>{{ $funcionario->whatsapp }}</td>
+                <td>{{ $funcionario->getId() }}</td>
+                <td>{{ $funcionario->getNome() }}</td>
+                <td>{{ $funcionario->getWhatsapp() }}</td>
+                <td>{{ $funcionario->getEndereco() . ', ' . $funcionario->getNumero() . ' - ' . $funcionario->getBairro() }}</td>
                 <td class="text-center">
                     <div class="row no-gutters d-flex justify-content-center">
-                        <a class="btn btn-sm btn-spinner btn-primary mr-2" href="{{ route('funcionarios.edit', $funcionario->id) }}">
+                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('funcionarios.edit', $funcionario->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <form action="{{ route('funcionarios.destroy', $funcionario->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="fa fa-trash-alt"></i>
-                            </button>
-                        </form>
+                        <a class="btn btn-sm btn-danger" href="{{ route('funcionarios.show', $funcionario->getId()) }}">
+                            <i class="fa fa-trash-alt"></i>
+                        </a>
                     </div>
                 </td>
             </tr>
         @empty
-            <!-- <tr>
-                <td colspan="8">
-                    <div class="alert alert-danger text-center">
-                        <i class="fa fa-exclamation-triangle"></i>
-                        Nenhum registro encontrado!
-                    </div>
-                </td>
-            </tr> -->
+
         @endforelse
         </tbody>
     </table>
