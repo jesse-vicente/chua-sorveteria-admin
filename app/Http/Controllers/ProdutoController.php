@@ -11,9 +11,9 @@ class ProdutoController extends Controller
 {
     private DaoProduto $daoProduto;
 
-    public function __construct(DaoProduto $daoProduto)
+    public function __construct()
     {
-        $this->daoProduto = $daoProduto;
+        $this->daoProduto = new DaoProduto();
     }
 
     /**

@@ -11,9 +11,9 @@ class FuncionarioController extends Controller
 {
     private DaoFuncionario $daoFuncionario;
 
-    public function __construct(DaoFuncionario $daoFuncionario)
+    public function __construct()
     {
-        $this->daoFuncionario = $daoFuncionario;
+        $this->daoFuncionario = new DaoFuncionario();
     }
 
     /**

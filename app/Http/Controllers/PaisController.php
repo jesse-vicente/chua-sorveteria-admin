@@ -13,9 +13,9 @@ class PaisController extends Controller
 {
     private DaoPais $daoPais;
 
-    public function __construct(DaoPais $daoPais)
+    public function __construct()
     {
-        $this->daoPais = $daoPais;
+        $this->daoPais = new DaoPais();
     }
 
     /**

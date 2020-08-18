@@ -11,9 +11,9 @@ class FornecedorController extends Controller
 {
     private DaoFornecedor $daoFornecedor;
 
-    public function __construct(DaoFornecedor $daoFornecedor)
+    public function __construct()
     {
-        $this->daoFornecedor = $daoFornecedor;
+        $this->daoFornecedor = new DaoFornecedor();
     }
 
     /**

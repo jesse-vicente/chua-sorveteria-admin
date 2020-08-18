@@ -11,9 +11,9 @@ class FormaPagamentoController extends Controller
 {
     private DaoFormaPagamento $daoFormaPagamento;
 
-    public function __construct(DaoFormaPagamento $daoFormaPagamento)
+    public function __construct()
     {
-        $this->daoFormaPagamento = $daoFormaPagamento;
+        $this->daoFormaPagamento = new DaoFormaPagamento();
     }
 
     /**

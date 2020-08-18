@@ -11,9 +11,9 @@ class CategoriaController extends Controller
 {
     private DaoCategoria $daoCategoria;
 
-    public function __construct(DaoCategoria $daoCategoria)
+    public function __construct()
     {
-        $this->daoCategoria = $daoCategoria;
+        $this->daoCategoria = new DaoCategoria();
     }
 
     /**

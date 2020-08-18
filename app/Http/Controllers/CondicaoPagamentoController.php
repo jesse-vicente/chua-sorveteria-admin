@@ -14,9 +14,9 @@ class CondicaoPagamentoController extends Controller
     private DaoCondicaoPagamento $daoCondicaoPagamento;
     private DaoFormaPagamento $daoFormaPagamento;
 
-    public function __construct(DaoCondicaoPagamento $daoCondicaoPagamento)
+    public function __construct()
     {
-        $this->daoCondicaoPagamento = $daoCondicaoPagamento;
+        $this->daoCondicaoPagamento = new DaoCondicaoPagamento();
         $this->daoFormaPagamento = new DaoFormaPagamento();
     }
 
