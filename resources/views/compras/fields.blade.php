@@ -209,8 +209,10 @@
     </div>
 </div>
 
-<div class="container mx-0 px-0">
-    @include('compras.products-table')
+<div class="form-row">
+    <div class="col-xl-5">
+        @include('compras.products-table')
+    </div>
 </div>
 
 <div class="form-row">
@@ -409,8 +411,10 @@
     </div>
 </div>
 
-<div class="container mx-0 px-0">
-    @include('contas-a-pagar.table')
+<div class="form-row">
+    <div class="col-xl-5">
+        @include('contas-a-pagar.table')
+    </div>
 </div>
 
 <div class="form-group col-xl-6 px-0">

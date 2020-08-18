@@ -1,13 +1,19 @@
-<div class="card">
-    <div class="card-header bg-gradient-light">
-        <span class="d-flex align-items-center">
-            <i class="fa fa-shopping-cart mr-2"></i>
-            <h5 class="mb-0">Lista de Produtos</h5>
-        </span>
+<div class="card collapsed-card" id="card-produtos">
+    <div class="card-header bg-gradient-primary">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex">
+                <i class="fa fa-shopping-cart mr-2"></i>
+                <h3 class="card-title">Lista de Produtos</h3>
+            </div>
+
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+            </div>
+        </div>
     </div>
 
-    <div class="card-body" style="display: none;">
-        <table class="table table-hover table-sm table-striped" id="produtos-table"></table>
+    <div class="card-body p-0">
+        <table class="table table-sm table-borderless table-striped table-responsive-xl" id="produtos-table"></table>
     </div>
 
     <!-- <div class="card-footer d-flex justify-content-end">
@@ -38,7 +44,7 @@
                         >
                     </div>
 
-                    <div class="form-group col-xl-10">
+                    <div class="form-group col-xl-8">
                         <label>Produto</label>
                         <input
                             type="text"
@@ -49,9 +55,21 @@
                             disabled
                         >
                     </div>
+
+                    <div class="form-group col-xl-2">
+                        <label>Unidade</label>
+                        <input
+                            type="text"
+                            id="unidade"
+                            name="unidade"
+                            class="form-control"
+                            readonly
+                            disabled
+                        >
+                    </div>
                 </div>
 
-                <div class="form-row">
+                <!-- <div class="form-row">
                     <div class="form-group col-xl-2">
                         <label>Unidade</label>
                         <input
@@ -75,7 +93,7 @@
                             disabled
                         >
                     </div>
-                </div>
+                </div> -->
 
                 <div class="form-row">
                     <div class="form-group col-xl-4 required">

@@ -184,7 +184,7 @@ $(document).ready(function() {
                 'id'        : id,
                 'descricao' : descricao,
                 'unidade'   : $(this).find("td").eq(2).text(),
-                'categoria' : $(this).find("td").eq(3).text(),
+                // 'categoria' : $(this).find("td").eq(3).text(),
             };
 
             mostrarDetalhesProduto(detalhesProduto);
@@ -230,7 +230,7 @@ $(document).ready(function() {
         $("#produto_cod").val(detalhesProduto.id);
         $("#descricao").val(detalhesProduto.descricao);
         $("#unidade").val(detalhesProduto.unidade);
-        $("#categoria").val(detalhesProduto.categoria);
+        // $("#categoria").val(detalhesProduto.categoria);
 
         if (alterar) {
             $("#quantidade").val(detalhesProduto.quantidade);
@@ -264,6 +264,9 @@ $(document).ready(function() {
         }
 
         listaContasPagar.rows.add(duplicatas).draw();
+
+        if ($("#card-contas-pagar").hasClass("collapsed-card"))
+            $("#card-contas-pagar .card-tools .btn").click();
     }
 
     var totalProdutos = 0.0;
@@ -332,10 +335,10 @@ $(document).ready(function() {
             'id'         : row.find("td").eq(0).text(),
             'descricao'  : row.find("td").eq(1).text(),
             'unidade'    : row.find("td").eq(2).text(),
-            'categoria'  : row.find("td").eq(3).text(),
-            'quantidade' : row.find("td").eq(4).text(),
-            'valor'      : Number(row.find("td").eq(5).text().replace('R$ ', '')).toFixed(2),
-            'total'      : Number(row.find("td").eq(6).text().replace('R$ ', '')).toFixed(2),
+            // 'categoria'  : row.find("td").eq(3).text(),
+            'quantidade' : row.find("td").eq(3).text(),
+            'valor'      : Number(row.find("td").eq(4).text().replace('R$ ', '')).toFixed(2),
+            'total'      : Number(row.find("td").eq(5).text().replace('R$ ', '')).toFixed(2),
         };
 
         console.table(detalhesProduto)
@@ -361,22 +364,25 @@ $(document).ready(function() {
         const id = Number($("#produto_cod").val());
         const descricao = $("#descricao").val();
         const unidade = $("#unidade").val();
-        const categoria = $("#categoria").val();
+        // const categoria = $("#categoria").val();
 
         const qtd = Number($("#quantidade").val());
         const val = parseFloat(Number($("#valor").val()));
 
         const total = Number(parseFloat(qtd * val));
 
-        dadosProduto = {
-            0: id,
-            1: descricao,
-            2: unidade,
-            3: categoria,
-            4: qtd,
-            5: `R$ ${val}`,
-            6: `R$ ${total.toFixed(2)}`,
-        }
+        const valTexto = `R$ ${val}`;
+        const totalTexto = `R$ ${total.toFixed(2)}`;
+
+        dadosProduto = [
+            id,
+            descricao,
+            unidade,
+            // 3: categoria,
+            qtd,
+            valTexto,
+            totalTexto,
+        ]
 
         if (!listaProdutos) {
             listaProdutos = $('#produtos-table').DataTable({
@@ -385,29 +391,30 @@ $(document).ready(function() {
                     { title: 'Cód.' },
                     { title: 'Produto' },
                     { title: 'Und.' },
-                    { title: 'Categoria'},
+                    // { title: 'Categoria'},
                     { title: 'Qtd.' },
                     { title: 'Valor' },
                     { title: 'Valor Total' },
                     {
                         title: 'Ações',
                         render: data =>
-                            `<button
-                                type="button"
-                                class="btn btn-xs mx-1 btn-warning alterar"
-                                title="Editar"
-                            >
-                                <i class="fa fa-edit text-white"></i>
-                            </button>
+                            `<div class="btn-group btn-group-sm">
+                                <button
+                                    type="button"
+                                    class="btn btn-warning alterar"
+                                    title="Editar"
+                                >
+                                    <i class="fa fa-edit text-white"></i>
+                                </button>
 
-                            <button
-                                type="button"
-                                class="btn btn-xs mx-1 btn-danger remover"
-                                title="Remover"
-                            >
-                                <i class="fa fa-trash-alt"></i>
-                            </button>
-                        `
+                                <button
+                                    type="button"
+                                    class="btn btn-danger remover"
+                                    title="Remover"
+                                >
+                                    <i class="fa fa-trash-alt"></i>
+                                </button>
+                            </div>`
                     }
                 ],
                 "columnDefs": [
@@ -445,7 +452,8 @@ $(document).ready(function() {
         $("#total_produtos").val(totalProdutos.toFixed(2));
         $("#total_pagar").val(calcularAdicionais().toFixed(2));
 
-        $("#produtos-table").parents('.card-body').slideDown();
+        if ($("#card-produtos").hasClass("collapsed-card"))
+            $("#card-produtos .card-tools .btn").click();
 
         $("#condicao_pagamento_id, .btn-search[data-input='#condicao_pagamento_id']").attr("disabled", false);
     });
