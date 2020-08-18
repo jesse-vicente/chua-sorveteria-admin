@@ -105,7 +105,7 @@ class DaoFuncionario implements Dao {
         }
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = DB::table('funcionarios')->where('id', '=', $id)->first();
 
         $funcionario = $this->create(get_object_vars($dados));

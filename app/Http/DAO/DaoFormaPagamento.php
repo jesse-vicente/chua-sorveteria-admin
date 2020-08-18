@@ -78,7 +78,7 @@ class DaoFormaPagamento implements Dao {
         }
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = DB::table('formas_pagamento')->where('id', $id)->first();
 
         if ($dados)

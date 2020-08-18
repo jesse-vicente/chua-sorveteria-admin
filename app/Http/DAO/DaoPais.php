@@ -83,7 +83,7 @@ class DaoPais implements Dao {
         }
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = DB::table('paises')->where('id', $id)->first();
 
         if ($dados)

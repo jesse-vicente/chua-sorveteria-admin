@@ -126,7 +126,7 @@ class FornecedorController extends Controller
         return view('fornecedores.search', compact('fornecedores'));
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = array();
 
         if ($id == 0) {

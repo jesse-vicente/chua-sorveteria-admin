@@ -131,38 +131,7 @@ class CondicaoPagamentoController extends Controller
         return view('condicoes-pagamento.search', compact('condicoesPagamento'));
     }
 
-    // public function find($id) {
-    //     $condicaoPagamento = $this->daoCondicaoPagamento->find($id);
-
-    //     if ($condicaoPagamento != null) {
-
-    //         $parcelas = $condicaoPagamento->getParcelas();
-    //         $listaParcelas = array();
-
-    //         foreach ($parcelas as $parcela) {
-    //             $dadosParcela = [
-    //                 "numero"      => $parcela->getNumero(),
-    //                 "prazo"       => $parcela->getPrazo(),
-    //                 "porcentagem" => $parcela->getPorcentagem(),
-    //             ];
-
-    //             array_push($listaParcelas, $dadosParcela);
-    //         }
-
-    //         $dados = [
-    //             "id"   => $condicaoPagamento->getId(),
-    //             "nome" => $condicaoPagamento->getCondicaoPagamento(),
-    //         ];
-
-    //         // dd($dados);
-
-    //         return $dados;
-    //     }
-
-    //     return null;
-    // }
-
-    public function find($id) {
+    public function find(int $id) {
 
         $dados = array();
 

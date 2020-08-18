@@ -126,7 +126,7 @@ class CategoriaController extends Controller
         return view('categorias.search', compact('categorias'));
     }
 
-    public function find($id) {
+    public function find(int $id) {
 
         $dados = array();
 

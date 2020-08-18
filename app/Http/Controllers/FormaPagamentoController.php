@@ -126,7 +126,7 @@ class FormaPagamentoController extends Controller
         return view('formas-pagamento.search', compact('formasPagamento'));
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = array();
 
         if ($id == 0) {

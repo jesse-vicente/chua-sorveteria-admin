@@ -92,7 +92,7 @@ class DaoEstado implements Dao {
         }
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = DB::table('estados')->where('id', $id)->first();
 
         if ($dados)

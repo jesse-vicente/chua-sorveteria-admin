@@ -91,7 +91,7 @@ class DaoCidade implements Dao {
         }
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = DB::table('cidades')->where('id', $id)->first();
 
         if ($dados)

@@ -16,7 +16,7 @@ interface Dao {
 
     public function delete($id);
 
-    public function find($id);
+    public function find(int $id);
 
     public function search(string $q = null);
 

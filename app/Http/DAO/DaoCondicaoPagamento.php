@@ -196,7 +196,7 @@ class DaoCondicaoPagamento implements Dao {
         return $this->daoParcela->delete($id);
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = DB::table('condicoes_pagamento')->where('id', $id)->first();
 
         if ($dados)

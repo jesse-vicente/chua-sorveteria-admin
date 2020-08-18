@@ -113,7 +113,7 @@ class DaoCliente implements Dao {
         }
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = DB::table('clientes')->where('id', $id)->first();
 
         if ($dados)

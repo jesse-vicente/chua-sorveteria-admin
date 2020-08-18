@@ -126,7 +126,7 @@ class PaisController extends Controller
         return view('paises.search', compact('paises'));
     }
 
-    public function find($id) {
+    public function find(int $id) {
 
         $dados = array();
 

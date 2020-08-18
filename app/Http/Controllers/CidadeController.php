@@ -128,7 +128,7 @@ class CidadeController extends Controller
         return view('cidades.search', compact('cidades'));
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = array();
 
         if ($id == 0) {

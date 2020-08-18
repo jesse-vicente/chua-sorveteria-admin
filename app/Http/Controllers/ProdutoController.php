@@ -126,7 +126,7 @@ class ProdutoController extends Controller
         return view('produtos.search', compact('produtos'));
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = array();
 
         if ($id == 0) {

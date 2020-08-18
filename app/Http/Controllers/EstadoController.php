@@ -130,7 +130,7 @@ class EstadoController extends Controller
         return view('estados.search', compact('estados'));
     }
 
-    public function find($id) {
+    public function find(int $id) {
 
         $dados = array();
 

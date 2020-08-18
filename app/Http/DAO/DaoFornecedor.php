@@ -115,7 +115,7 @@ class DaoFornecedor implements Dao {
         }
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = DB::table('fornecedores')->where('id', $id)->first();
 
         if ($dados)

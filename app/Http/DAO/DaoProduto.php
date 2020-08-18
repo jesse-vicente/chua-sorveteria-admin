@@ -103,7 +103,7 @@ class DaoProduto implements Dao {
         }
     }
 
-    public function find($id) {
+    public function find(int $id) {
         $dados = DB::table('produtos')->where('id', $id)->first();
 
         if ($dados)
