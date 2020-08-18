@@ -142,7 +142,7 @@
     </div>
 
     <div class="form-group col-xl-1">
-        <label>Cód. Cidade</label>
+        <label>Código</label>
         <input
             type="number"
             class="form-control @error('cidade_id') is-invalid @enderror"
@@ -194,7 +194,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="table-responsive"></div>
+                    @include('cidades.search')
                 </div>
             </div>
         </div>
@@ -312,7 +312,7 @@
 
 <div class="form-row">
     <div class="form-group col-xl-1">
-        <label>Cód. Cond. Pgto.</label>
+        <label>Código</label>
         <input
             type="number"
             class="form-control @error('condicao_pagamento_id') is-invalid @enderror"
@@ -365,7 +365,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="table-responsive"></div>
+                    @include('condicoes-pagamento.search')
                 </div>
             </div>
         </div>

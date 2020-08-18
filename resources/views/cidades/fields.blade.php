@@ -55,7 +55,7 @@
 
 <div class="form-row">
     <div class="form-group col-xl-1">
-        <label>Cód. Estado</label>
+        <label>Código</label>
         <input
             type="text"
             class="form-control"
@@ -110,7 +110,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="table-responsive"></div>
+                    @include('estados.search')
                 </div>
             </div>
         </div>

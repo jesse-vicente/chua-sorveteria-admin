@@ -113,10 +113,19 @@ class DaoCategoria implements Dao {
         }
     }
 
-    public function fillData($categoria) {
+    public function fillData(Categoria $categoria) {
         $dados = [
             'id'        => $categoria->getId(),
             'categoria' => $categoria->getCategoria(),
+        ];
+
+        return $dados;
+    }
+
+    public function fillForModal(Categoria $categoria) {
+        $dados = [
+            'id'   => $categoria->getId(),
+            'nome' => $categoria->getCategoria(),
         ];
 
         return $dados;

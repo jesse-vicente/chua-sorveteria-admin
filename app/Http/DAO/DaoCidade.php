@@ -46,12 +46,15 @@ class DaoCidade implements Dao {
         try {
             $dados = $this->fillData($cidade);
 
+            // dd($dados);
+
             DB::table('cidades')->insert($dados);
             DB::commit();
 
             return true;
         } catch (\Throwable $th) {
             DB::rollBack();
+            dd($th->getMessage());
             return false;
         }
     }
@@ -110,7 +113,7 @@ class DaoCidade implements Dao {
             return $cidades;
         }
         else {
-            $dados = DB::table('cidades')->limit(10)->get();
+            $dados = DB::table('cidades')->get();
 
             foreach ($dados as $obj) {
                 $cidade = $this->create(get_object_vars($obj));
@@ -121,12 +124,25 @@ class DaoCidade implements Dao {
         }
     }
 
-    public function fillData($cidade) {
+    public function fillData(Cidade $cidade) {
+
         $dados = [
-            'id'        => $cidade->getId(),
-            'cidade'    => $cidade->getCidade(),
-            'ddd'       => $cidade->getDDD(),
-            'estado_id' => $cidade->getEstado()->getID(),
+            "id"        => $cidade->getId(),
+            "cidade"    => $cidade->getCidade(),
+            "ddd"       => $cidade->getDDD(),
+            "estado_id" => $cidade->getEstado()->getID(),
+        ];
+
+        return $dados;
+    }
+
+    public function fillForModal(Cidade $cidade) {
+
+        $dados = [
+            "id"      => $cidade->getId(),
+            "nome"    => $cidade->getCidade(),
+            "ddd"     => $cidade->getDDD(),
+            "estado"  => $cidade->getEstado()->getEstado(),
         ];
 
         return $dados;

@@ -6,14 +6,16 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CidadeRequest;
 
 use App\Http\Dao\DaoCidade;
+use App\Http\Dao\DaoEstado;
 
 class CidadeController extends Controller
 {
     private DaoCidade $daoCidade;
 
-    public function __construct(DaoCidade $daoCidade)
+    public function __construct()
     {
-        $this->daoCidade = $daoCidade;
+        $this->daoCidade = new DaoCidade();
+        $this->daoEstado = new DaoEstado();
     }
 
     /**
@@ -127,10 +129,26 @@ class CidadeController extends Controller
     }
 
     public function find($id) {
-        $cidade = $this->daoCidade->find($id);
+        $dados = array();
 
-        if ($cidade != null)
-            return ["nome" => $cidade->getCidade()];  
+        if ($id == 0) {
+            $cidades = $this->daoCidade->all();
+
+            foreach ($cidades as $cidade) {
+                $dadosCidade = $this->daoCidade->fillForModal($cidade);
+                array_push($dados, $dadosCidade);
+            }
+
+            return $dados;
+        }
+        else {
+            $cidade = $this->daoCidade->find($id);
+
+            if ($cidade) {
+                $dados = $this->daoCidade->fillForModal($cidade);
+                return [$dados];
+            }
+        }
 
         return null;
     }

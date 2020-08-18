@@ -52,8 +52,6 @@ class DaoProduto implements Dao {
         $produto->setCategoria($categoria);
         $produto->setFornecedor($fornecedor);
 
-        // dd($produto);
-
         return $produto;
     }
 
@@ -136,7 +134,7 @@ class DaoProduto implements Dao {
         return $produtos;
     }
 
-    public function fillData($produto) {
+    public function fillData(Produto $produto) {
 
         $dados = [
             'id'                  => $produto->getId(),
@@ -150,6 +148,20 @@ class DaoProduto implements Dao {
             'custo_ultima_compra' => $produto->getCustoUltimaCompra(),
             'data_ultima_compra'  => $produto->getDataUltimaCompra(),
             'data_ultima_venda'   => $produto->getDataUltimaVenda(),
+        ];
+
+        return $dados;
+    }
+
+    public function fillForModal(Produto $produto) {
+
+        $dados = [
+            'id'          => $produto->getId(),
+            'nome'        => $produto->getProduto(),
+            'unidade'     => $produto->getUnidade(),
+            'categoria'   => $produto->getCategoria()->getCategoria(),
+            'preco_custo' => $produto->getPrecoCusto() ?? '-',
+            'fornecedor'  => $produto->getFornecedor()->getRazaoSocial(),
         ];
 
         return $dados;

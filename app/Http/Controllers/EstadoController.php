@@ -11,9 +11,9 @@ class EstadoController extends Controller
 {
     private $daoEstado;
 
-    public function __construct(DaoEstado $daoEstado)
+    public function __construct()
     {
-        $this->daoEstado = $daoEstado;
+        $this->daoEstado = new DaoEstado();
     }
 
     /**
@@ -131,10 +131,27 @@ class EstadoController extends Controller
     }
 
     public function find($id) {
-        $estado = $this->daoEstado->find($id);
 
-        if ($estado != null)
-            return ["nome" => $estado->getEstado()];  
+        $dados = array();
+
+        if ($id == 0) {
+            $estados = $this->daoEstado->all();
+
+            foreach ($estados as $estado) {
+                $dadosEstado = $this->daoEstado->fillData($estado);
+                array_push($dados, $dadosEstado);
+            }
+
+            return $dados;
+        }
+        else {
+            $estado = $this->daoEstado->find($id);
+
+            if ($estado) {
+                $dados = $this->daoEstado->fillForModal($estado);
+                return [$dados];
+            }
+        }
 
         return null;
     }

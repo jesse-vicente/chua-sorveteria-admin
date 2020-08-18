@@ -227,77 +227,84 @@ return [
         //     'label'       => 4,
         //     'label_color' => 'success',
         // ],
+
         [
-            'text'    => 'Cadastros',
-            'icon'    => 'mr-1 fas fa-fw fa-folder-open',
+            'text'    => 'Financeiro',
+            'icon'    => 'mr-1 fas fa-fw fa-dollar-sign',
             'submenu' => [
                 [
-                    'text'    => 'Financeiro',
-                    'icon'    => 'mr-1 fas fa-fw fa-dollar-sign',
-                    'submenu' => [
-                        [
-                            'text'        => 'Formas de Pagamento',
-                            'url'         => 'formas-pagamento',
-                            'icon'        => 'mr-1 fas fa-fw fa-credit-card',
-                        ],
-                        [
-                            'text'        => 'Condições de Pagamento',
-                            'url'         => 'condicoes-pagamento',
-                            'icon'        => 'mr-1 fas fa-comments-dollar',
-                        ],
-                    ],
-                ],
-                
-                [
-                    'text'        => 'Funcionários',
-                    'url'         => 'funcionarios',
-                    'icon'        => 'mr-1 fas fa-fw fa-address-card',
+                    'text'        => 'Formas de Pagamento',
+                    'url'         => 'formas-pagamento',
+                    'icon'        => 'mr-1 fas fa-fw fa-credit-card',
                 ],
                 [
-                    'text'        => 'Fornecedores',
-                    'url'         => 'fornecedores',
-                    'icon'        => 'mr-1 fas fa-fw fa-truck',
-                ],
-                [
-                    'text'        => 'Clientes',
-                    'url'         => 'clientes',
-                    'icon'        => 'mr-1 fas fa-fw fa-users',
-                ],
-                [
-                    'text'        => 'Categorias',
-                    'url'         => 'categorias',
-                    'icon'        => 'mr-1 fas fa-fw fa-layer-group',
-                ],
-                [
-                    'text'        => 'Produtos',
-                    'url'         => 'produtos',
-                    'icon'        => 'mr-1 fas fa-fw fa-box',
-                ],
-
-                [
-                    'text'    => 'Países, Estados & Cidades',
-                    'icon'    => 'mr-1 fas fa-fw fa-map-marker-alt',
-                    'submenu' => [
-                        [
-                            'text' => 'Países',
-                            'url'  => 'paises',
-                            'icon' => 'mr-1 fas fa-fw fa-location-arrow',
-                        ],
-                        [
-                            'text' => 'Estados',
-                            'url'  => 'estados',
-                            'icon' => 'mr-1 fas fa-fw fa-location-arrow',
-                        ],
-                        [
-                            'text' => 'Cidades',
-                            'url'  => 'cidades',
-                            'icon' => 'mr-1 fas fa-fw fa-location-arrow',
-                        ],
-                    ],
+                    'text'        => 'Condições de Pagamento',
+                    'url'         => 'condicoes-pagamento',
+                    'icon'        => 'mr-1 fas fa-comments-dollar',
                 ],
             ],
         ],
-        
+
+        [
+            'text'        => 'Compras',
+            'url'         => 'compras',
+            'icon'        => 'mr-1 fas fa-fw',
+        ],
+
+        [
+            'text'        => 'Vendas',
+            'url'         => 'vendas',
+            'icon'        => 'mr-1 fas fa-fw',
+        ],
+
+        [
+            'text'        => 'Funcionários',
+            'url'         => 'funcionarios',
+            'icon'        => 'mr-1 fas fa-fw fa-address-card',
+        ],
+        [
+            'text'        => 'Fornecedores',
+            'url'         => 'fornecedores',
+            'icon'        => 'mr-1 fas fa-fw fa-truck',
+        ],
+        [
+            'text'        => 'Clientes',
+            'url'         => 'clientes',
+            'icon'        => 'mr-1 fas fa-fw fa-users',
+        ],
+        [
+            'text'        => 'Categorias',
+            'url'         => 'categorias',
+            'icon'        => 'mr-1 fas fa-fw fa-layer-group',
+        ],
+        [
+            'text'        => 'Produtos',
+            'url'         => 'produtos',
+            'icon'        => 'mr-1 fas fa-fw fa-box',
+        ],
+
+        [
+            'text'    => 'Países, Estados & Cidades',
+            'icon'    => 'mr-1 fas fa-fw fa-map-marker-alt',
+            'submenu' => [
+                [
+                    'text' => 'Países',
+                    'url'  => 'paises',
+                    'icon' => 'mr-1 fas fa-fw fa-location-arrow',
+                ],
+                [
+                    'text' => 'Estados',
+                    'url'  => 'estados',
+                    'icon' => 'mr-1 fas fa-fw fa-location-arrow',
+                ],
+                [
+                    'text' => 'Cidades',
+                    'url'  => 'cidades',
+                    'icon' => 'mr-1 fas fa-fw fa-location-arrow',
+                ],
+            ],
+        ],
+
         // ['header' => 'account_settings'],
         // [
         //     'text' => 'profile',
@@ -415,7 +422,7 @@ return [
         ],
         [
             'name' => 'Select2',
-            'active' => true,
+            'active' => false,
             'files' => [
                 [
                     'type' => 'js',

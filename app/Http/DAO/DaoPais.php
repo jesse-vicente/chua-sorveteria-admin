@@ -37,16 +37,15 @@ class DaoPais implements Dao {
     }
 
     public function store($pais) {
+        $dados = $this->fillData($pais);
+
         DB::beginTransaction();
 
         try {
-            $dados = $this->fillData($pais);
-
             DB::table('paises')->insert($dados);
             DB::commit();
-
             return true;
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return false;
         }
@@ -115,14 +114,39 @@ class DaoPais implements Dao {
         return $paises;
     }
 
-    public function fillData($pais) {
+    public function clone(Pais $pais) {
+        $clone = new Pais();
+
+        $clone->setId($pais->getId());
+        $clone->setPais($pais->getPais());
+        $clone->setSigla($pais->getSigla());
+        $clone->setDDI($pais->getDDI());
+        $clone->setDataCadastro($pais->getDataCadastro());
+        $clone->setDataAlteracao($pais->getDataAlteracao());
+
+        return $clone;
+    }
+
+    public function fillData(Pais $pais) {
         $dados = [
-            'id'             => $pais->getId(),
-            'pais'           => $pais->getPais(),
-            'sigla'          => $pais->getSigla(),
-            'ddi'            => $pais->getDDI(),
+            'id'    => $pais->getId(),
+            'pais'  => $pais->getPais(),
+            'sigla' => $pais->getSigla(),
+            'ddi'   => $pais->getDDI(),
         ];
 
         return $dados;
     }
+
+    public function fillForModal(Pais $pais) {
+        $dados = [
+            'id'    => $pais->getId(),
+            'nome'  => $pais->getPais(),
+            'sigla' => $pais->getSigla(),
+            'ddi'   => $pais->getDDI(),
+        ];
+
+        return $dados;
+    }
+
 }

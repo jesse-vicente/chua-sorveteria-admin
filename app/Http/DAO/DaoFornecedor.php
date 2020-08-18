@@ -175,4 +175,15 @@ class DaoFornecedor implements Dao {
 
         return $dados;
     }
+
+    public function fillForModal(Fornecedor $fornecedor) {
+
+        $dados = [
+            'id'       => $fornecedor->getId(),
+            'nome'     => $fornecedor->getRazaoSocial(),
+            'whatsapp' => $fornecedor->getWhatsapp(),
+        ];
+
+        return $dados;
+    }
 }

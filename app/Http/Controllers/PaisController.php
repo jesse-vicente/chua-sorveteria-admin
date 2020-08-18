@@ -127,10 +127,27 @@ class PaisController extends Controller
     }
 
     public function find($id) {
-        $pais = $this->daoPais->find($id);
 
-        if ($pais != null)
-            return ["nome" => $pais->getPais()];  
+        $dados = array();
+
+        if ($id == 0) {
+            $paises = $this->daoPais->all();
+
+            foreach ($paises as $pais) {
+                $dadosPais = $this->daoPais->fillData($pais);
+                array_push($dados, $dadosPais);
+            }
+
+            return $dados;
+        }
+        else {
+            $pais = $this->daoPais->find($id);
+
+            if ($pais) {
+                $dados = $this->daoPais->fillForModal($pais);
+                return [$dados];
+            }
+        }
 
         return null;
     }

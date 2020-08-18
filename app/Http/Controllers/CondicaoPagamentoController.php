@@ -131,11 +131,59 @@ class CondicaoPagamentoController extends Controller
         return view('condicoes-pagamento.search', compact('condicoesPagamento'));
     }
 
-    public function find($id) {
-        $condicaoPagamento = $this->daoCondicaoPagamento->find($id);
+    // public function find($id) {
+    //     $condicaoPagamento = $this->daoCondicaoPagamento->find($id);
 
-        if ($condicaoPagamento != null)
-            return ["nome" => $condicaoPagamento->getCondicaoPagamento()];  
+    //     if ($condicaoPagamento != null) {
+
+    //         $parcelas = $condicaoPagamento->getParcelas();
+    //         $listaParcelas = array();
+
+    //         foreach ($parcelas as $parcela) {
+    //             $dadosParcela = [
+    //                 "numero"      => $parcela->getNumero(),
+    //                 "prazo"       => $parcela->getPrazo(),
+    //                 "porcentagem" => $parcela->getPorcentagem(),
+    //             ];
+
+    //             array_push($listaParcelas, $dadosParcela);
+    //         }
+
+    //         $dados = [
+    //             "id"   => $condicaoPagamento->getId(),
+    //             "nome" => $condicaoPagamento->getCondicaoPagamento(),
+    //         ];
+
+    //         // dd($dados);
+
+    //         return $dados;
+    //     }
+
+    //     return null;
+    // }
+
+    public function find($id) {
+
+        $dados = array();
+
+        if ($id == 0) {
+            $condicoesPagamento = $this->daoCondicaoPagamento->all();
+
+            foreach ($condicoesPagamento as $condicaoPagamento) {
+                $dadosCondicaoPagamento = $this->daoCondicaoPagamento->fillForModal($condicaoPagamento);
+                array_push($dados, $dadosCondicaoPagamento);
+            }
+
+            return $dados;
+        }
+        else {
+            $condicaoPagamento = $this->daoCondicaoPagamento->find($id);
+
+            if ($condicaoPagamento) {
+                $dados = $this->daoCondicaoPagamento->fillForModal($condicaoPagamento);
+                return [$dados];
+            }
+        }
 
         return null;
     }

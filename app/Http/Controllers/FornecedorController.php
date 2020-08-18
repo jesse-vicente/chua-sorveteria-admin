@@ -127,10 +127,26 @@ class FornecedorController extends Controller
     }
 
     public function find($id) {
-        $fornecedor = $this->daoFornecedor->find($id);
+        $dados = array();
 
-        if ($fornecedor != null)
-            return ["nome" => $fornecedor->getRazaoSocial()];  
+        if ($id == 0) {
+            $fornecedores = $this->daoFornecedor->all();
+
+            foreach ($fornecedores as $fornecedor) {
+                $dadosFornecedor = $this->daoFornecedor->fillForModal($fornecedor);
+                array_push($dados, $dadosFornecedor);
+            }
+
+            return $dados;
+        }
+        else {
+            $fornecedor = $this->daoFornecedor->find($id);
+
+            if ($fornecedor) {
+                $dados = $this->daoFornecedor->fillForModal($fornecedor);
+                return [$dados];
+            }
+        }
 
         return null;
     }

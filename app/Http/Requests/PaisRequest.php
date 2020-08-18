@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use Illuminate\Validation\Rule;
+
 class PaisRequest extends FormRequest
 {
     /**
@@ -24,9 +26,28 @@ class PaisRequest extends FormRequest
     public function rules()
     {
         return [
-            'pais'  => 'required|min:3|max:50',
-            'sigla' => 'required|alpha|min:2|max:3',
-            'ddi'   => 'required|numeric|gt:0|lt:1000',
+            'pais' => [
+                'required',
+                'min:3',
+                'max:50',
+                Rule::unique('paises')->ignore($this->request->get('id'))
+            ],
+
+            'sigla' => [
+                'required',
+                'alpha',
+                'min:2',
+                'max:3',
+                Rule::unique('paises')->ignore($this->request->get('id'))
+            ],
+
+            'ddi' => [
+                'required',
+                'numeric',
+                'gt:0',
+                'lt:1000',
+                Rule::unique('paises')->ignore($this->request->get('id'))
+            ],
         ];
     }
 }

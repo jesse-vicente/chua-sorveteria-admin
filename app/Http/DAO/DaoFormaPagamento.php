@@ -117,4 +117,14 @@ class DaoFormaPagamento implements Dao {
 
         return $dados;
     }
+
+    public function fillForModal(FormaPagamento $formaPagamento) {
+
+        $dados = [
+            "id"      => $formaPagamento->getId(),
+            "nome"    => $formaPagamento->getFormaPagamento(),
+        ];
+
+        return $dados;
+    }
 }

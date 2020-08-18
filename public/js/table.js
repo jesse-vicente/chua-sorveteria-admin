@@ -190,25 +190,27 @@ $(document).ready(function() {
     function getPercentualAtual() {
         let percentual = 0;
 
-        $(".percentual").map(function(index, item) {
+        $(".porcentagem").map(function(index, item) {
             percentual += Number($(item).val());
 
-            if (Math.round(percentual) >= 100)
-                percentual = 100;
+            // if (Math.round(percentual) === 100)
+            //     percentual = 100;
         });
+
+        console.log(percentual)
 
         return percentual;
     }
 
 	// Edit row on edit button click
-	$(document).on("click", ".edit", function(){
+	$(document).on("click", ".edit", function() {
         $(this).parents("tr").find("btn-search, .form-control").not(".numero-parcela").each(function() {
             $(this).attr("readonly", false);
         });
 
         $(this).parents("tr").find(".add, .edit").toggle();
 
-		$(".add-new").attr("disabled", "disabled");
+        $(".add-new").attr("disabled", "disabled");
     });
 
 	// Delete row on delete button click

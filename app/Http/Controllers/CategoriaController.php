@@ -127,10 +127,27 @@ class CategoriaController extends Controller
     }
 
     public function find($id) {
-        $categoria = $this->daoCategoria->find($id);
 
-        if ($categoria != null)
-            return ["nome" => $categoria->getCategoria()];  
+        $dados = array();
+
+        if ($id == 0) {
+            $categorias = $this->daoCategoria->all();
+
+            foreach ($categorias as $categoria) {
+                $dadosPais = $this->daoCategoria->fillData($categoria);
+                array_push($dados, $dadosPais);
+            }
+
+            return $dados;
+        }
+        else {
+            $categoria = $this->daoCategoria->find($id);
+
+            if ($categoria) {
+                $dados = $this->daoCategoria->fillForModal($categoria);
+                return [$dados];
+            }
+        }
 
         return null;
     }

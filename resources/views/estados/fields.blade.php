@@ -54,7 +54,7 @@
 
 <div class="form-row">
     <div class="form-group col-xl-1">
-        <label>Cód. País</label>
+        <label>Código</label>
 
         <input
             type="number"
@@ -107,14 +107,14 @@
     </div>
 
     <div id="modal-paises" data-field="pais" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header align-items-center py-2">
                     <h3 class="modal-title">Buscar País</h3>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="table-responsive"></div>
+                    @include('paises.search')
                 </div>
             </div>
         </div>

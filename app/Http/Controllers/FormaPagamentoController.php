@@ -127,10 +127,26 @@ class FormaPagamentoController extends Controller
     }
 
     public function find($id) {
-        $formaPagamento = $this->daoFormaPagamento->find($id);
+        $dados = array();
 
-        if ($formaPagamento != null)
-            return ["nome" => $formaPagamento->getFormaPagamento()];  
+        if ($id == 0) {
+            $formasPagamento = $this->daoFormaPagamento->all();
+
+            foreach ($formasPagamento as $formaPagamento) {
+                $dadosFormaPagamento = $this->daoFormaPagamento->fillForModal($formaPagamento);
+                array_push($dados, $dadosFormaPagamento);
+            }
+
+            return $dados;
+        }
+        else {
+            $formaPagamento = $this->daoFormaPagamento->find($id);
+
+            if ($formaPagamento) {
+                $dados = $this->daoFormaPagamento->fillForModal($formaPagamento);
+                return [$dados];
+            }
+        }
 
         return null;
     }

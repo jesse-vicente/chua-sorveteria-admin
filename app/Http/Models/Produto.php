@@ -277,4 +277,26 @@ class Produto extends TObject
     {
         $this->dataUltimaVenda = $dataUltimaVenda;
     }
+
+    public function clone(Produto $produto) {
+        $clone = new Produto();
+
+        $clone->setId($produto->getId());
+        $clone->setProduto($produto->getProduto());
+        $clone->setUnidade($produto->getUnidade());
+        $clone->setEstoque($produto->getEstoque());
+        $clone->setPrecoCusto($produto->getPrecoCusto());
+        $clone->setPrecoVenda($produto->getPrecoVenda());
+        $clone->setCustoUltimaCompra($produto->getCustoUltimaCompra());
+        $clone->setDataUltimaCompra($produto->getDataUltimaCompra());
+        $clone->setDataUltimaVenda($produto->getDataUltimaVenda());
+
+        $clone->setCategoria($produto->getCategoria());
+        $clone->setFornecedor($produto->getFornecedor());
+
+        $clone->setDataCadastro($produto->getDataCadastro());
+        $clone->setDataAlteracao($produto->getDataAlteracao());
+
+        return $clone;
+    }
 }

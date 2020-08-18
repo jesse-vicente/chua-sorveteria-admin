@@ -125,4 +125,29 @@ class ProdutoController extends Controller
 
         return view('produtos.search', compact('produtos'));
     }
+
+    public function find($id) {
+        $dados = array();
+
+        if ($id == 0) {
+            $produtos = $this->daoProduto->all();
+
+            foreach ($produtos as $produto) {
+                $dadosProduto = $this->daoProduto->fillForModal($produto);
+                array_push($dados, $dadosProduto);
+            }
+
+            return $dados;
+        }
+        else {
+            $produto = $this->daoProduto->find($id);
+
+            if ($produto) {
+                $dados = $this->daoProduto->fillForModal($produto);
+                return [$dados];
+            }
+        }
+
+        return null;
+    }
 }

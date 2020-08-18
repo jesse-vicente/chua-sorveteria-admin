@@ -128,13 +128,25 @@ class DaoParcela implements Dao {
         return $parcelas;
     }
 
-    public function fillData($parcela) {
+    public function fillData(Parcela $parcela) {
 
         $dados = [
             'numero'             => $parcela->getNumero(),
             'prazo'              => $parcela->getPrazo(),
             'porcentagem'        => $parcela->getPorcentagem(),
             'forma_pagamento_id' => $parcela->getFormaPagamento()->getId(),
+        ];
+
+        return $dados;
+    }
+
+    public function fillForModal(Parcela $parcela) {
+
+        $dados = [
+            'numero'          => $parcela->getNumero(),
+            'prazo'           => $parcela->getPrazo(),
+            'porcentagem'     => $parcela->getPorcentagem(),
+            'forma_pagamento' => $parcela->getFormaPagamento()->getFormaPagamento(),
         ];
 
         return $dados;

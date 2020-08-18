@@ -230,7 +230,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="table-responsive"></div>
+                @include('formas-pagamento.search')
             </div>
         </div>
     </div>

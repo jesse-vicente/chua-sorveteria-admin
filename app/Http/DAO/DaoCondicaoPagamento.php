@@ -240,8 +240,7 @@ class DaoCondicaoPagamento implements Dao {
         return $parcelas;
     }
 
-    public function fillData($condicaoPagamento) {
-
+    public function fillData(CondicaoPagamento $condicaoPagamento) {
         $dados = [
             'id'                 => $condicaoPagamento->getId(),
             'condicao_pagamento' => $condicaoPagamento->getCondicaoPagamento(),
@@ -250,6 +249,33 @@ class DaoCondicaoPagamento implements Dao {
             'desconto'           => $condicaoPagamento->getDesconto(),
             'total_parcelas'     => $condicaoPagamento->getTotalParcelas(),
         ];
+
+        return $dados;
+    }
+
+    public function fillForModal(CondicaoPagamento $condicaoPagamento) {
+        $dados = [
+            'id'             => $condicaoPagamento->getId(),
+            'nome'           => $condicaoPagamento->getCondicaoPagamento(),
+            'juros'          => $condicaoPagamento->getJuros(),
+            'multa'          => $condicaoPagamento->getMulta(),
+            'desconto'       => $condicaoPagamento->getDesconto(),
+            'total_parcelas' => $condicaoPagamento->getTotalParcelas(),
+        ];
+
+        if ($condicaoPagamento->getTotalParcelas() > 0) {
+            $listaParcelas = array();
+            $parcelas = $condicaoPagamento->getParcelas();
+
+            foreach ($parcelas as $parcela) {
+                $dadosParcela = $this->daoParcela->fillForModal($parcela);
+                array_push($listaParcelas, $dadosParcela);
+            }
+
+            $dados['parcelas'] = $listaParcelas;
+        }
+
+        // dd($dados);
 
         return $dados;
     }

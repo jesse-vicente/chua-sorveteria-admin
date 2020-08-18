@@ -28,6 +28,7 @@ Route::get('/estados/{id}/find', 'EstadoController@find')->name('estados.find');
 Route::get('/cidades/{id}/find', 'CidadeController@find')->name('cidades.find');
 
 Route::get('/categorias/{id}/find', 'CategoriaController@find')->name('categorias.find');
+Route::get('/produtos/{id}/find', 'ProdutoController@find')->name('produtos.find');
 Route::get('/fornecedores/{id}/find', 'FornecedorController@find')->name('fornecedores.find');
 
 Route::get('/formas-pagamento/{id}/find', 'FormaPagamentoController@find')->name('formas-pagamento.find');
@@ -38,6 +39,7 @@ Route::get('/estados/search', 'EstadoController@search')->name('estados.search')
 Route::get('/cidades/search', 'CidadeController@search')->name('cidades.search');
 
 Route::get('/categorias/search', 'CategoriaController@search')->name('categorias.search');
+Route::get('/produtos/search', 'ProdutoController@search')->name('produtos.search');
 Route::get('/fornecedores/search', 'FornecedorController@search')->name('fornecedores.search');
 Route::get('/funcionarios/search', 'FuncionarioController@search')->name('funcionarios.search');
 Route::get('/formas-pagamento/search', 'FormaPagamentoController@search')->name('formas-pagamento.search');
@@ -57,3 +59,5 @@ Route::resource('/clientes', 'ClienteController');
 
 Route::resource('/categorias', 'CategoriaController');
 Route::resource('/produtos', 'ProdutoController');
+
+Route::resource('/compras', 'CompraController');

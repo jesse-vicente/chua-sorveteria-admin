@@ -123,12 +123,23 @@ class DaoEstado implements Dao {
         return $estados;
     }
 
-    public function fillData($estado) {
+    public function fillData(Estado $estado) {
         $dados = [
             'id'      => $estado->getId(),
             'estado'  => $estado->getEstado(),
             'uf'      => $estado->getUF(),
             'pais_id' => $estado->getPais()->getID(),
+        ];
+
+        return $dados;
+    }
+
+    public function fillForModal(Estado $estado) {
+        $dados = [
+            'id'      => $estado->getId(),
+            'nome'    => $estado->getEstado(),
+            'uf'      => $estado->getUF(),
+            'pais'    => $estado->getPais()->getPais(),
         ];
 
         return $dados;

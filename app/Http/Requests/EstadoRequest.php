@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class EstadoRequest extends FormRequest
 {
@@ -24,8 +25,21 @@ class EstadoRequest extends FormRequest
     public function rules()
     {
         return [
-            'estado'  => 'required|min:3|max:50',
-            'uf'      => 'required|alpha|min:2|max:3',
+            'estado' => [
+                'required',
+                'min:3',
+                'max:50',
+                Rule::unique('estados')->ignore($this->request->get('id'))
+            ],
+
+            'uf' => [
+                'required',
+                'alpha',
+                'min:2',
+                'max:3',
+                Rule::unique('estados')->ignore($this->request->get('id'))
+            ],
+
             'pais_id' => 'required|exists:paises,id',
         ];
     }
