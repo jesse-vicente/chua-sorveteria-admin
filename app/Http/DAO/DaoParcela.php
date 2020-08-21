@@ -8,8 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 use App\Http\Models\Parcela;
-use App\Http\Models\FormaPagamento;
-use App\Http\Models\CondicaoPagamento;
 
 class DaoParcela implements Dao {
 
@@ -20,8 +18,8 @@ class DaoParcela implements Dao {
         $this->daoFormaPagamento = new DaoFormaPagamento();
     }
 
-    public function all() {
-        $parcelas = $this->search();
+    public function all(bool $model = false) {
+        $parcelas = DB::table('parcelas')->get();
         return $parcelas;
     }
 
@@ -35,7 +33,7 @@ class DaoParcela implements Dao {
         $parcela->setPrazo($dados["prazo"]);
         $parcela->setPorcentagem((float) $dados["porcentagem"]);
 
-        $formaPagamento = $this->daoFormaPagamento->find($dados["forma_pagamento_id"]);
+        $formaPagamento = $this->daoFormaPagamento->findById($dados["forma_pagamento_id"], true);
 
         $parcela->setFormaPagamento($formaPagamento);
 
@@ -46,7 +44,7 @@ class DaoParcela implements Dao {
         DB::beginTransaction();
 
         try {
-            $dados = $this->fillData($parcela);
+            $dados = $this->getData($parcela);
 
             DB::table('parcelas')->insert($dados);
             DB::commit();
@@ -64,7 +62,7 @@ class DaoParcela implements Dao {
         try {
             $parcela = $this->create($request->all());
 
-            $dados = $this->fillData($parcela);
+            $dados = $this->getData($parcela);
 
             DB::table('parcelas')->where('id', $id)->update($dados);
 
@@ -97,38 +95,19 @@ class DaoParcela implements Dao {
         }
     }
 
-    public function find(int $id) {
+    public function findById(int $id, bool $model = false) {
+        if (!$model)
+            return DB::table('parcelas')->get()->where('id', $id)->first();
+
         $dados = DB::table('parcelas')->where('id', $id)->first();
 
         if ($dados)
             return $this->create(get_object_vars($dados));
 
-        return null;
+        return $dados;
     }
 
-    public function search($q = null)
-    {
-        $parcelas = array();
-
-        if (!is_null($q)) {
-            $dados = DB::table('parcelas')->where('id', $q)->orWhere('numero', 'like', '$q')->first();
-
-            if ($dados)
-                $parcelas[0] = $this->create(get_object_vars($dados));
-        }
-        else {
-            $dados = DB::table('parcelas')->limit(10)->get();
-
-            foreach ($dados as $obj) {
-                $numero = $this->create(get_object_vars($obj));
-                array_push($parcelas, $numero);
-            }
-        }
-
-        return $parcelas;
-    }
-
-    public function fillData(Parcela $parcela) {
+    public function getData(Parcela $parcela) {
 
         $dados = [
             'numero'             => $parcela->getNumero(),

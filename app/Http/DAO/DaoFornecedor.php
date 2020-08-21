@@ -6,6 +6,7 @@ use App\Http\Dao\Dao;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 use App\Http\Models\Fornecedor;
 
@@ -23,8 +24,19 @@ class DaoFornecedor implements Dao {
         $this->daoCondicaoPagamento = new DaoCondicaoPagamento();
     }
 
-    public function all() {
-        $fornecedores = $this->search();
+    public function all(bool $model = false) {
+        if (!$model)
+            return DB::table('fornecedores')->get(['id', 'fornecedor', 'telefone', 'whatsapp']);
+
+        $dados = DB::table('fornecedores')->get();
+
+        $fornecedores = array();
+
+        foreach ($dados as $dado) {
+            $fornecedor = $this->create(get_object_vars($dado));
+            array_push($fornecedores, $fornecedor);
+        }
+
         return $fornecedores;
     }
 
@@ -57,8 +69,8 @@ class DaoFornecedor implements Dao {
         $fornecedor->setValorCredito((float) $dados["valor_credito"]);
         $fornecedor->setObservacoes($dados["observacoes"]);
 
-        $cidade = $this->daoCidade->find($dados["cidade_id"]);
-        $condicaoPagamento = $this->daoCondicaoPagamento->find($dados["condicao_pagamento_id"]);
+        $cidade = $this->daoCidade->findById($dados["cidade_id"], true);
+        $condicaoPagamento = $this->daoCondicaoPagamento->findById($dados["condicao_pagamento_id"], true);
 
         $fornecedor->setCidade($cidade);
         $fornecedor->setCondicaoPagamento($condicaoPagamento);
@@ -70,7 +82,7 @@ class DaoFornecedor implements Dao {
         DB::beginTransaction();
 
         try {
-            $dados = $this->fillData($fornecedor);
+            $dados = $this->getData($fornecedor);
 
             DB::table('fornecedores')->insert($dados);
             DB::commit();
@@ -89,7 +101,7 @@ class DaoFornecedor implements Dao {
         try {
             $fornecedor = $this->create($request->all());
 
-            $dados = $this->fillData($fornecedor);
+            $dados = $this->getData($fornecedor);
 
             DB::table('fornecedores')->where('id', $id)->update($dados);
 
@@ -115,38 +127,19 @@ class DaoFornecedor implements Dao {
         }
     }
 
-    public function find(int $id) {
+    public function findById(int $id, bool $model = false) {
+        if (!$model)
+            return DB::table('fornecedores')->get(['id', 'fornecedor', 'telefone', 'whatsapp'])->where('id', $id)->first();
+
         $dados = DB::table('fornecedores')->where('id', $id)->first();
 
         if ($dados)
             return $this->create(get_object_vars($dados));
 
-        return null;
+        return $dados;
     }
 
-    public function search($q = null)
-    {
-        $fornecedores = array();
-
-        if (!is_null($q)) {
-            $dados = DB::table('fornecedores')->where('id', $q)->orWhere('fornecedor', 'like', '$q')->first();
-
-            if ($dados)
-                $fornecedores[0] = $this->create(get_object_vars($dados));
-        }
-        else {
-            $dados = DB::table('fornecedores')->limit(10)->get();
-
-            foreach ($dados as $obj) {
-                $fornecedor = $this->create(get_object_vars($obj));
-                array_push($fornecedores, $fornecedor);
-            }
-        }
-
-        return $fornecedores;
-    }
-
-    public function fillData(Fornecedor $fornecedor) {
+    public function getData(Fornecedor $fornecedor) {
 
         $dados = [
             'id'                    => $fornecedor->getId(),
@@ -172,17 +165,6 @@ class DaoFornecedor implements Dao {
 
         if ($fornecedor->getTipo())
             $dados['tipo_pessoa'] = $fornecedor->getTipo();
-
-        return $dados;
-    }
-
-    public function fillForModal(Fornecedor $fornecedor) {
-
-        $dados = [
-            'id'       => $fornecedor->getId(),
-            'nome'     => $fornecedor->getRazaoSocial(),
-            'whatsapp' => $fornecedor->getWhatsapp(),
-        ];
 
         return $dados;
     }

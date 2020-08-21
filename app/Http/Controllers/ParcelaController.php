@@ -46,7 +46,7 @@ class ParcelaController extends Controller
         //
     }
 
-    /**
+        /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -57,7 +57,7 @@ class ParcelaController extends Controller
         //
     }
 
-    /**
+        /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -80,7 +80,7 @@ class ParcelaController extends Controller
         //
     }
 
-    /**
+        /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id

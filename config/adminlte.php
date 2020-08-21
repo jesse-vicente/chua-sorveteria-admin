@@ -233,6 +233,16 @@ return [
             'icon'    => 'mr-1 fas fa-fw fa-dollar-sign',
             'submenu' => [
                 [
+                    'text'        => 'Compras',
+                    'url'         => 'compras',
+                    'icon'        => 'mr-1 fas fa-fw fa-shopping-cart',
+                ],
+                [
+                    'text'        => 'Vendas',
+                    'url'         => 'vendas',
+                    'icon'        => 'mr-1 fas fa-fw fa-tag',
+                ],
+                [
                     'text'        => 'Formas de Pagamento',
                     'url'         => 'formas-pagamento',
                     'icon'        => 'mr-1 fas fa-fw fa-credit-card',
@@ -246,21 +256,9 @@ return [
         ],
 
         [
-            'text'        => 'Compras',
-            'url'         => 'compras',
-            'icon'        => 'mr-1 fas fa-fw',
-        ],
-
-        [
-            'text'        => 'Vendas',
-            'url'         => 'vendas',
-            'icon'        => 'mr-1 fas fa-fw',
-        ],
-
-        [
-            'text'        => 'Funcionários',
-            'url'         => 'funcionarios',
-            'icon'        => 'mr-1 fas fa-fw fa-address-card',
+            'text'        => 'Clientes',
+            'url'         => 'clientes',
+            'icon'        => 'mr-1 fas fa-fw fa-heart',
         ],
         [
             'text'        => 'Fornecedores',
@@ -268,19 +266,26 @@ return [
             'icon'        => 'mr-1 fas fa-fw fa-truck',
         ],
         [
-            'text'        => 'Clientes',
-            'url'         => 'clientes',
-            'icon'        => 'mr-1 fas fa-fw fa-users',
+            'text'        => 'Funcionários',
+            'url'         => 'funcionarios',
+            'icon'        => 'mr-1 fas fa-fw fa-address-card',
         ],
+
         [
-            'text'        => 'Categorias',
-            'url'         => 'categorias',
-            'icon'        => 'mr-1 fas fa-fw fa-layer-group',
-        ],
-        [
-            'text'        => 'Produtos',
-            'url'         => 'produtos',
-            'icon'        => 'mr-1 fas fa-fw fa-box',
+            'text'    => 'Produtos & Categorias',
+            'icon'    => 'mr-1 fas fa-fw fa-store',
+            'submenu' => [
+                [
+                    'text'        => 'Categorias',
+                    'url'         => 'categorias',
+                    'icon'        => 'mr-1 fas fa-fw fa-layer-group',
+                ],
+                [
+                    'text'        => 'Produtos',
+                    'url'         => 'produtos',
+                    'icon'        => 'mr-1 fas fa-fw fa-box',
+                ],
+            ],
         ],
 
         [
@@ -368,22 +373,6 @@ return [
 
     'plugins' => [
         [
-            'name' => 'Toastr',
-            'active' => true,
-            'files' => [
-                [
-                    'type' => 'js',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js',
-                ],
-                [
-                    'type' => 'css',
-                    'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css',
-                ],
-            ],
-        ],
-        [
             'name' => 'Datatables',
             'active' => true,
             'files' => [
@@ -455,13 +444,29 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@8',
+                    'location' => '//cdn.jsdelivr.net/npm/sweetalert2@9',
                 ],
                 [
                     'type' => 'js',
                     'asset' => true,
                     'location' => '/js/masks.js',
                 ]
+            ],
+        ],
+        [
+            'name' => 'Toastr',
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js',
+                ],
             ],
         ],
         [

@@ -29,7 +29,7 @@ $(document).ready(function() {
         swalWithBootstrapButtons.fire({
             title: "Aviso!",
             text: "Esta operação não poderá ser revertida.",
-            type: "warning",
+            icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Remover",
             cancelButtonText: "Cancelar",
@@ -105,7 +105,7 @@ $(document).ready(function() {
     });
 
     $("#table").DataTable({
-        "dom": '<"row justify-content-md-between"<"col-md-4"f>l>rtip',
+        dom: "<'row options-bar'<'col-md-4'f>l>rtip",
     });
 
     // Função que captura o enter
@@ -138,16 +138,21 @@ $(document).ready(function() {
 
         const input = $($(this).data("input"));
 
-        $.get(`/${route}/${id}/find`, function(data) {
+        $.get(`/${route}/${id}/findById`, function(data) {
+
+            const chave = input.attr("id");
+
             const dados = data[0];
 
-            // console.table(dados);
-            (data) ? input.val(dados["nome"]) : input.val("Nenhum registro encontrado.");
+            if (dados)
+                input.val(dados[chave])
+            else
+                input.val("Nenhum registro encontrado.");
 
             if (route === 'produtos') {
                 const detalhesProduto = {
                     'id'        : dados['id'],
-                    'descricao' : dados['nome'],
+                    'descricao' : dados['produto'],
                     'categoria' : dados['categoria'],
                     'unidade'   : dados['unidade'],
                 };
@@ -159,18 +164,16 @@ $(document).ready(function() {
         });
     });
 
-    var dadosProduto = null;
-
     // Seleciona item da modal e coloca os valores nos inputs
     $(document).on('click', '.modal-body tbody tr', function() {
 
         const data = table.rows({ selected: true }).data()[0];
 
-        console.table(data)
-
         const modal = $(this).parents(".modal");
 
         const field = modal.data('field');
+
+        // console.table(data)
 
         const id = data[0];
         const descricao = data[1];
@@ -192,6 +195,7 @@ $(document).ready(function() {
         else if (field === 'condicao_pagamento' && $("#total_pagar").length) { // Inserir na lista de contas à pagar
             const totalPagar = Number($("#total_pagar").val());
 
+            // console.table(data)
             const parcelas = data[6];
 
             let duplicatas = [];
@@ -205,7 +209,7 @@ $(document).ready(function() {
 
                 const numParcela = `${$("#numero").val()}/${parcela.numero}`;
                 const vencimento = prazo.toLocaleDateString();
-                const valParcela = percentage(totalPagar, parcela.porcentagem);
+                const valParcela = getPercentual(totalPagar, parcela.porcentagem);
 
                 const duplicata = {
                     0: numParcela,
@@ -216,7 +220,7 @@ $(document).ready(function() {
                 duplicatas.push(duplicata);
             });
 
-            atualizarContasPagar(duplicatas);
+            listarDuplicatas(duplicatas);
         }
         // else {
             $(`input[name='${field}_id']`).eq(0).val(id);
@@ -243,17 +247,83 @@ $(document).ready(function() {
         $("#modal-detalhes-produto").modal("show");
     }
 
-    function percentage(num, per)
+    function calcularAdicionais() {
+        return adicionais.frete + adicionais.seguro + adicionais.despesas;
+    }
+
+    function calcularTotal(total = 0) {
+        if (listaProdutos) {
+
+            let totalPagar    = 0;
+            let totalProdutos = 0;
+
+            const itens = listaProdutos.rows().data();
+
+            itens.map(function(item) {
+                totalProdutos += Number(item[4].replace("R$ ", "")) * item[3];
+                totalPagar += Number(item[5].replace("R$ ", ""));
+            });
+
+            $("#total_produtos").val(totalProdutos.toFixed(2));
+            $("#total_pagar").val((totalPagar + calcularAdicionais()).toFixed(2));
+        } else {
+            $("#total_produtos").val(total.toFixed(2));
+        }
+    }
+
+    function getPercentual(num, per)
     {
         return ((num / 100) * per).toFixed(2);
     }
 
-    function atualizarContasPagar(duplicatas) {
+    function listarProdutos(dadosProduto) {
+        if (listaProdutos) {
+            listaProdutos.rows( { selected: true } ).remove().draw(false);
+        } else {
+            listaProdutos = $('#produtos-table').DataTable({
+                dom: '<"row"<"col-md-4">>rt',
+                columns: [
+                    { title: 'Cód.' },
+                    { title: 'Produto' },
+                    { title: 'Und.' },
+                    { title: 'Qtd.' },
+                    { title: 'Valor' },
+                    { title: 'Valor Total' },
+                    {
+                        title: 'Ações',
+                        className: 'text-center',
+                        render: data =>
+                            `<div class="btn-group btn-group-sm">
+                                <i class="fa fa-edit py-0 btn text-warning alterar"></i>
+                                <i class="fa fa-trash-alt py-0 btn text-danger remover"></i>
+                             </div>`
+                    }
+                ],
+                columnDefs: [
+                    {
+                        targets: 0,
+                            //"className": "select-checkbox",
+                        checkboxes: {
+                            "selectRow": true
+                        }
+                    }
+                ],
+                select: {
+                    style: "multi"
+                },
+                bSort: false,
+            });
+        }
+
+        listaProdutos.row.add(dadosProduto).draw();
+    }
+
+    function listarDuplicatas(duplicatas) {
         if (listaContasPagar)
             listaContasPagar.clear().draw();
         else {
             listaContasPagar = $('#contas-pagar-table').DataTable({
-                "dom": '<"row justify-content-md-between"<"col-md-4">>rt',
+                "dom": '<"row"<"col-md-4">>rt',
                 columns: [
                     { title: 'Duplicata' },
                     { title: 'Vencimento' },
@@ -269,12 +339,12 @@ $(document).ready(function() {
             $("#card-contas-pagar .card-tools .btn").click();
     }
 
-    var totalProdutos = 0.0;
-    var totalCompra   = 0.0;
+    function desbloquearAdicionais() {
+        if ($("#frete").is(":disabled") && $("#seguro").is(":disabled") && $("#despesas").is(":disabled"))
+            $("#frete, #seguro, #despesas").attr("disabled", false);
+    }
 
     $("#modelo, #serie, #numero, #data_emissao, #data_chegada").change(function() {
-        const val = $(this).val();
-
         let vazio = $("#modelo, #serie, #numero, #data_emissao, #data_chegada").filter(function(index, item) {
             return $(item).val() === "";
         });
@@ -302,59 +372,49 @@ $(document).ready(function() {
     });
 
     var adicionais = {
-        "frete": 0,
-        "seguro": 0,
+        "frete"    : 0,
+        "seguro"   : 0,
         "despesas" : 0,
     }
 
     $("#frete, #seguro, #despesas").keyup(function() {
-        const val = parseFloat(Number($(this).val()));
+        const valor = parseFloat(Number($(this).val()));
 
-        const id = $(this).attr("id");
+        switch ($(this).attr("id")) {
+            case "frete":
+                adicionais.frete    = valor;
+                break;
+            case "seguro":
+                adicionais.seguro   = valor;
+                break;
+            case "despesas":
+                adicionais.despesas = valor;
+                break;
+            default:
+                break;
+        }
 
-        if (id == "frete")
-            adicionais.frete = val;
-        else if (id == "seguro")
-            adicionais.seguro = val;
-        else if (id == "despesas")
-            adicionais.despesas = val;
-
-        const total = calcularAdicionais();
-
-        $("#total_pagar").val(total.toFixed(2));
+        calcularTotal();
     });
-
-    function calcularAdicionais() {
-        return totalCompra + adicionais.frete + adicionais.seguro + adicionais.despesas;
-    }
 
     $(document).on("click", ".alterar", function() {
         const row = $(this).parents("tr");
 
         const detalhesProduto = {
-            'id'         : row.find("td").eq(0).text(),
-            'descricao'  : row.find("td").eq(1).text(),
-            'unidade'    : row.find("td").eq(2).text(),
-            // 'categoria'  : row.find("td").eq(3).text(),
-            'quantidade' : row.find("td").eq(3).text(),
-            'valor'      : Number(row.find("td").eq(4).text().replace('R$ ', '')).toFixed(2),
-            'total'      : Number(row.find("td").eq(5).text().replace('R$ ', '')).toFixed(2),
+            "id"         : row.find("td").eq(0).text(),
+            "descricao"  : row.find("td").eq(1).text(),
+            "unidade"    : row.find("td").eq(2).text(),
+            "quantidade" : row.find("td").eq(3).text(),
+            "valor"      : Number(row.find("td").eq(4).text().replace("R$ ", "")).toFixed(2),
+            "total"      : Number(row.find("td").eq(5).text().replace("R$ ", "")).toFixed(2),
         };
 
-        console.table(detalhesProduto)
         mostrarDetalhesProduto(detalhesProduto, true);
     });
 
 	$(document).on("click", ".remover", function() {
-        const tr = $(this).parents("tr");
-
-        tr.prev().find(".btn").removeAttr("disabled");
-
-        tr.remove();
-
-        $("#total_parcelas").val(--parcelas);
-
-        $(".add-new").removeAttr("disabled");
+        listaProdutos.row($(this).parents("tr")).remove().draw();
+        calcularTotal();
     });
 
     // Adiciona item à lista de produtos (compra e venda)
@@ -364,93 +424,29 @@ $(document).ready(function() {
         const id = Number($("#produto_cod").val());
         const descricao = $("#descricao").val();
         const unidade = $("#unidade").val();
-        // const categoria = $("#categoria").val();
 
         const qtd = Number($("#quantidade").val());
         const val = parseFloat(Number($("#valor").val()));
 
         const total = Number(parseFloat(qtd * val));
 
-        const valTexto = `R$ ${val}`;
+        const valTexto   = `R$ ${val}`;
         const totalTexto = `R$ ${total.toFixed(2)}`;
 
-        dadosProduto = [
+        const dadosProduto = [
             id,
             descricao,
             unidade,
-            // 3: categoria,
             qtd,
             valTexto,
             totalTexto,
         ]
 
-        if (!listaProdutos) {
-            listaProdutos = $('#produtos-table').DataTable({
-                "dom": '<"row justify-content-md-between"<"col-md-4">>rt',
-                columns: [
-                    { title: 'Cód.' },
-                    { title: 'Produto' },
-                    { title: 'Und.' },
-                    // { title: 'Categoria'},
-                    { title: 'Qtd.' },
-                    { title: 'Valor' },
-                    { title: 'Valor Total' },
-                    {
-                        title: 'Ações',
-                        render: data =>
-                            `<div class="btn-group btn-group-sm">
-                                <button
-                                    type="button"
-                                    class="btn btn-warning alterar"
-                                    title="Editar"
-                                >
-                                    <i class="fa fa-edit text-white"></i>
-                                </button>
+        listarProdutos(dadosProduto);
 
-                                <button
-                                    type="button"
-                                    class="btn btn-danger remover"
-                                    title="Remover"
-                                >
-                                    <i class="fa fa-trash-alt"></i>
-                                </button>
-                            </div>`
-                    }
-                ],
-                "columnDefs": [
-                    {
-                       "targets": 0,
-                    //    "className": "select-checkbox",
-                       "checkboxes": {
-                          "selectRow": true
-                       }
-                    }
-                ],
-                "select": {
-                    "style": "multi"
-                },
-                bSort: false,
-            });
-        } else {
-            listaProdutos.rows( { selected: true } ).remove().draw(false);
-        }
+        desbloquearAdicionais();
 
-        listaProdutos.row.add(dadosProduto).draw();
-
-        if (totalProdutos == 0) {
-            totalProdutos = total;
-        } else {
-            totalProdutos += total;
-        }
-
-        if (totalCompra == 0) {
-            totalCompra = total;
-        } else {
-            totalCompra += total;
-        }
-
-        $("#total_produtos").val(totalProdutos.toFixed(2));
-        $("#total_pagar").val(calcularAdicionais().toFixed(2));
+        calcularTotal(total);
 
         if ($("#card-produtos").hasClass("collapsed-card"))
             $("#card-produtos .card-tools .btn").click();
@@ -461,33 +457,32 @@ $(document).ready(function() {
     // Remove item da lista de produtos (compra e venda)
     $("#remove-item").click(function(e) {
         e.preventDefault();
-
-        listaProdutos.rows('.selected').remove().draw(false);
+        listaProdutos.rows(".selected").remove().draw(false);
     });
 
-    $('.custom-control-input').click(function() {
-        let id = $(this).attr('id');
+    $(".custom-control-input").click(function() {
+        let id = $(this).attr("id");
 
-        if (id === 'fisica') {
-            $('#nome_fantasia').prev().text('Apelido');
+        if (id === "fisica") {
+            $("#nome_fantasia").prev().text("Apelido");
 
-            $('#cpf_cnpj').prev().text("CPF");
-            $('#cpf_cnpj').addClass("cpf");
-            $('#cpf_cnpj').removeClass("cnpj");
+            $("#cpf_cnpj").prev().text("CPF");
+            $("#cpf_cnpj").addClass("cpf");
+            $("#cpf_cnpj").removeClass("cnpj");
 
-            $('#cpf_cnpj').attr('placeholder', '___.___.___-__');
+            $("#cpf_cnpj").attr("placeholder", "___.___.___-__");
 
-            $('#rg_inscricao_estadual').prev().text("RG");
-        } else if (id === 'juridica') {
-            $('#nome_fantasia').prev().text('Nome Fantasia');
+            $("#rg_inscricao_estadual").prev().text("RG");
+        } else if (id === "juridica") {
+            $("#nome_fantasia").prev().text("Nome Fantasia");
 
-            $('#cpf_cnpj').prev().text("CNPJ");
-            $('#cpf_cnpj').addClass("cnpj");
-            $('#cpf_cnpj').removeClass("cpf");
+            $("#cpf_cnpj").prev().text("CNPJ");
+            $("#cpf_cnpj").addClass("cnpj");
+            $("#cpf_cnpj").removeClass("cpf");
 
-            $('#cpf_cnpj').attr('placeholder', '__.___.___/____-__');
+            $("#cpf_cnpj").attr("placeholder", "__.___.___/____-__");
 
-            $('#rg_inscricao_estadual').prev().text("Inscrição Estadual");
+            $("#rg_inscricao_estadual").prev().text("Inscrição Estadual");
         }
     });
 
@@ -496,32 +491,40 @@ $(document).ready(function() {
     $(document).on("click", ".btn-search", function(e) {
         e.preventDefault();
 
-        if (!$('.modal').hasClass('show'))
+        if (!$(".modal").hasClass("show"))
             route = $(this).data("route");
 
         if (route === "formas-pagamento")
-            fieldIndex = $(this).parents('tr').index();
+            fieldIndex = $(this).parents("tr").index();
 
-        const val = Number($($(this).data('input')).val());
+        const val = Number($($(this).data("input")).val());
 
-        $.get(`/${route}/${val}/find`, function(data) {
-            fillDataTable(data, route);
-        });
+        if (!val) {
+            $.get(`/${route}/all`, function(data) {
+                fillDataTable(data, route);
+            });
+        } else {
+            $.get(`/${route}/${val}/findById`, function(data) {
+                fillDataTable(data, route);
+            });
+        }
     });
 
-    function fillDataTable(data, route) {
-        const dados = data.map(obj => Object.values(obj));
+    function fillDataTable(result, route) {
+        const dados = result.data
+            ? result.data.map(obj => Object.values(obj))
+            : result.map(obj => Object.values(obj))
 
-        console.log(dados)
+        console.table(dados)
 
         if (!$.fn.DataTable.isDataTable(`#modal-${route} .table`)) {
             table = $(`#modal-${route} .table`).DataTable({
                 data: dados,
-                dom: '<"row justify-content-md-between"<"col-md-6"f>B>rtip',
+                dom: '<"row options-bar"<"col-md-6"f>B>rtip',
                 select: true,
                 buttons: [
                     {
-                        text: 'Novo',
+                        text: '+ Adicionar',
                         className: 'btn btn-primary',
                         action: function (e, dt, node, config) {
                             $(`#modal-${route}-create`).modal('show');

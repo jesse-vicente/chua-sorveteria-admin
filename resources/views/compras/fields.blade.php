@@ -107,7 +107,7 @@
 
     <div class="form-group required col-xl-4">
         <label>Fornecedor</label>
-        <div class="input-group mb-3">
+        <div class="input-group">
             <input
                 class="form-control"
                 name="fornecedor"
@@ -169,7 +169,7 @@
 
     <div class="form-group required col-xl-4">
         <label>Produto</label>
-        <div class="input-group mb-3">
+        <div class="input-group">
             <input
                 class="form-control"
                 name="produto"
@@ -370,7 +370,7 @@
 
     <div class="form-group required col-xl-4">
         <label>Condição de Pagamento</label>
-        <div class="input-group mb-3">
+        <div class="input-group">
             <input
                 type="text"
                 class="form-control"
@@ -417,7 +417,9 @@
     </div>
 </div>
 
-<div class="form-group col-xl-6 px-0">
-    <label for="observacoes">Observações</label>
-    <textarea name="observacoes" id="observacoes" class="form-control" rows="3">{{ old('observacoes', isset($compra) ? $compra->getObservacoes() : null) }}</textarea>
+<div class="form-row">
+    <div class="col-xl-5">
+        <label for="observacoes">Observações</label>
+        <textarea name="observacoes" id="observacoes" class="form-control" rows="3">{{ old('observacoes', isset($compra) ? $compra->getObservacoes() : null) }}</textarea>
+    </div>
 </div>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\FornecedorRequest;
 
 use App\Http\Dao\DaoFornecedor;
@@ -23,8 +22,14 @@ class FornecedorController extends Controller
      */
     public function index()
     {
-        $fornecedores = $this->daoFornecedor->all();
+        $fornecedores = $this->daoFornecedor->all(true);
         return view('fornecedores.index', compact('fornecedores'));
+    }
+
+    public function all()
+    {
+        $fornecedores = $this->daoFornecedor->all();
+        return $fornecedores;
     }
 
     /**
@@ -63,8 +68,12 @@ class FornecedorController extends Controller
      */
     public function show($id)
     {
-        $fornecedor = $this->daoFornecedor->find($id);
-        return view('fornecedores.show', compact('fornecedor'));
+        $fornecedor = $this->daoFornecedor->findById($id, true);
+
+        if ($fornecedor)
+            return view('fornecedores.show', compact('fornecedor'));
+
+        return redirect('fornecedores')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -75,8 +84,12 @@ class FornecedorController extends Controller
      */
     public function edit($id)
     {
-        $fornecedor = $this->daoFornecedor->find($id);
-        return view('fornecedores.create', compact('fornecedor'));
+        $fornecedor = $this->daoFornecedor->findById($id, true);
+
+        if ($fornecedor)
+            return view('fornecedores.create', compact('fornecedor'));
+
+        return redirect('fornecedores')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -109,45 +122,12 @@ class FornecedorController extends Controller
         if ($delete)
             return redirect('fornecedores')->with('success', 'Registro removido com sucesso!');
 
-        return redirect('fornecedores')->with('error', 'Este registro não pode ser removido.');
+        return back()->with('error', 'Este registro não pode ser removido.');
     }
 
-    /**
-     * Search for the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request) {
-        $q = $request->q;
+    public function findById(int $id) {
+        $fornecedor = $this->daoFornecedor->findById($id);
 
-        $fornecedores = $this->daoFornecedor->search($q);
-
-        return view('fornecedores.search', compact('fornecedores'));
-    }
-
-    public function find(int $id) {
-        $dados = array();
-
-        if ($id == 0) {
-            $fornecedores = $this->daoFornecedor->all();
-
-            foreach ($fornecedores as $fornecedor) {
-                $dadosFornecedor = $this->daoFornecedor->fillForModal($fornecedor);
-                array_push($dados, $dadosFornecedor);
-            }
-
-            return $dados;
-        }
-        else {
-            $fornecedor = $this->daoFornecedor->find($id);
-
-            if ($fornecedor) {
-                $dados = $this->daoFornecedor->fillForModal($fornecedor);
-                return [$dados];
-            }
-        }
-
-        return null;
+        return [ $fornecedor ];
     }
 }

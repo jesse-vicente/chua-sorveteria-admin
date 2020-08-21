@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\EstadoRequest;
 
 use App\Http\Dao\DaoEstado;
@@ -23,8 +22,14 @@ class EstadoController extends Controller
      */
     public function index()
     {
-        $estados = $this->daoEstado->all();
+        $estados = $this->daoEstado->all(true);
         return view('estados.index', compact('estados'));
+    }
+
+    public function all()
+    {
+        $estados = $this->daoEstado->all();
+        return $estados;
     }
 
     /**
@@ -63,8 +68,12 @@ class EstadoController extends Controller
      */
     public function show($id)
     {
-        $estado = $this->daoEstado->find($id);
-        return view('estados.show', compact('estado'));
+        $estado = $this->daoEstado->findById($id, true);
+
+        if ($estado)
+            return view('estados.show', compact('estado'));
+
+        return redirect('estados')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -75,7 +84,7 @@ class EstadoController extends Controller
      */
     public function edit($id)
     {
-        $estado = $this->daoEstado->find($id);
+        $estado = $this->daoEstado->findById($id, true);
 
         if ($estado)
             return view('estados.create', compact('estado'));
@@ -100,7 +109,7 @@ class EstadoController extends Controller
         return redirect('estados')->with('error', 'Erro ao alterar registro.');
     }
 
-    /**
+        /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -116,43 +125,9 @@ class EstadoController extends Controller
         return redirect('estados')->with('error', 'Este registro não pode ser removido.');
     }
 
-    /**
-     * Search for the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request) {
-        $q = $request->q;
+    public function findById(int $id) {
+        $estado = $this->daoEstado->findById($id);
 
-        $estados = $this->daoEstado->search($q);
-
-        return view('estados.search', compact('estados'));
-    }
-
-    public function find(int $id) {
-
-        $dados = array();
-
-        if ($id == 0) {
-            $estados = $this->daoEstado->all();
-
-            foreach ($estados as $estado) {
-                $dadosEstado = $this->daoEstado->fillData($estado);
-                array_push($dados, $dadosEstado);
-            }
-
-            return $dados;
-        }
-        else {
-            $estado = $this->daoEstado->find($id);
-
-            if ($estado) {
-                $dados = $this->daoEstado->fillForModal($estado);
-                return [$dados];
-            }
-        }
-
-        return null;
+        return [ $estado ];
     }
 }

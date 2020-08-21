@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\CondicaoPagamentoRequest;
 
 use App\Http\Dao\DaoCondicaoPagamento;
@@ -27,8 +28,22 @@ class CondicaoPagamentoController extends Controller
      */
     public function index()
     {
-        $condicoesPagamento = $this->daoCondicaoPagamento->all();
+        $condicoesPagamento = $this->daoCondicaoPagamento->all(true);
         return view('condicoes-pagamento.index', compact('condicoesPagamento'));
+    }
+
+    public function all()
+    {
+        $condicoes = $this->daoCondicaoPagamento->all(true);
+
+        $condicoesPagamento = array();
+
+        foreach ($condicoes as $condicao) {
+            $condicaoPagamento = $this->daoCondicaoPagamento->fillForModal($condicao);
+            array_push($condicoesPagamento, $condicaoPagamento);
+        }
+
+        return $condicoesPagamento;
     }
 
     /**
@@ -68,8 +83,14 @@ class CondicaoPagamentoController extends Controller
      */
     public function show($id)
     {
-        $condicaoPagamento = $this->daoCondicaoPagamento->find($id);
-        return view('condicoes-pagamento.show', compact('condicaoPagamento'));
+        $dados = $this->daoCondicaoPagamento->findById($id);
+
+        if ($dados) {
+            $condicaoPagamento = $this->daoCondicaoPagamento->create(get_object_vars($dados));
+            return view('condicoes-pagamento.show', compact('condicaoPagamento'));
+        }
+
+        return redirect('condicoes-pagamento')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -80,8 +101,14 @@ class CondicaoPagamentoController extends Controller
      */
     public function edit($id)
     {
-        $condicaoPagamento = $this->daoCondicaoPagamento->find($id);
-        return view('condicoes-pagamento.create', compact('condicaoPagamento'));
+        $dados = $this->daoCondicaoPagamento->findById($id);
+
+        if ($dados) {
+            $condicaoPagamento = $this->daoCondicaoPagamento->create(get_object_vars($dados));
+            return view('condicoes-pagamento.create', compact('condicaoPagamento'));
+        }
+
+        return redirect('condicoes-pagamento')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -117,43 +144,9 @@ class CondicaoPagamentoController extends Controller
         return redirect('condicoes-pagamento')->with('error', 'Este registro não pode ser removido.');
     }
 
-    /**
-     * Search for the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request) {
-        $q = $request->q;
+    public function findById(int $id) {
+        $condicaoPagamento = $this->daoCondicaoPagamento->findById($id);
 
-        $condicoesPagamento = $this->daoCondicaoPagamento->search($q);
-
-        return view('condicoes-pagamento.search', compact('condicoesPagamento'));
-    }
-
-    public function find(int $id) {
-
-        $dados = array();
-
-        if ($id == 0) {
-            $condicoesPagamento = $this->daoCondicaoPagamento->all();
-
-            foreach ($condicoesPagamento as $condicaoPagamento) {
-                $dadosCondicaoPagamento = $this->daoCondicaoPagamento->fillForModal($condicaoPagamento);
-                array_push($dados, $dadosCondicaoPagamento);
-            }
-
-            return $dados;
-        }
-        else {
-            $condicaoPagamento = $this->daoCondicaoPagamento->find($id);
-
-            if ($condicaoPagamento) {
-                $dados = $this->daoCondicaoPagamento->fillForModal($condicaoPagamento);
-                return [$dados];
-            }
-        }
-
-        return null;
+        return [ $condicaoPagamento ];
     }
 }

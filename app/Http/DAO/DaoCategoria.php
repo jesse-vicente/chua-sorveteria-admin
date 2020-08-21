@@ -4,6 +4,8 @@ namespace App\Http\Dao;
 
 use App\Http\Dao\Dao;
 
+use Illuminate\Support\Collection;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -11,8 +13,19 @@ use App\Http\Models\Categoria;
 
 class DaoCategoria implements Dao {
 
-    public function all() {
-        $categorias = $this->search();
+    public function all(bool $model = false) {
+        if (!$model)
+            return DB::table('categorias')->get();
+
+        $itens = DB::table('categorias')->get();
+
+        $categorias = array();
+
+        foreach ($itens as $item) {
+            $categoria = $this->create(get_object_vars($item));
+            array_push($categorias, $categoria);
+        }
+
         return $categorias;
     }
 
@@ -35,7 +48,7 @@ class DaoCategoria implements Dao {
         DB::beginTransaction();
 
         try {
-            $dados = $this->fillData($categoria);
+            $dados = $this->getData($categoria);
 
             DB::table('categorias')->insert($dados);
             DB::commit();
@@ -53,7 +66,7 @@ class DaoCategoria implements Dao {
         try {
             $categoria = $this->create($request->all());
 
-            $dados = $this->fillData($categoria);
+            $dados = $this->getData($categoria);
 
             DB::table('categorias')->where('id', $id)->update($dados);
 
@@ -80,52 +93,22 @@ class DaoCategoria implements Dao {
         }
     }
 
-    public function find(int $id) {
+    public function findById(int $id, bool $model = false) {
+        if (!$model)
+            return DB::table('categorias')->get(['id', 'categoria'])->where('id', $id)->first();
+
         $dados = DB::table('categorias')->where('id', $id)->first();
 
         if ($dados)
             return $this->create(get_object_vars($dados));
 
-        return null;
-    }
-
-    public function search($q = null)
-    {
-        $categorias = array();
-
-        if (!is_null($q)) {
-            $dados = DB::table('categorias')->where('id', $q)->orWhere('categoria', 'like', '$q')->first();
-
-            if ($dados)
-                $categorias[0] = $this->create(get_object_vars($dados));
-
-            return $categorias;
-        }
-        else {
-            $dados = DB::table('categorias')->limit(10)->get();
-
-            foreach ($dados as $obj) {
-                $categoria = $this->create(get_object_vars($obj));
-                array_push($categorias, $categoria);
-            }
-
-            return $categorias;
-        }
-    }
-
-    public function fillData(Categoria $categoria) {
-        $dados = [
-            'id'        => $categoria->getId(),
-            'categoria' => $categoria->getCategoria(),
-        ];
-
         return $dados;
     }
 
-    public function fillForModal(Categoria $categoria) {
+    public function getData(Categoria $categoria) {
         $dados = [
-            'id'   => $categoria->getId(),
-            'nome' => $categoria->getCategoria(),
+            'id'        => $categoria->getId(),
+            'categoria' => $categoria->getCategoria(),
         ];
 
         return $dados;

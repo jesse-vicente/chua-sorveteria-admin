@@ -23,27 +23,24 @@ Route::get('/home', function() {
     return view('home');
 })->name('home')->middleware('auth');
 
-Route::get('/paises/{id}/find', 'PaisController@find')->name('paises.find');
-Route::get('/estados/{id}/find', 'EstadoController@find')->name('estados.find');
-Route::get('/cidades/{id}/find', 'CidadeController@find')->name('cidades.find');
+Route::get('/paises/all', 'PaisController@all')->name('paises.all');
+Route::get('/estados/all', 'EstadoController@all')->name('estados.all');
+Route::get('/cidades/all', 'CidadeController@all')->name('cidades.all');
+Route::get('/categorias/all', 'CategoriaController@all')->name('categorias.all');
+Route::get('/produtos/all', 'ProdutoController@all')->name('produtos.all');
+Route::get('/fornecedores/all', 'FornecedorController@all')->name('fornecedores.all');
+Route::get('/formas-pagamento/all', 'FormaPagamentoController@all')->name('formas-pagamento.all');
+Route::get('/condicoes-pagamento/all', 'CondicaoPagamentoController@all')->name('condicoes-pagamento.all');
 
-Route::get('/categorias/{id}/find', 'CategoriaController@find')->name('categorias.find');
-Route::get('/produtos/{id}/find', 'ProdutoController@find')->name('produtos.find');
-Route::get('/fornecedores/{id}/find', 'FornecedorController@find')->name('fornecedores.find');
+Route::get('/paises/{id}/findById', 'PaisController@findById')->name('paises.findById');
+Route::get('/estados/{id}/findById', 'EstadoController@findById')->name('estados.findById');
+Route::get('/cidades/{id}/findById', 'CidadeController@findById')->name('cidades.findById');
+Route::get('/categorias/{id}/findById', 'CategoriaController@findById')->name('categorias.findById');
+Route::get('/produtos/{id}/findById', 'ProdutoController@findById')->name('produtos.findById');
+Route::get('/fornecedores/{id}/findById', 'FornecedorController@findById')->name('fornecedores.findById');
 
-Route::get('/formas-pagamento/{id}/find', 'FormaPagamentoController@find')->name('formas-pagamento.find');
-Route::get('/condicoes-pagamento/{id}/find', 'CondicaoPagamentoController@find')->name('condicoes-pagamento.find');
-
-Route::get('/paises/search', 'PaisController@search')->name('paises.search');
-Route::get('/estados/search', 'EstadoController@search')->name('estados.search');
-Route::get('/cidades/search', 'CidadeController@search')->name('cidades.search');
-
-Route::get('/categorias/search', 'CategoriaController@search')->name('categorias.search');
-Route::get('/produtos/search', 'ProdutoController@search')->name('produtos.search');
-Route::get('/fornecedores/search', 'FornecedorController@search')->name('fornecedores.search');
-Route::get('/funcionarios/search', 'FuncionarioController@search')->name('funcionarios.search');
-Route::get('/formas-pagamento/search', 'FormaPagamentoController@search')->name('formas-pagamento.search');
-Route::get('/condicoes-pagamento/search', 'CondicaoPagamentoController@search')->name('condicoes-pagamento.search');
+Route::get('/formas-pagamento/{id}/findById', 'FormaPagamentoController@findById')->name('formas-pagamento.findById');
+Route::get('/condicoes-pagamento/{id}/findById', 'CondicaoPagamentoController@findById')->name('condicoes-pagamento.findById');
 
 Route::resource('/paises', 'PaisController');
 Route::resource('/estados', 'EstadoController');

@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\PaisRequest;
-
-use Illuminate\Support\Facades\Session;
 
 use App\Http\Dao\DaoPais;
 
@@ -25,8 +22,14 @@ class PaisController extends Controller
      */
     public function index()
     {
-        $paises = $this->daoPais->all();
+        $paises = $this->daoPais->all(true);
         return view('paises.index', compact('paises'));
+    }
+
+    public function all()
+    {
+        $paises = $this->daoPais->all();
+        return $paises;
     }
 
     /**
@@ -52,9 +55,27 @@ class PaisController extends Controller
         $store = $this->daoPais->store($pais);
 
         if ($store)
-            return redirect('paises') ->with('success', 'Registro inserido com sucesso!');
+            return redirect('paises')->with('success', 'Registro inserido com sucesso!');
 
         return redirect('paises')->with('error', 'Erro ao inserir registro.');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\PaisRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function inlineStore(PaisRequest $request)
+    {
+        $pais = $this->daoPais->create($request->all());
+
+        $store = $this->daoPais->store($pais);
+
+        if ($store)
+            return back()->withInput($request->all())->with('success', 'Registro inserido com sucesso!');
+
+        return back()->withInput($request->all())->with('error', 'Erro ao inserir registro.');
     }
 
     /**
@@ -65,8 +86,12 @@ class PaisController extends Controller
      */
     public function show($id)
     {
-        $pais = $this->daoPais->find($id);
-        return view('paises.show', compact('pais'));
+        $pais = $this->daoPais->findById($id, true);
+
+        if ($pais)
+            return view('paises.show', compact('pais'));
+
+        return redirect('paises')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -77,8 +102,12 @@ class PaisController extends Controller
      */
     public function edit($id)
     {
-        $pais = $this->daoPais->find($id);
-        return view('paises.create', compact('pais'));
+        $pais = $this->daoPais->findById($id, true);
+
+        if ($pais)
+            return view('paises.create', compact('pais'));
+
+        return redirect('paises')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -114,41 +143,9 @@ class PaisController extends Controller
         return redirect()->back()->with('error', 'Este registro não pode ser removido!');
     }
 
-    /**
-     * Search for the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request) {
-        $paises = $this->daoPais->search($request->q);
+    public function findById(int $id) {
+        $pais = $this->daoPais->findById($id);
 
-        return view('paises.search', compact('paises'));
-    }
-
-    public function find(int $id) {
-
-        $dados = array();
-
-        if ($id == 0) {
-            $paises = $this->daoPais->all();
-
-            foreach ($paises as $pais) {
-                $dadosPais = $this->daoPais->fillData($pais);
-                array_push($dados, $dadosPais);
-            }
-
-            return $dados;
-        }
-        else {
-            $pais = $this->daoPais->find($id);
-
-            if ($pais) {
-                $dados = $this->daoPais->fillForModal($pais);
-                return [$dados];
-            }
-        }
-
-        return null;
+        return [ $pais ];
     }
 }

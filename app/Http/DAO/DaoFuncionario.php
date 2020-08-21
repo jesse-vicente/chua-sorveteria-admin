@@ -6,6 +6,7 @@ use App\Http\Dao\Dao;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 use App\Http\Models\Funcionario;
 
@@ -18,8 +19,19 @@ class DaoFuncionario implements Dao {
         $this->daoCidade = new DaoCidade();
     }
 
-    public function all() {
-        $funcionarios = $this->search();
+    public function all(bool $model = false) {
+        if (!$model)
+            return DB::table('funcionarios')->get(['id', 'funcionario', 'whatsapp', 'endereco']);
+
+        $dados = DB::table('funcionarios')->get();
+
+        $funcionarios = array();
+
+        foreach ($dados as $dado) {
+            $funcionario = $this->create(get_object_vars($dado));
+            array_push($funcionarios, $funcionario);
+        }
+
         return $funcionarios;
     }
 
@@ -41,7 +53,6 @@ class DaoFuncionario implements Dao {
         $funcionario->setNumero((int) $dados["numero"]);
         $funcionario->setComplemento($dados["complemento"]);
         $funcionario->setBairro($dados["bairro"]);
-        $funcionario->setCidade($this->daoCidade->find($dados["cidade_id"]));
         $funcionario->setTelefone($dados["telefone"]);
         $funcionario->setWhatsapp($dados["whatsapp"]);
         $funcionario->setEmail($dados["email"]);
@@ -53,6 +64,9 @@ class DaoFuncionario implements Dao {
         $funcionario->setDataDemissao($dados["data_demissao"]);
         $funcionario->setObservacoes($dados["observacoes"]);
 
+        $cidade = $this->daoCidade->findById($dados["cidade_id"], true);
+        $funcionario->setCidade($cidade);
+
         return $funcionario;
     }
 
@@ -60,7 +74,7 @@ class DaoFuncionario implements Dao {
         DB::beginTransaction();
 
         try {
-            $dados = $this->fillData($funcionario);
+            $dados = $this->getData($funcionario);
 
             DB::table('funcionarios')->insert($dados);
             DB::commit();
@@ -79,7 +93,7 @@ class DaoFuncionario implements Dao {
         try {
             $funcionario = $this->create($request->all());
 
-            $dados = $this->fillData($funcionario);
+            $dados = $this->getData($funcionario);
 
             DB::table('funcionarios')->where('id', $id)->update($dados);
 
@@ -105,37 +119,19 @@ class DaoFuncionario implements Dao {
         }
     }
 
-    public function find(int $id) {
-        $dados = DB::table('funcionarios')->where('id', '=', $id)->first();
+    public function findById(int $id, bool $model = false) {
+        if (!$model)
+            return DB::table('funcionarios')->get(['id', 'funcionario', 'whatsapp', 'endereco'])->where('id', $id)->first();
 
-        $funcionario = $this->create(get_object_vars($dados));
+        $dados = DB::table('funcionarios')->where('id', $id)->first();
 
-        return $funcionario;
+        if ($dados)
+            return $this->create(get_object_vars($dados));
+
+        return $dados;
     }
 
-    public function search(string $q = null)
-    {
-        $funcionarios = array();
-
-        if (!is_null($q)) {
-            $dados = DB::table('funcionarios')->where('id', '=', $q)->orWhere('funcionario', 'like', '$q')->first();
-
-            if ($dados)
-                $funcionarios[0] = $this->create(get_object_vars($dados));
-        }
-        else {
-            $dados = DB::table('funcionarios')->limit(10)->get();
-
-            foreach ($dados as $obj) {
-                $funcionario = $this->create(get_object_vars($obj));
-                array_push($funcionarios, $funcionario);
-            }
-        }
-
-        return $funcionarios;
-    }
-
-    public function fillData($funcionario) {
+    public function getData($funcionario) {
         $dados = [
             'id'              => $funcionario->getId(),
             'funcionario'     => $funcionario->getNome(),

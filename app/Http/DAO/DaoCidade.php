@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Dao\DaoEstado;
 use App\Http\Models\Cidade;
 
+use Illuminate\Support\Collection;
+
 class DaoCidade implements Dao {
 
     private DaoEstado $daoEstado;
@@ -19,8 +21,22 @@ class DaoCidade implements Dao {
         $this->daoEstado = new DaoEstado();
     }
 
-    public function all() {
-        $cidades = $this->search();
+    public function all(bool $model = false) {
+        if (!$model) {
+            return DB::table('cidades', 'c')
+                ->join('estados as e', 'c.estado_id', '=', 'e.id')
+                ->get(['c.id', 'c.cidade', 'c.ddd', 'e.estado']);
+        }
+
+        $itens = DB::table('cidades')->get();
+
+        $cidades = array();
+
+        foreach ($itens as $item) {
+            $cidade = $this->create(get_object_vars($item));
+            array_push($cidades, $cidade);
+        }
+
         return $cidades;
     }
 
@@ -35,7 +51,10 @@ class DaoCidade implements Dao {
 
         $cidade->setCidade($dados["cidade"]);
         $cidade->setDDD($dados["ddd"]);
-        $cidade->setEstado($this->daoEstado->find($dados["estado_id"]));
+
+        $estado = $this->daoEstado->findById($dados["estado_id"], true);
+
+        $cidade->setEstado($estado);
 
         return $cidade;
     }
@@ -44,9 +63,7 @@ class DaoCidade implements Dao {
         DB::beginTransaction();
 
         try {
-            $dados = $this->fillData($cidade);
-
-            // dd($dados);
+            $dados = $this->getData($cidade);
 
             DB::table('cidades')->insert($dados);
             DB::commit();
@@ -65,7 +82,7 @@ class DaoCidade implements Dao {
         try {
             $cidade = $this->create($request->all());
 
-            $dados = $this->fillData($cidade);
+            $dados = $this->getData($cidade);
 
             DB::table('cidades')->where('id', $id)->update($dados);
 
@@ -91,58 +108,30 @@ class DaoCidade implements Dao {
         }
     }
 
-    public function find(int $id) {
+    public function findById(int $id, bool $model = false) {
+        if (!$model) {
+            return DB::table('cidades', 'c')
+                    ->join('estados as e', 'c.estado_id', '=', 'e.id')
+                    ->get(['c.id', 'c.cidade', 'c.ddd', 'e.estado'])
+                    ->where('id', $id)
+                    ->first();
+        }
+
         $dados = DB::table('cidades')->where('id', $id)->first();
 
         if ($dados)
             return $this->create(get_object_vars($dados));
 
-        return null;
+        return $dados;
     }
 
-    public function search($q = null)
-    {
-        $cidades = array();
-
-        if (!is_null($q)) {
-            $dados = DB::table('cidades')->where('id', $q)->orWhere('cidade', 'like', '$q')->first();
-
-            if ($dados)
-                $cidades[0] = $this->create(get_object_vars($dados));
-
-            return $cidades;
-        }
-        else {
-            $dados = DB::table('cidades')->get();
-
-            foreach ($dados as $obj) {
-                $cidade = $this->create(get_object_vars($obj));
-                array_push($cidades, $cidade);
-            }
-
-            return $cidades;
-        }
-    }
-
-    public function fillData(Cidade $cidade) {
+    public function getData(Cidade $cidade) {
 
         $dados = [
             "id"        => $cidade->getId(),
             "cidade"    => $cidade->getCidade(),
             "ddd"       => $cidade->getDDD(),
             "estado_id" => $cidade->getEstado()->getID(),
-        ];
-
-        return $dados;
-    }
-
-    public function fillForModal(Cidade $cidade) {
-
-        $dados = [
-            "id"      => $cidade->getId(),
-            "nome"    => $cidade->getCidade(),
-            "ddd"     => $cidade->getDDD(),
-            "estado"  => $cidade->getEstado()->getEstado(),
         ];
 
         return $dados;

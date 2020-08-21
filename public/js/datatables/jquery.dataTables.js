@@ -4180,7 +4180,7 @@
 		var previousSearch = settings.oPreviousSearch;
 		var features = settings.aanFeatures;
 		// var input = '<input type="search" class="'+classes.sFilterInput+'"/>';
-		var input = `<div class="input-group mb-3">
+		var input = `<div class="input-group">
                         <input type="search" class="form-control ml-0" />
                         <div class="input-group-append">
                             <button class="btn btn-primary btn-search">
@@ -4188,7 +4188,7 @@
                                 <span>Buscar</span>
                             </button>
                         </div>
-                    </div>`;
+                     </div>`;
 
 		var str = language.sSearch;
 		str = str.match(/_INPUT_/) ?
@@ -11937,7 +11937,7 @@
 		 *      } );
 		 *    } )
 		 */
-		"searchDelay": 1000,
+		"searchDelay": 200,
 
 
 		/**

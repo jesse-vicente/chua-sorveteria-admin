@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 interface Dao {
 
-    public function all();
+    public function all(bool $model = false);
 
     public function create(array $dados);
 
@@ -16,8 +16,6 @@ interface Dao {
 
     public function delete($id);
 
-    public function find(int $id);
-
-    public function search(string $q = null);
+    public function findById(int $id, bool $model = false);
 
 }

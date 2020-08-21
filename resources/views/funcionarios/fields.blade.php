@@ -186,7 +186,7 @@
 
     <div class="form-group required col-xl-4">
         <label>Cidade</label>
-        <div class="input-group mb-3">
+        <div class="input-group">
 
             <input
                 type="text"

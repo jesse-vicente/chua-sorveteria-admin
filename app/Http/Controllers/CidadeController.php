@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\CidadeRequest;
 
 use App\Http\Dao\DaoCidade;
-use App\Http\Dao\DaoEstado;
 
 class CidadeController extends Controller
 {
@@ -15,7 +13,6 @@ class CidadeController extends Controller
     public function __construct()
     {
         $this->daoCidade = new DaoCidade();
-        $this->daoEstado = new DaoEstado();
     }
 
     /**
@@ -25,8 +22,14 @@ class CidadeController extends Controller
      */
     public function index()
     {
-        $cidades = $this->daoCidade->all();
+        $cidades = $this->daoCidade->all(true);
         return view('cidades.index', compact('cidades'));
+    }
+
+    public function all()
+    {
+        $cidades = $this->daoCidade->all();
+        return $cidades;
     }
 
     /**
@@ -65,8 +68,12 @@ class CidadeController extends Controller
      */
     public function show($id)
     {
-        $cidade = $this->daoCidade->find($id);
-        return view('cidades.show', compact('cidade'));
+        $cidade = $this->daoCidade->findById($id, true);
+
+        if ($cidade)
+            return view('cidades.show', compact('cidade'));
+
+        return redirect('cidades')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -77,8 +84,12 @@ class CidadeController extends Controller
      */
     public function edit($id)
     {
-        $cidade = $this->daoCidade->find($id);
-        return view('cidades.create', compact('cidade'));
+        $cidade = $this->daoCidade->findById($id, true);
+
+        if ($cidade)
+            return view('cidades.create', compact('cidade'));
+
+        return redirect('cidades')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -114,42 +125,9 @@ class CidadeController extends Controller
         return redirect('cidades')->with('error', 'Este registro não pode ser removido.');
     }
 
-    /**
-     * Search for the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request) {
-        $q = $request->q;
+    public function findById(int $id) {
+        $cidade = $this->daoCidade->findById($id);
 
-        $cidades = $this->daoCidade->search($q);
-
-        return view('cidades.search', compact('cidades'));
-    }
-
-    public function find(int $id) {
-        $dados = array();
-
-        if ($id == 0) {
-            $cidades = $this->daoCidade->all();
-
-            foreach ($cidades as $cidade) {
-                $dadosCidade = $this->daoCidade->fillForModal($cidade);
-                array_push($dados, $dadosCidade);
-            }
-
-            return $dados;
-        }
-        else {
-            $cidade = $this->daoCidade->find($id);
-
-            if ($cidade) {
-                $dados = $this->daoCidade->fillForModal($cidade);
-                return [$dados];
-            }
-        }
-
-        return null;
+        return [ $cidade ];
     }
 }

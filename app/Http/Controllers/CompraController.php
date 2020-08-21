@@ -23,8 +23,14 @@ class CompraController extends Controller
      */
     public function index()
     {
-        $compras = $this->daoCompra->all();
+        $listaCompras = $this->daoCompra->all();
+        $compras = $this->daoCompra->toObjectArray($listaCompras);
         return view('compras.index', compact('compras'));
+    }
+
+    public function all()
+    {
+        return $this->daoCompra->all();
     }
 
     /**
@@ -55,7 +61,7 @@ class CompraController extends Controller
         return redirect('compras')->with('error', 'Erro ao inserir registro.');
     }
 
-    /**
+        /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -63,11 +69,11 @@ class CompraController extends Controller
      */
     public function show($id)
     {
-        $compra = $this->daoCompra->find($id);
+        $compra = $this->daoCompra->findById($id);
         return view('compras.show', compact('compra'));
     }
 
-    /**
+        /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -75,7 +81,7 @@ class CompraController extends Controller
      */
     public function edit($id)
     {
-        $compra = $this->daoCompra->find($id);
+        $compra = $this->daoCompra->findById($id);
         return view('compras.create', compact('compra'));
     }
 
@@ -96,7 +102,7 @@ class CompraController extends Controller
         return redirect('compras')->with('error', 'Erro ao alterar registro.');
     }
 
-    /**
+        /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -110,19 +116,5 @@ class CompraController extends Controller
             return redirect('compras')->with('success', 'Registro removido com sucesso!');
 
         return redirect('compras')->with('error', 'Este registro não pode ser removido.');
-    }
-
-    /**
-     * Search for the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request) {
-        $q = $request->q;
-
-        $compras = $this->daoCompra->search($q);
-
-        return view('compras.search', compact('compras'));
     }
 }

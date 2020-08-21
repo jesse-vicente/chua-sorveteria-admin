@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\CategoriaRequest;
 
 use App\Http\Dao\DaoCategoria;
@@ -23,8 +22,13 @@ class CategoriaController extends Controller
      */
     public function index()
     {
-        $categorias = $this->daoCategoria->all();
+        $categorias = $this->daoCategoria->all(true);
         return view('categorias.index', compact('categorias'));
+    }
+
+    public function all()
+    {
+        return $this->daoCategoria->all();
     }
 
     /**
@@ -63,8 +67,12 @@ class CategoriaController extends Controller
      */
     public function show($id)
     {
-        $categoria = $this->daoCategoria->find($id);
-        return view('categorias.show', compact('categoria'));
+        $categoria = $this->daoCategoria->findById($id, true);
+
+        if ($categoria)
+            return view('categorias.show', compact('categoria'));
+
+        return redirect('categorias')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -75,8 +83,12 @@ class CategoriaController extends Controller
      */
     public function edit($id)
     {
-        $categoria = $this->daoCategoria->find($id);
-        return view('categorias.create', compact('categoria'));
+        $categoria = $this->daoCategoria->findById($id, true);
+
+        if ($categoria)
+            return view('categorias.create', compact('categoria'));
+
+        return redirect('categorias')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -112,43 +124,9 @@ class CategoriaController extends Controller
         return redirect('categorias')->with('error', 'Este registro não pode ser removido.');
     }
 
-    /**
-     * Search for the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request) {
-        $q = $request->q;
+    public function findById(int $id) {
+        $categoria = $this->daoCategoria->findById($id);
 
-        $categorias = $this->daoCategoria->search($q);
-
-        return view('categorias.search', compact('categorias'));
-    }
-
-    public function find(int $id) {
-
-        $dados = array();
-
-        if ($id == 0) {
-            $categorias = $this->daoCategoria->all();
-
-            foreach ($categorias as $categoria) {
-                $dadosPais = $this->daoCategoria->fillData($categoria);
-                array_push($dados, $dadosPais);
-            }
-
-            return $dados;
-        }
-        else {
-            $categoria = $this->daoCategoria->find($id);
-
-            if ($categoria) {
-                $dados = $this->daoCategoria->fillForModal($categoria);
-                return [$dados];
-            }
-        }
-
-        return null;
+        return [ $categoria ];
     }
 }

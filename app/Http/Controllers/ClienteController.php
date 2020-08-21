@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\ClienteRequest;
 
 use App\Http\Dao\DaoCliente;
@@ -23,8 +22,14 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        $clientes = $this->daoCliente->all();
+        $clientes = $this->daoCliente->all(true);
         return view('clientes.index', compact('clientes'));
+    }
+
+    public function all()
+    {
+        $clientes = $this->daoCliente->all();
+        return $clientes;
     }
 
     /**
@@ -55,7 +60,7 @@ class ClienteController extends Controller
         return redirect('clientes')->with('error', 'Erro ao inserir registro.');
     }
 
-    /**
+        /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -63,11 +68,15 @@ class ClienteController extends Controller
      */
     public function show($id)
     {
-        $cliente = $this->daoCliente->find($id);
-        return view('clientes.show', compact('cliente'));
+        $cliente = $this->daoCliente->findById($id, true);
+
+        if ($cliente)
+            return view('clientes.show', compact('cliente'));
+
+        return redirect('clientes')->with('error', 'Registro não encontrado.');
     }
 
-    /**
+        /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -75,8 +84,12 @@ class ClienteController extends Controller
      */
     public function edit($id)
     {
-        $cliente = $this->daoCliente->find($id);
-        return view('clientes.create', compact('cliente'));
+        $cliente = $this->daoCliente->findById($id, true);
+
+        if ($cliente)
+            return view('clientes.create', compact('cliente'));
+
+        return redirect('clientes')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -96,7 +109,7 @@ class ClienteController extends Controller
         return redirect('clientes')->with('error', 'Erro ao alterar registro.');
     }
 
-    /**
+        /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -112,17 +125,9 @@ class ClienteController extends Controller
         return redirect('clientes')->with('error', 'Este registro não pode ser removido.');
     }
 
-    /**
-     * Search for the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request) {
-        $q = $request->q;
+    public function findById(int $id) {
+        $cliente = $this->daoCliente->findById($id);
 
-        $clientes = $this->daoCliente->search($q);
-
-        return view('clientes.search', compact('clientes'));
+        return [ $cliente ];
     }
 }

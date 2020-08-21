@@ -6,6 +6,7 @@ use App\Http\Dao\Dao;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 use App\Http\Models\Cliente;
 
@@ -23,8 +24,19 @@ class DaoCliente implements Dao {
         $this->daoCondicaoPagamento = new DaoCondicaoPagamento();
     }
 
-    public function all() {
-        $clientes = $this->search();
+    public function all(bool $model = false) {
+        if (!$model)
+            return DB::table('clientes')->get(['id', 'cliente', 'whatsapp']);
+
+        $itens = DB::table('clientes')->get();
+
+        $clientes = array();
+
+        foreach ($itens as $item) {
+            $cliente = $this->create(get_object_vars($item));
+            array_push($clientes, $cliente);
+        }
+
         return $clientes;
     }
 
@@ -52,8 +64,8 @@ class DaoCliente implements Dao {
         $cliente->setRgInscricaoEstadual($dados["rg"]);
         $cliente->setObservacoes($dados["observacoes"]);
 
-        $cidade = $this->daoCidade->find($dados["cidade_id"]);
-        $condicaoPagamento = $this->daoCondicaoPagamento->find($dados["condicao_pagamento_id"]);
+        $cidade = $this->daoCidade->findById($dados["cidade_id"], true);
+        $condicaoPagamento = $this->daoCondicaoPagamento->findById($dados["condicao_pagamento_id"], true);
 
         $cliente->setCidade($cidade);
         $cliente->setCondicaoPagamento($condicaoPagamento);
@@ -65,9 +77,7 @@ class DaoCliente implements Dao {
         DB::beginTransaction();
 
         try {
-            $dados = $this->fillData($cliente);
-
-            // dd($dados);
+            $dados = $this->getData($cliente);
 
             DB::table('clientes')->insert($dados);
             DB::commit();
@@ -86,7 +96,7 @@ class DaoCliente implements Dao {
         try {
             $cliente = $this->create($request->all());
 
-            $dados = $this->fillData($cliente);
+            $dados = $this->getData($cliente);
 
             DB::table('clientes')->where('id', $id)->update($dados);
 
@@ -113,38 +123,19 @@ class DaoCliente implements Dao {
         }
     }
 
-    public function find(int $id) {
+    public function findById(int $id, bool $model = false) {
+        if (!$model)
+            return DB::table('clientes')->get(['id', 'cliente', 'whatsapp'])->where('id', $id)->first();
+
         $dados = DB::table('clientes')->where('id', $id)->first();
 
         if ($dados)
             return $this->create(get_object_vars($dados));
 
-        return null;
+        return $dados;
     }
 
-    public function search(string $q = null)
-    {
-        $clientes = array();
-
-        if (!is_null($q)) {
-            $dados = DB::table('clientes')->where('id', '=', $q)->orWhere('cliente', 'like', '$q')->first();
-
-            if ($dados)
-                $clientes[0] = $this->create(get_object_vars($dados));
-        }
-        else {
-            $dados = DB::table('clientes')->limit(10)->get();
-
-            foreach ($dados as $obj) {
-                $cliente = $this->create(get_object_vars($obj));
-                array_push($clientes, $cliente);
-            }
-        }
-
-        return $clientes;
-    }
-
-    public function fillData($cliente) {
+    public function getData($cliente) {
         $dados = [
             'id'                    => $cliente->getId(),
             'cliente'               => $cliente->getNome(),

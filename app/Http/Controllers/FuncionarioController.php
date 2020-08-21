@@ -23,8 +23,14 @@ class FuncionarioController extends Controller
      */
     public function index()
     {
-        $funcionarios = $this->daoFuncionario->all();
+        $funcionarios = $this->daoFuncionario->all(true);
         return view('funcionarios.index', compact('funcionarios'));
+    }
+
+    public function all()
+    {
+        $funcionarios =$this->daoFuncionario->all();
+        return $funcionarios;
     }
 
     /**
@@ -63,8 +69,12 @@ class FuncionarioController extends Controller
      */
     public function show($id)
     {
-        $funcionario = $this->daoFuncionario->find($id);
-        return view('funcionarios.show', compact('funcionario'));
+        $funcionario = $this->daoFuncionario->findById($id, true);
+
+        if ($funcionario)
+            return view('funcionarios.show', compact('funcionario'));
+
+        return redirect('funcionarios')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -75,8 +85,12 @@ class FuncionarioController extends Controller
      */
     public function edit($id)
     {
-        $funcionario = $this->daoFuncionario->find($id);
-        return view('funcionarios.create', compact('funcionario'));
+        $funcionario = $this->daoFuncionario->findById($id, true);
+
+        if ($funcionario)
+            return view('funcionarios.create', compact('funcionario'));
+
+        return redirect('funcionarios')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -109,20 +123,12 @@ class FuncionarioController extends Controller
         if ($delete)
             return redirect('funcionarios')->with('success', 'Registro removido com sucesso!');
 
-        return redirect('funcionarios')->with('error', 'Este registro não pode ser removido.');
+        return back()->with('error', 'Este registro não pode ser removido.');
     }
 
-    /**
-     * Search for the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request) {
-        $q = $request->q;
+    public function findById(int $id) {
+        $funcionario = $this->daoFuncionario->findById($id);
 
-        $funcionarios = $this->daoFuncionario->search($q);
-
-        return view('funcionarios.search', compact('funcionarios'));
+        return [ $funcionario ];
     }
 }

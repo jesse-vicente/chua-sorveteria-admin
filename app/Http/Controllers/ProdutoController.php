@@ -23,8 +23,13 @@ class ProdutoController extends Controller
      */
     public function index()
     {
-        $produtos = $this->daoProduto->all();
+        $produtos = $this->daoProduto->all(true);
         return view('produtos.index', compact('produtos'));
+    }
+
+    public function all()
+    {
+        return $this->daoProduto->all();
     }
 
     /**
@@ -63,8 +68,14 @@ class ProdutoController extends Controller
      */
     public function show($id)
     {
-        $produto = $this->daoProduto->find($id);
-        return view('produtos.show', compact('produto'));
+        $dados = $this->daoProduto->findById($id);
+
+        if ($dados) {
+            $produto = $this->daoProduto->create(get_object_vars($dados));
+            return view('produtos.show', compact('produto'));
+        }
+
+        return redirect('produtos')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -75,8 +86,14 @@ class ProdutoController extends Controller
      */
     public function edit($id)
     {
-        $produto = $this->daoProduto->find($id);
-        return view('produtos.create', compact('produto'));
+        $dados = $this->daoProduto->findById($id);
+
+        if ($dados) {
+            $produto = $this->daoProduto->create(get_object_vars($dados));
+            return view('produtos.create', compact('produto'));
+        }
+
+        return redirect('produtos')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -112,42 +129,9 @@ class ProdutoController extends Controller
         return redirect('produtos')->with('error', 'Este registro não pode ser removido.');
     }
 
-    /**
-     * Search for the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request) {
-        $q = $request->q;
+    public function findById(int $id) {
+        $produto = $this->daoProduto->findById($id);
 
-        $produtos = $this->daoProduto->search($q);
-
-        return view('produtos.search', compact('produtos'));
-    }
-
-    public function find(int $id) {
-        $dados = array();
-
-        if ($id == 0) {
-            $produtos = $this->daoProduto->all();
-
-            foreach ($produtos as $produto) {
-                $dadosProduto = $this->daoProduto->fillForModal($produto);
-                array_push($dados, $dadosProduto);
-            }
-
-            return $dados;
-        }
-        else {
-            $produto = $this->daoProduto->find($id);
-
-            if ($produto) {
-                $dados = $this->daoProduto->fillForModal($produto);
-                return [$dados];
-            }
-        }
-
-        return null;
+        return [ $produto ];
     }
 }

@@ -107,7 +107,7 @@ $(document).ready(function() {
             Swal.fire({
                 title: "Erro!",
                 text: "Não é possível adicionar mais parcelas, percentual (100%).",
-                type: "error",
+                icon: "error",
                 showCloseButton: true,
                 showConfirmButton: false,
             });
@@ -167,7 +167,7 @@ $(document).ready(function() {
                 Swal.fire({
                     title: "Erro!",
                     text: "O percentual das parcelas não podem exceder a 100%.",
-                    type: "error",
+                    icon: "error",
                     showCloseButton: true,
                     showConfirmButton: false,
                 });
@@ -238,7 +238,7 @@ $(document).ready(function() {
             Swal.fire({
                 title: "Erro!",
                 text: "O percentual das parcelas devem fechar em 100%.",
-                type: "error",
+                icon: "error",
                 showCloseButton: true,
                 showConfirmButton: false,
             });

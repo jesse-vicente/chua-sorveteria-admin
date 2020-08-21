@@ -162,7 +162,7 @@
 
     <div class="form-group required col-xl-4">
         <label>Cidade</label>
-        <div class="input-group mb-3">
+        <div class="input-group">
             <input
                 class="form-control"
                 name="cidade"
@@ -332,7 +332,7 @@
 
     <div class="form-group required col-xl-5">
         <label>Condição de Pagamento</label>
-        <div class="input-group mb-3">
+        <div class="input-group">
             <input
                 type="text"
                 class="form-control"

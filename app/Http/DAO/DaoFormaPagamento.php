@@ -6,13 +6,25 @@ use App\Http\Dao\Dao;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 use App\Http\Models\FormaPagamento;
 
 class DaoFormaPagamento implements Dao {
 
-    public function all() {
-        $formasPagamento = $this->search();
+    public function all(bool $model = false) {
+        if (!$model)
+            return DB::table('formas_pagamento')->get();
+
+        $itens = DB::table('formas_pagamento')->get();
+
+        $formasPagamento = array();
+
+        foreach ($itens as $item) {
+            $formaPagamento = $this->create(get_object_vars($item));
+            array_push($formasPagamento, $formaPagamento);
+        }
+
         return $formasPagamento;
     }
 
@@ -34,7 +46,7 @@ class DaoFormaPagamento implements Dao {
         DB::beginTransaction();
 
         try {
-            $dados = $this->fillData($formaPagamento);
+            $dados = $this->getData($formaPagamento);
 
             DB::table('formas_pagamento')->insert($dados);
             DB::commit();
@@ -52,7 +64,7 @@ class DaoFormaPagamento implements Dao {
         try {
             $formaPagamento = $this->create($request->all());
 
-            $dados = $this->fillData($formaPagamento);
+            $dados = $this->getData($formaPagamento);
 
             DB::table('formas_pagamento')->where('id', $id)->update($dados);
 
@@ -78,51 +90,22 @@ class DaoFormaPagamento implements Dao {
         }
     }
 
-    public function find(int $id) {
+    public function findById(int $id, bool $model = false) {
+        if (!$model)
+            return DB::table('formas_pagamento')->get()->where('id', $id)->first();
+
         $dados = DB::table('formas_pagamento')->where('id', $id)->first();
 
         if ($dados)
             return $this->create(get_object_vars($dados));
 
-        return null;
-    }
-
-    public function search($q = null)
-    {
-        $formasPagamento = array();
-
-        if (!is_null($q)) {
-            $dados = DB::table('formas_pagamento')->where('id', $q)->orWhere('forma_pagamento', 'like', '$q')->first();
-
-            if ($dados)
-                $formasPagamento[0] = $this->create(get_object_vars($dados));
-        }
-        else {
-            $dados = DB::table('formas_pagamento')->limit(10)->get();
-
-            foreach ($dados as $obj) {
-                $formaPagamento = $this->create(get_object_vars($obj));
-                array_push($formasPagamento, $formaPagamento);
-            }
-        }
-
-        return $formasPagamento;
-    }
-
-    public function fillData($formaPagamento) {
-        $dados = [
-            'id'              => $formaPagamento->getId(),
-            'forma_pagamento' => $formaPagamento->getFormaPagamento(),
-        ];
-
         return $dados;
     }
 
-    public function fillForModal(FormaPagamento $formaPagamento) {
-
+    public function getData($formaPagamento) {
         $dados = [
-            "id"      => $formaPagamento->getId(),
-            "nome"    => $formaPagamento->getFormaPagamento(),
+            'id'              => $formaPagamento->getId(),
+            'forma_pagamento' => $formaPagamento->getFormaPagamento(),
         ];
 
         return $dados;

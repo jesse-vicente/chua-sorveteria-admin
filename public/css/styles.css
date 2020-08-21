@@ -2,6 +2,16 @@
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
 } */
 
+.options-bar {
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding-bottom: 0.85rem !important;
+}
+
+.dataTables_length label {
+    margin-bottom: 0;
+}
+
 label:not(.form-check-label):not(.custom-file-label) {
     font-weight: 600 !important;
 }

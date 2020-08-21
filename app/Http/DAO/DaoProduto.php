@@ -23,8 +23,23 @@ class DaoProduto implements Dao {
         $this->daoFornecedor = new DaoFornecedor();
     }
 
-    public function all() {
-        $produtos = $this->search();
+    public function all(bool $model = false) {
+        if (!$model) {
+            return DB::table('produtos', 'p')
+                    ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
+                    ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
+                    ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'p.preco_custo', 'f.fornecedor']);
+        }
+
+        $itens = DB::table('produtos')->get();
+
+        $produtos = array();
+
+        foreach ($itens as $item) {
+            $produto = $this->create(get_object_vars($item));
+            array_push($produtos, $produto);
+        }
+
         return $produtos;
     }
 
@@ -46,8 +61,8 @@ class DaoProduto implements Dao {
         $produto->setDataUltimaCompra($dados["data_ultima_compra"]);
         $produto->setDataUltimaVenda($dados["data_ultima_venda"]);
 
-        $categoria  = $this->daoCategoria->find($dados["categoria_id"]);
-        $fornecedor = $this->daoFornecedor->find($dados["fornecedor_id"]);
+        $categoria  = $this->daoCategoria->findById($dados["categoria_id"], true);
+        $fornecedor = $this->daoFornecedor->findById($dados["fornecedor_id"], true);
 
         $produto->setCategoria($categoria);
         $produto->setFornecedor($fornecedor);
@@ -59,7 +74,7 @@ class DaoProduto implements Dao {
         DB::beginTransaction();
 
         try {
-            $dados = $this->fillData($produto);
+            $dados = $this->getData($produto);
 
             DB::table('produtos')->insert($dados);
             DB::commit();
@@ -77,7 +92,7 @@ class DaoProduto implements Dao {
         try {
             $produto = $this->create($request->all());
 
-            $dados = $this->fillData($produto);
+            $dados = $this->getData($produto);
 
             DB::table('produtos')->where('id', $id)->update($dados);
 
@@ -103,38 +118,25 @@ class DaoProduto implements Dao {
         }
     }
 
-    public function find(int $id) {
+    public function findById(int $id, bool $model = false) {
+        if (!$model) {
+            return DB::table('produtos', 'p')
+                    ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
+                    ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
+                    ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'p.preco_custo', 'f.fornecedor'])
+                    ->where('id', $id)
+                    ->first();
+        }
+
         $dados = DB::table('produtos')->where('id', $id)->first();
 
         if ($dados)
             return $this->create(get_object_vars($dados));
 
-        return null;
+        return $dados;
     }
 
-    public function search($q = null)
-    {
-        $produtos = array();
-
-        if (!is_null($q)) {
-            $dados = DB::table('produtos')->where('id', '=', $q)->orWhere('produto', 'like', '$q')->first();
-
-            if ($dados)
-                $produtos[0] = $this->create(get_object_vars($dados));
-        }
-        else {
-            $dados = DB::table('produtos')->limit(10)->get();
-
-            foreach ($dados as $obj) {
-                $produto = $this->create(get_object_vars($obj));
-                array_push($produtos, $produto);
-            }
-        }
-
-        return $produtos;
-    }
-
-    public function fillData(Produto $produto) {
+    public function getData(Produto $produto) {
 
         $dados = [
             'id'                  => $produto->getId(),
@@ -148,20 +150,6 @@ class DaoProduto implements Dao {
             'custo_ultima_compra' => $produto->getCustoUltimaCompra(),
             'data_ultima_compra'  => $produto->getDataUltimaCompra(),
             'data_ultima_venda'   => $produto->getDataUltimaVenda(),
-        ];
-
-        return $dados;
-    }
-
-    public function fillForModal(Produto $produto) {
-
-        $dados = [
-            'id'          => $produto->getId(),
-            'nome'        => $produto->getProduto(),
-            'unidade'     => $produto->getUnidade(),
-            'categoria'   => $produto->getCategoria()->getCategoria(),
-            'preco_custo' => $produto->getPrecoCusto() ?? '-',
-            'fornecedor'  => $produto->getFornecedor()->getRazaoSocial(),
         ];
 
         return $dados;

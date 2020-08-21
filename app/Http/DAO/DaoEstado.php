@@ -19,8 +19,22 @@ class DaoEstado implements Dao {
         $this->daoPais = new DaoPais();
     }
 
-    public function all() {
-        $estados = $this->search();
+    public function all(bool $model = false) {
+        if (!$model) {
+            return DB::table('estados', 'e')
+                ->join('paises as p', 'e.pais_id', '=', 'p.id')
+                ->get(['e.id', 'e.estado', 'e.uf', 'p.pais']);
+        }
+
+        $itens = DB::table('estados')->get();
+
+        $estados = array();
+
+        foreach ($itens as $item) {
+            $estado = $this->create(get_object_vars($item));
+            array_push($estados, $estado);
+        }
+
         return $estados;
     }
 
@@ -36,7 +50,7 @@ class DaoEstado implements Dao {
         $estado->setEstado($dados["estado"]);
         $estado->setUF($dados["uf"]);
 
-        $pais = $this->daoPais->find($dados["pais_id"]);
+        $pais = $this->daoPais->findById($dados["pais_id"], true);
 
         $estado->setPais($pais);
 
@@ -47,7 +61,7 @@ class DaoEstado implements Dao {
         DB::beginTransaction();
 
         try {
-            $dados = $this->fillData($estado);
+            $dados = $this->getData($estado);
 
             DB::table('estados')->insert($dados);
             DB::commit();
@@ -65,7 +79,7 @@ class DaoEstado implements Dao {
         try {
             $estado = $this->create($request->all());
 
-            $dados = $this->fillData($estado);
+            $dados = $this->getData($estado);
 
             DB::table('estados')->where('id', $id)->update($dados);
 
@@ -92,54 +106,29 @@ class DaoEstado implements Dao {
         }
     }
 
-    public function find(int $id) {
+    public function findById(int $id, bool $model = false) {
+        if (!$model) {
+            return DB::table('estados', 'e')
+                    ->join('pais as p', 'e.pais_id', '=', 'p.id')
+                    ->get(['e.id', 'e.estado', 'e.uf', 'p.pais'])
+                    ->where('id', $id)
+                    ->first();
+        }
+
         $dados = DB::table('estados')->where('id', $id)->first();
 
         if ($dados)
             return $this->create(get_object_vars($dados));
 
-        return null;
+        return $dados;
     }
 
-    public function search($q = null)
-    {
-        $estados = array();
-
-        if (!is_null($q)) {
-            $dados = DB::table('estados')->where('id', '=', $q)->orWhere('estado', 'like', '$q')->first();
-
-            if ($dados)
-                $estados[0] = $this->create(get_object_vars($dados));
-        }
-        else {
-            $dados = DB::table('estados')->limit(10)->get();
-
-            foreach ($dados as $obj) {
-                $estado = $this->create(get_object_vars($obj));
-                array_push($estados, $estado);
-            }
-        }
-
-        return $estados;
-    }
-
-    public function fillData(Estado $estado) {
+    public function getData(Estado $estado) {
         $dados = [
             'id'      => $estado->getId(),
             'estado'  => $estado->getEstado(),
             'uf'      => $estado->getUF(),
             'pais_id' => $estado->getPais()->getID(),
-        ];
-
-        return $dados;
-    }
-
-    public function fillForModal(Estado $estado) {
-        $dados = [
-            'id'      => $estado->getId(),
-            'nome'    => $estado->getEstado(),
-            'uf'      => $estado->getUF(),
-            'pais'    => $estado->getPais()->getPais(),
         ];
 
         return $dados;

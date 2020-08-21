@@ -74,7 +74,7 @@
 
     <div class="form-group required col-xl-4">
         <label>Fornecedor</label>
-        <div class="input-group mb-3">
+        <div class="input-group">
             <input
                 class="form-control"
                 name="fornecedor"
@@ -135,7 +135,7 @@
 
     <div class="form-group required col-xl-4">
         <label>Categoria</label>
-        <div class="input-group mb-3">
+        <div class="input-group">
             <input
                 class="form-control"
                 name="categoria"

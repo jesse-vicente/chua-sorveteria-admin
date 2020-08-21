@@ -23,8 +23,14 @@ class FormaPagamentoController extends Controller
      */
     public function index()
     {
-        $formasPagamento = $this->daoFormaPagamento->all();
+        $formasPagamento = $this->daoFormaPagamento->all(true);
         return view('formas-pagamento.index', compact('formasPagamento'));
+    }
+
+    public function all()
+    {
+        $formasPagamento = $this->daoFormaPagamento->all();
+        return $formasPagamento;
     }
 
     /**
@@ -63,8 +69,12 @@ class FormaPagamentoController extends Controller
      */
     public function show($id)
     {
-        $formaPagamento = $this->daoFormaPagamento->find($id);
-        return view('formas-pagamento.show', compact('formaPagamento'));
+        $formaPagamento = $this->daoFormaPagamento->findById($id, true);
+
+        if ($formaPagamento)
+            return view('formas-pagamento.show', compact('formaPagamento'));
+
+        return redirect('formas-pagamento')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -75,8 +85,12 @@ class FormaPagamentoController extends Controller
      */
     public function edit($id)
     {
-        $formaPagamento = $this->daoFormaPagamento->find($id);
-        return view('formas-pagamento.create', compact('formaPagamento'));
+        $formaPagamento = $this->daoFormaPagamento->findById($id, true);
+
+        if ($formaPagamento)
+            return view('formas-pagamento.create', compact('formaPagamento'));
+
+        return redirect('formas-pagamento')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -112,42 +126,9 @@ class FormaPagamentoController extends Controller
         return redirect('formas-pagamento')->with('error', 'Este registro não pode ser removido.');
     }
 
-    /**
-     * Search for the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function search(Request $request) {
-        $q = $request->q;
+    public function findById(int $id) {
+        $formaPagamento = $this->daoFormaPagamento->findById($id);
 
-        $formasPagamento = $this->daoFormaPagamento->search($q);
-
-        return view('formas-pagamento.search', compact('formasPagamento'));
-    }
-
-    public function find(int $id) {
-        $dados = array();
-
-        if ($id == 0) {
-            $formasPagamento = $this->daoFormaPagamento->all();
-
-            foreach ($formasPagamento as $formaPagamento) {
-                $dadosFormaPagamento = $this->daoFormaPagamento->fillForModal($formaPagamento);
-                array_push($dados, $dadosFormaPagamento);
-            }
-
-            return $dados;
-        }
-        else {
-            $formaPagamento = $this->daoFormaPagamento->find($id);
-
-            if ($formaPagamento) {
-                $dados = $this->daoFormaPagamento->fillForModal($formaPagamento);
-                return [$dados];
-            }
-        }
-
-        return null;
+        return [ $formaPagamento ];
     }
 }
