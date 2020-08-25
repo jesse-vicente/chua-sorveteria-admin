@@ -24,7 +24,18 @@ class DaoCompra implements Dao {
     }
 
     public function all(bool $model = false) {
-        $compras = DB::table('compras')->get();
+        if (!$model)
+            return DB::table('compras')->get();
+
+        $itens = DB::table('compras')->get();
+
+        $compras = array();
+
+        foreach ($itens as $item) {
+            $compra = $this->create(get_object_vars($item));
+            array_push($compras, $compra);
+        }
+
         return $compras;
     }
 
@@ -37,12 +48,10 @@ class DaoCompra implements Dao {
             $compra->setDataAlteracao($dados["data_alteracao"] ?? null);
         }
 
-        // $compra->setNome($dados["compra"]);
-
-        $cidade = $this->daoFornecedor->findById($dados["cidade_id"]);
+        $fornecedor = $this->daoFornecedor->findById($dados["fornecedor_id"]);
         $condicaoPagamento = $this->daoCondicaoPagamento->findById($dados["condicao_pagamento_id"]);
 
-        $compra->setFornecedor($cidade);
+        $compra->setFornecedor($fornecedor);
         $compra->setCondicaoPagamento($condicaoPagamento);
 
         return $compra;
@@ -53,8 +62,6 @@ class DaoCompra implements Dao {
 
         try {
             $dados = $this->getData($compra);
-
-            // dd($dados);
 
             DB::table('compras')->insert($dados);
             DB::commit();
@@ -101,41 +108,21 @@ class DaoCompra implements Dao {
     }
 
     public function findById(int $id, bool $model = false) {
-        $compra = DB::table('compras')->where('id', $id)->first();
+        if (!$model)
+            return DB::table('compras')->get(['id', 'compra'])->where('id', $id)->first();
 
-        return $compra;
+        $dados = DB::table('compras')->where('id', $id)->first();
+
+        if ($dados)
+            return $this->create(get_object_vars($dados));
+
+        return $dados;
     }
 
-    public function toObjectArray(Collection $collection) {
-        $compras = array();
-
-        foreach ($collection as $item) {
-            $compra = $this->create(get_object_vars($item));
-            array_push($compras, $compra);
-        }
-
-        return $compras;
-    }
-
-    public function getData($compra) {
+    public function getData(Compra $compra) {
+        // TODO ...
         $dados = [
-            'id'                    => $compra->getId(),
-            'compra'               => $compra->getNome(),
-            'apelido'               => $compra->getApelido(),
-            'data_nascimento'       => $compra->getDataNascimento(),
-            'cpf'                   => $compra->getCpfCnpj(),
-            'rg'                    => $compra->getRgInscricaoEstadual(),
-            'cep'                   => $compra->getCEP(),
-            'endereco'              => $compra->getEndereco(),
-            'numero'                => $compra->getNumero(),
-            'complemento'           => $compra->getComplemento(),
-            'bairro'                => $compra->getBairro(),
-            'cidade_id'             => $compra->getFornecedor()->getId(),
-            'condicao_pagamento_id' => $compra->getCondicaoPagamento()->getId(),
-            'telefone'              => $compra->getTelefone(),
-            'whatsapp'              => $compra->getWhatsapp(),
-            'email'                 => $compra->getEmail(),
-            'observacoes'           => $compra->getObservacoes(),
+            'id' => $compra->getId(),
         ];
 
         return $dados;
