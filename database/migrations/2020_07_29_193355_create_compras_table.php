@@ -29,12 +29,13 @@ class CreateComprasTable extends Migration
             $table->integer('funcionario_id')->unsigned()->index();
             $table->foreign('funcionario_id')->references('id')->on('funcionarios')->onDelete('restrict');
 
-            $table->double('valor_total');
             $table->double('frete')->nullable();
             $table->double('seguro')->nullable();
             $table->double('despesas')->nullable();
             $table->double('descontos')->nullable();
-            $table->double('valor_total_nota');
+
+            $table->double('total_produtos');
+            $table->double('total_compra');
 
             $table->integer('condicao_pagamento_id')->unsigned()->index();
             $table->foreign('condicao_pagamento_id')->references('id')->on('condicoes_pagamento')->onDelete('restrict');
