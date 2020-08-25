@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Dao\DaoEstado;
 use App\Http\Models\Cidade;
 
-use Illuminate\Support\Collection;
-
 class DaoCidade implements Dao {
 
     private DaoEstado $daoEstado;

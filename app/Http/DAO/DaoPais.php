@@ -4,7 +4,6 @@ namespace App\Http\Dao;
 
 use App\Http\Dao\Dao;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
 
 use Illuminate\Database\QueryException;
 

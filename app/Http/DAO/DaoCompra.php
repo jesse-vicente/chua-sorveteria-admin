@@ -6,12 +6,11 @@ use App\Http\Dao\Dao;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
-
-use App\Http\Models\Compra;
 
 use App\Http\Dao\DaoFornecedor;
 use App\Http\Dao\DaoCondicaoPagamento;
+
+use App\Http\Models\Compra;
 
 class DaoCompra implements Dao {
 

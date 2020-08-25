@@ -4,7 +4,6 @@ namespace App\Http\Dao;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
 
 use App\Http\Dao\Dao;
 use App\Http\Dao\DaoParcela;

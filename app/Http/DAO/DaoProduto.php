@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 
-use App\Http\Models\Produto;
-
 use App\Http\Dao\DaoCategoria;
 use App\Http\Dao\DaoFornecedor;
+
+use App\Http\Models\Produto;
 
 class DaoProduto implements Dao {
 

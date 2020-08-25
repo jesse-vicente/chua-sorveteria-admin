@@ -6,12 +6,11 @@ use App\Http\Dao\Dao;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
-
-use App\Http\Models\Cliente;
 
 use App\Http\Dao\DaoCidade;
 use App\Http\Dao\DaoCondicaoPagamento;
+
+use App\Http\Models\Cliente;
 
 class DaoCliente implements Dao {
 
