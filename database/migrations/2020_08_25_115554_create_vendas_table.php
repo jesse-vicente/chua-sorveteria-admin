@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateComprasTable extends Migration
+class CreateVendasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateComprasTable extends Migration
      */
     public function up()
     {
-        Schema::create('compras', function (Blueprint $table) {
+        Schema::create('vendas', function (Blueprint $table) {
             $table->unsignedInteger("num_nota")->unique();
             $table->unsignedInteger("serie");
             $table->unsignedInteger("modelo");
@@ -21,19 +21,15 @@ class CreateComprasTable extends Migration
             $table->string('status', 10);
 
             $table->date("data_emissao");
-            $table->date("data_entrada");
 
-            $table->integer('fornecedor_id')->unsigned()->index();
-            $table->foreign('fornecedor_id')->references('id')->on('fornecedores')->onDelete('restrict');
+            $table->integer('cliente_id')->unsigned()->index()->nullable();
+            $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('restrict');
 
             $table->integer('funcionario_id')->unsigned()->index();
             $table->foreign('funcionario_id')->references('id')->on('funcionarios')->onDelete('restrict');
 
-            $table->double('valor_total');
-            $table->double('frete')->nullable();
-            $table->double('seguro')->nullable();
-            $table->double('despesas')->nullable();
             $table->double('descontos')->nullable();
+            $table->double('valor_total');
             $table->double('valor_total_nota');
 
             $table->integer('condicao_pagamento_id')->unsigned()->index();
@@ -43,7 +39,6 @@ class CreateComprasTable extends Migration
                 'num_nota',
                 'serie',
                 'modelo',
-                'fornecedor_id',
             ]);
 
             $table->timestamps();
@@ -57,6 +52,6 @@ class CreateComprasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('compras');
+        Schema::dropIfExists('vendas');
     }
 }
