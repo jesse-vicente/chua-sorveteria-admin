@@ -28,6 +28,7 @@ Route::get('/estados/all', 'EstadoController@all')->name('estados.all');
 Route::get('/cidades/all', 'CidadeController@all')->name('cidades.all');
 Route::get('/categorias/all', 'CategoriaController@all')->name('categorias.all');
 Route::get('/produtos/all', 'ProdutoController@all')->name('produtos.all');
+Route::get('/clientes/all', 'ClienteController@all')->name('clientes.all');
 Route::get('/fornecedores/all', 'FornecedorController@all')->name('fornecedores.all');
 Route::get('/formas-pagamento/all', 'FormaPagamentoController@all')->name('formas-pagamento.all');
 Route::get('/condicoes-pagamento/all', 'CondicaoPagamentoController@all')->name('condicoes-pagamento.all');
@@ -58,3 +59,4 @@ Route::resource('/categorias', 'CategoriaController');
 Route::resource('/produtos', 'ProdutoController');
 
 Route::resource('/compras', 'CompraController');
+Route::resource('/vendas', 'VendaController');
