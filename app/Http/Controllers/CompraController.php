@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\CompraRequest;
 
 use App\Http\Dao\DaoCompra;
@@ -23,8 +22,7 @@ class CompraController extends Controller
      */
     public function index()
     {
-        $listaCompras = $this->daoCompra->all();
-        $compras = $this->daoCompra->toObjectArray($listaCompras);
+        $compras = $this->daoCompra->all(true);
         return view('compras.index', compact('compras'));
     }
 
@@ -61,7 +59,7 @@ class CompraController extends Controller
         return redirect('compras')->with('error', 'Erro ao inserir registro.');
     }
 
-        /**
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -69,11 +67,15 @@ class CompraController extends Controller
      */
     public function show($id)
     {
-        $compra = $this->daoCompra->findById($id);
-        return view('compras.show', compact('compra'));
+        $compra = $this->daoCompra->findById($id, true);
+
+        if ($compra)
+            return view('compras.show', compact('compra'));
+
+        return redirect('compras')->with('error', 'Registro não encontrado.');
     }
 
-        /**
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -81,8 +83,12 @@ class CompraController extends Controller
      */
     public function edit($id)
     {
-        $compra = $this->daoCompra->findById($id);
-        return view('compras.create', compact('compra'));
+        $compra = $this->daoCompra->findById($id, true);
+
+        if ($compra)
+            return view('compras.create', compact('compra'));
+
+        return redirect('compras')->with('error', 'Registro não encontrado.');
     }
 
     /**
@@ -102,7 +108,7 @@ class CompraController extends Controller
         return redirect('compras')->with('error', 'Erro ao alterar registro.');
     }
 
-        /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
@@ -116,5 +122,11 @@ class CompraController extends Controller
             return redirect('compras')->with('success', 'Registro removido com sucesso!');
 
         return redirect('compras')->with('error', 'Este registro não pode ser removido.');
+    }
+
+    public function findById(int $id) {
+        $compra = $this->daoCompra->findById($id);
+
+        return [ $compra ];
     }
 }
