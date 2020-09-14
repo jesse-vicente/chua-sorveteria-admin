@@ -8,16 +8,6 @@ use App\Http\Models\CondicaoPagamento;
 class Parcela extends TObject
 {
     /**
-     * @var FormaPagamento
-     */
-    protected $formaPagamento;
-
-    /**
-     * @var CondicaoPagamento
-     */
-    protected $condicaoPagamento;
-
-    /**
      * @var int
      */
     protected $numero;
@@ -33,63 +23,22 @@ class Parcela extends TObject
     protected $porcentagem;
 
     /**
-     * @var float
+     * @var FormaPagamento
      */
-    protected $juros;
+    protected $formaPagamento;
 
     /**
-     * @var float
+     * @var CondicaoPagamento
      */
-    protected $valor;
+    protected $condicaoPagamento;
 
     public function __construct()
     {
+        $this->numero = 0;
+        $this->prazo  = 0;
+        $this->porcentagem = 0;
         $this->formaPagamento    = new FormaPagamento();
         $this->condicaoPagamento = new CondicaoPagamento();
-        $this->numero            = 0;
-        $this->valor             = 0;
-    }
-
-    /**
-     * Get the value of formaPagamento
-     *
-     * @return  FormaPagamento
-     */
-    public function getFormaPagamento()
-    {
-        return $this->formaPagamento;
-    }
-
-    /**
-     * Set the value of formaPagamento
-     *
-     * @param  FormaPagamento  $formaPagamento
-     *
-     */
-    public function setFormaPagamento(FormaPagamento $formaPagamento)
-    {
-        $this->formaPagamento = $formaPagamento;
-    }
-
-    /**
-     * Get the value of condicaoPagamento
-     *
-     * @return  CondicaoPagamento
-     */
-    public function getCondicaoPagamento()
-    {
-        return $this->condicaoPagamento;
-    }
-
-    /**
-     * Set the value of condicaoPagamento
-     *
-     * @param  CondicaoPagamento  $condicaoPagamento
-     *
-     */
-    public function setCondicaoPagamento(CondicaoPagamento $condicaoPagamento)
-    {
-        $this->condicaoPagamento = $condicaoPagamento;
     }
 
     /**
@@ -155,45 +104,45 @@ class Parcela extends TObject
         $this->porcentagem = $porcentagem;
     }
 
-        /**
-     * Get the value of juros
+    /**
+     * Get the value of formaPagamento
      *
-     * @return  float
+     * @return  FormaPagamento
      */
-    public function getJuros()
+    public function getFormaPagamento()
     {
-        return $this->juros;
+        return $this->formaPagamento;
     }
 
     /**
-     * Set the value of juros
+     * Set the value of formaPagamento
      *
-     * @param  float  $juros
+     * @param  FormaPagamento  $formaPagamento
      *
      */
-    public function setJuros(float $juros)
+    public function setFormaPagamento(FormaPagamento $formaPagamento)
     {
-        $this->juros = $juros;
+        $this->formaPagamento = $formaPagamento;
     }
 
     /**
-     * Get the value of valor
+     * Get the value of condicaoPagamento
      *
-     * @return  float
+     * @return  CondicaoPagamento
      */
-    public function getValor()
+    public function getCondicaoPagamento()
     {
-        return $this->valor;
+        return $this->condicaoPagamento;
     }
 
     /**
-     * Set the value of valor
+     * Set the value of condicaoPagamento
      *
-     * @param  float  $valor
+     * @param  CondicaoPagamento  $condicaoPagamento
      *
      */
-    public function setValor(float $valor)
+    public function setCondicaoPagamento(CondicaoPagamento $condicaoPagamento)
     {
-        $this->valor = $valor;
+        $this->condicaoPagamento = $condicaoPagamento;
     }
 }

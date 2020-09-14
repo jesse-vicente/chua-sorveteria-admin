@@ -68,12 +68,10 @@ class ProdutoController extends Controller
      */
     public function show($id)
     {
-        $dados = $this->daoProduto->findById($id);
+        $produto = $this->daoProduto->findById($id, true);
 
-        if ($dados) {
-            $produto = $this->daoProduto->create(get_object_vars($dados));
+        if ($produto)
             return view('produtos.show', compact('produto'));
-        }
 
         return redirect('produtos')->with('error', 'Registro não encontrado.');
     }
@@ -86,12 +84,10 @@ class ProdutoController extends Controller
      */
     public function edit($id)
     {
-        $dados = $this->daoProduto->findById($id);
+        $produto = $this->daoProduto->findById($id, true);
 
-        if ($dados) {
-            $produto = $this->daoProduto->create(get_object_vars($dados));
+        if ($produto)
             return view('produtos.create', compact('produto'));
-        }
 
         return redirect('produtos')->with('error', 'Registro não encontrado.');
     }

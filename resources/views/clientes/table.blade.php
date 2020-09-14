@@ -1,10 +1,11 @@
 <div class="table-responsive">
-    <table class="table table-hover" id="table">
+    <table class="table table-hover table-striped shadow-xs rounded" id="table">
         <thead>
             <tr>
                 <th>Cód.</th>
                 <th>Cliente</th>
-                <th>WhatsApp</th>
+                <th>Telefone / WhatsApp</th>
+                <th>Endereço</th>
                 <th class="text-center">Ações</th>
             </tr>
         </thead>
@@ -13,9 +14,10 @@
             <tr>
                 <td>{{ $cliente->getId() }}</td>
                 <td>{{ $cliente->getNome() }}</td>
-                <td>{{ $cliente->getWhatsapp() }}</td>
+                <td>{{ $cliente->getTelefonesContato() }}</td>
+                <td>{{ $cliente->getEndereco() . ', ' . $cliente->getNumero() }}</td>
                 <td class="text-center">
-                    <div class="row no-gutters d-flex justify-content-center">
+                    <div class="row flex-nowrap justify-content-center">
                         <a class="btn btn-sm btn-primary mr-2" href="{{ route('clientes.edit', $cliente->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>

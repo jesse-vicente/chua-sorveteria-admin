@@ -34,7 +34,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-3">
+    <div class="form-group required col-xl-6">
         <label>Fornecedor</label>
         <input
             type="text"
@@ -51,7 +51,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-5">
         <label>Nome Fantasia</label>
         <input
             type="text"
@@ -70,9 +70,9 @@
 
 </div>
 
-<div class="form-row">
-    <div class="form-group required col-xl-2">
-        <label>Endereço</label>
+<div class="form-row mt-4">
+    <div class="form-group required col-xl-5">
+        <label>Logradouro</label>
         <input
             type="text"
             id="endereco"
@@ -88,7 +88,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Número</label>
         <input
             type="number"
@@ -105,7 +105,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-2">
         <label>Complemento</label>
         <input
             type="text"
@@ -122,7 +122,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-2">
+    <div class="form-group required col-xl-3">
         <label>Bairro</label>
         <input
             type="text"
@@ -141,7 +141,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group required col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>CEP</label>
         <input
             type="text"
@@ -179,7 +179,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-9">
         <label>Cidade</label>
         <div class="input-group">
             <input
@@ -221,26 +221,8 @@
 
 </div>
 
-<div class="form-row">
-    <div class="form-group col-xl-2">
-        <label>Telefone</label>
-        <input
-            type="text"
-            id="telefone"
-            name="telefone"
-            class="form-control @error('telefone') is-invalid @enderror"
-            value="{{ old('telefone', isset($fornecedor) ? $fornecedor->getTelefone() : null) }}"
-            placeholder="(__) ____-____"
-        >
-
-        @error('telefone')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-
-    <div class="form-group required col-xl-2">
+<div class="form-row mt-4">
+    <div class="form-group required col-xl-3">
         <label>WhatsApp</label>
         <input
             type="text"
@@ -258,7 +240,25 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-3">
+        <label>Telefone</label>
+        <input
+            type="text"
+            id="telefone"
+            name="telefone"
+            class="form-control @error('telefone') is-invalid @enderror"
+            value="{{ old('telefone', isset($fornecedor) ? $fornecedor->getTelefone() : null) }}"
+            placeholder="(__) ____-____"
+        >
+
+        @error('telefone')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+
+    <div class="form-group col-xl-6">
         <label>E-mail</label>
         <input
             type="email"
@@ -277,7 +277,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-3">
+    <div class="form-group col-xl-6">
         <label>Site</label>
         <input
             type="url"
@@ -294,7 +294,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-3">
+    <div class="form-group col-xl-6">
         <label>Contato</label>
         <input
             type="text"
@@ -313,7 +313,67 @@
 </div>
 
 <div class="form-row">
+    <div class="form-group required col-xl-4">
+        <label>CNPJ</label>
+        <input
+            type="text"
+            id="cpf_cnpj"
+            name="cpf_cnpj"
+            class="form-control @error('cpf_cnpj') is-invalid @enderror"
+            value="{{ old('cpf_cnpj', isset($fornecedor) ? $fornecedor->getCpfCnpj() : null) }}"
+            placeholder="__.___.___/____-__"
+        >
 
+        @error('cpf_cnpj')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+
+    <div class="form-group col-xl-4">
+        <label>Inscrição Estadual</label>
+        <input
+            type="text"
+            id="rg_inscricao_estadual"
+            name="rg_inscricao_estadual"
+            class="form-control @error('rg_inscricao_estadual') is-invalid @enderror"
+            value="{{ old('rg_inscricao_estadual', isset($fornecedor) ? $fornecedor->getRgInscricaoEstadual() : null) }}"
+        >
+
+        @error('rg_inscricao_estadual')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+
+    <div class="form-group col-xl-4">
+        <label>Limite de Crédito</label>
+
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">R$</span>
+            </div>
+
+            <input
+                type="number"
+                id="valor_credito"
+                name="valor_credito"
+                class="form-control @error('valor_credito') is-invalid @enderror"
+                value="{{ old('valor_credito', isset($fornecedor) ? $fornecedor->getValorCredito() : null) }}"
+            >
+        </div>
+
+        @error('valor_credito')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+</div>
+
+<div class="form-row mt-4">
     <div class="form-group col-xl-1">
         <label>Código</label>
         <input
@@ -333,7 +393,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-5">
+    <div class="form-group required col-xl-11">
         <label>Condição de Pagamento</label>
         <div class="input-group">
 
@@ -376,68 +436,7 @@
     </div>
 </div>
 
-<div class="form-row">
-    <div class="form-group required col-xl-2">
-        <label>CNPJ</label>
-        <input
-            type="text"
-            id="cpf_cnpj"
-            name="cpf_cnpj"
-            class="form-control @error('cpf_cnpj') is-invalid @enderror"
-            value="{{ old('cpf_cnpj', isset($fornecedor) ? $fornecedor->getCpfCnpj() : null) }}"
-            placeholder="__.___.___/____-__"
-        >
-
-        @error('cpf_cnpj')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-
-    <div class="form-group col-xl-2">
-        <label>Inscrição Estadual</label>
-        <input
-            type="text"
-            id="rg_inscricao_estadual"
-            name="rg_inscricao_estadual"
-            class="form-control @error('rg_inscricao_estadual') is-invalid @enderror"
-            value="{{ old('rg_inscricao_estadual', isset($fornecedor) ? $fornecedor->getRgInscricaoEstadual() : null) }}"
-        >
-
-        @error('rg_inscricao_estadual')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-
-    <div class="form-group col-xl-2">
-        <label>Limite de Crédito</label>
-
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">R$</span>
-            </div>
-
-            <input
-                type="text"
-                id="valor_credito"
-                name="valor_credito"
-                class="form-control @error('valor_credito') is-invalid @enderror"
-                value="{{ old('valor_credito', isset($fornecedor) ? $fornecedor->getValorCredito() : null) }}"
-            >
-        </div>
-
-        @error('valor_credito')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-</div>
-
-<div class="form-group col-xl-6 px-0">
+<div class="form-group col-xl-12 px-0">
     <label for="observacoes">Observações</label>
     <textarea
         name="observacoes"

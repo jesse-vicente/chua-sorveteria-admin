@@ -1,33 +1,50 @@
-<div class="card">
-    <div class="card-header">
-        <div class="d-flex align-items-center">
+<div class="col-xl-6">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                @isset($compra)
+                    <i class="fa fa-times-circle"></i>
+                    <h3 class="ml-3 mb-0">Cancelar Compra</h3>
+                @else
+                    <i class="fa fa-plus"></i>
+                    <h3 class="ml-3 mb-0">Cadastrar Compra</h3>
+                @endif
+            </div>
+        </div>
+
+        <div class="card-body">
             @isset($compra)
-                <i class="fa fa-edit"></i>
-                <h3 class="ml-3 mb-0">Alterar Compra</h3>
+                <form method="POST" key="{{ $compra->getPrimaryKey() }}" id="form-compra-cancel">
+                @method('PUT')
             @else
-                <i class="fa fa-plus"></i>
-                <h3 class="ml-3 mb-0">Cadastrar Compra</h3>
+                <form method="POST" id="form-compra">
             @endif
+
+                @csrf
+                @include('compras.fields')
+                </form>
+        </div>
+
+        <div class="card-footer">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex flex-column text-secondary">
+                    <small><b>Cadastrado em: </b>{{ isset($compra) ? $compra->getDataCadastro() : "__/__/____" }}</small>
+                    <small><b>Alterado em: </b>{{ isset($compra) ? $compra->getDataAlteracao() : "__/__/____" }}</small>
+                </div>
+
+                @empty($compra)
+                    @include('compras.actions')
+                @else
+                <div class="btn-group-lg">
+                    <button type="submit" class="btn btn-danger mr-2">
+                        <span class="text-bold">Cancelar Compra</span>
+                    </button>
+                    <a class="btn btn-outline-secondary" href="{{ route('compras.index') }}">
+                        <span class="text-bold">Voltar</span>
+                    </a>
+                </div>
+                @endempty
+            </div>
         </div>
     </div>
-
-    <div class="card-body">
-        @isset($compra)
-            <form method="POST" action="{{ route('compras.update', $compra->getId()) }}">
-            @method('PUT')
-        @else
-            <form method="POST" action="{{ route('compras.store') }}">
-        @endif
-
-            @csrf
-            @include('compras.fields')
-            </form>
-    </div>
 </div>
-
-<div class="d-flex justify-content-end flex-column align-items-xl-end mb-3">
-    <small><b>Cadastrado em: </b>{{ isset($compra) ? $compra->getDataCadastro() : "__/__/____" }}</small>
-    <small><b>Alterado em: </b>{{ isset($compra) ? $compra->getDataAlteracao() : "__/__/____" }}</small>
-</div>
-
-@include('compras.actions')

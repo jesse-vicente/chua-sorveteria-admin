@@ -23,11 +23,15 @@
             @include('funcionarios.fields')
             </form>
     </div>
-</div>
 
-<div class="d-flex justify-content-end flex-column align-items-xl-end mb-3">
-    <small><b>Cadastrado em: </b>{{ isset($funcionario) ? $funcionario->getDataCadastro() : "__/__/____" }}</small>
-    <small><b>Alterado em: </b>{{ isset($funcionario) ? $funcionario->getDataAlteracao() : "__/__/____" }}</small>
-</div>
+    <div class="card-footer">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex flex-column text-secondary">
+                <small><b>Cadastrado em: </b>{{ isset($funcionario) ? $funcionario->getDataCadastro() : "__/__/____" }}</small>
+                <small><b>Alterado em: </b>{{ isset($funcionario) ? $funcionario->getDataAlteracao() : "__/__/____" }}</small>
+            </div>
 
-@include('funcionarios.actions')
+            @include('funcionarios.actions')
+        </div>
+    </div>
+</div>

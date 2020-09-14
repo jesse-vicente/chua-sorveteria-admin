@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-hover" id="table">
+    <table class="table table-hover table-striped shadow-xs rounded" id="table">
         <thead>
             <tr>
                 <th>Cód.</th>
@@ -17,7 +17,7 @@
                 <td>{{ $estado->getUf() }}</td>
                 <td>{{ $estado->getPais()->getPais() }}</td>
                 <td class="text-center">
-                    <div class="row no-gutters d-flex justify-content-center">
+                    <div class="row flex-nowrap justify-content-center">
                         <a class="btn btn-sm btn-primary mr-2" href="{{ route('estados.edit', $estado->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>

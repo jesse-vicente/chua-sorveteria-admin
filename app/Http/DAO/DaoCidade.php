@@ -21,9 +21,11 @@ class DaoCidade implements Dao {
 
     public function all(bool $model = false) {
         if (!$model) {
-            return DB::table('cidades', 'c')
-                ->join('estados as e', 'c.estado_id', '=', 'e.id')
-                ->get(['c.id', 'c.cidade', 'c.ddd', 'e.estado']);
+            $cidades = DB::table('cidades', 'c')
+                        ->join('estados as e', 'c.estado_id', '=', 'e.id')
+                        ->get(['c.id', 'c.cidade', 'c.ddd', 'e.estado']);
+
+            return $cidades;
         }
 
         $itens = DB::table('cidades')->get();

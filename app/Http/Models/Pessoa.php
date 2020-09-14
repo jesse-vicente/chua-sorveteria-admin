@@ -282,6 +282,14 @@ class Pessoa extends TObject
         $this->whatsapp = $whatsapp;
     }
 
+    public function getTelefonesContato()
+    {
+        $contatos = $this->telefone ? $this->telefone . ' / ' : '';
+        $contatos .= $this->whatsapp;
+
+        return $contatos;
+    }
+
     /**
      * Get the value of email
      *

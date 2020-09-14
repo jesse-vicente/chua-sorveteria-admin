@@ -1,5 +1,5 @@
 <div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-2">
         <label>Código</label>
         <input
             type="text"
@@ -17,7 +17,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-2">
+    <div class="form-group required col-xl-8">
         <label>Estado</label>
         <input
             type="text"
@@ -34,7 +34,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>UF</label>
         <input
             type="text"
@@ -53,7 +53,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
 
         <input
@@ -73,7 +73,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-3">
+    <div class="form-group required col-xl-10">
         <label>País</label>
         <div class="input-group">
             <input
@@ -84,12 +84,6 @@
                 value="{{ old('pais', isset($estado) ? $estado->getPais()->getPais() : null) }}"
                 readonly
             >
-
-            @error('pais')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-            @enderror
 
             <div class="input-group-append">
                 <button

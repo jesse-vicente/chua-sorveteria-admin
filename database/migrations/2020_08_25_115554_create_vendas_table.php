@@ -14,9 +14,9 @@ class CreateVendasTable extends Migration
     public function up()
     {
         Schema::create('vendas', function (Blueprint $table) {
-            $table->unsignedInteger("num_nota")->unique();
-            $table->unsignedInteger("serie");
-            $table->unsignedInteger("modelo");
+            $table->unsignedInteger("num_nota")->unique()->index();
+            $table->unsignedInteger("serie")->index();
+            $table->unsignedInteger("modelo")->index();
 
             $table->string('status', 10);
 

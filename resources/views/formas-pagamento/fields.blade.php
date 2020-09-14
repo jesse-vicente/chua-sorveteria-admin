@@ -1,5 +1,5 @@
 <div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-2">
         <label>Código</label>
         <input
             type="text"
@@ -17,7 +17,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-3">
+    <div class="form-group required col-xl-10">
         <label>Forma de Pagamento</label>
         <input
             type="text"

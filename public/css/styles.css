@@ -1,6 +1,38 @@
 /* .form-control:focus {
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
 } */
+body {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol" !important;
+}
+
+.card .shadow-xs {
+    border: 1px solid rgba(0,40,100,.12);
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+}
+
+#card-produtos, #card-contas-pagar {
+    width: 100%;
+}
+
+.table-sm td {
+    vertical-align: middle !important;
+}
+
+.modal .table-hover tbody tr:hover {
+    cursor: pointer;
+}
+
+.table-hover tbody tr:hover {
+    transition: .25s ease-in-out;
+}
+
+#produtos-table input {
+    outline: 0 !important;
+    color: inherit !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background-color: transparent !important;
+}
 
 .options-bar {
     align-items: center !important;

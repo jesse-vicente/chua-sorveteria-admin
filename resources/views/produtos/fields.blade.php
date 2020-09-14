@@ -1,5 +1,5 @@
 <div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-2">
         <label>Código</label>
         <input
             type="text"
@@ -17,7 +17,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-3">
+    <div class="form-group required col-xl-8">
         <label>Produto</label>
         <input
             type="text"
@@ -34,7 +34,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Unidade</label>
         <input
             type="text"
@@ -53,7 +53,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -72,7 +72,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-10">
         <label>Fornecedor</label>
         <div class="input-group">
             <input
@@ -114,7 +114,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -133,7 +133,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-10">
         <label>Categoria</label>
         <div class="input-group">
             <input
@@ -175,7 +175,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-3">
         <label>Estoque Atual</label>
         <input
             type="number"
@@ -187,13 +187,13 @@
         >
 
         @error('estoque')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
         @enderror
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-3">
         <label>Preço Custo</label>
 
         <div class="input-group">
@@ -211,14 +211,14 @@
             >
 
             @error('preco_custo')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
 
-    <div class="form-group required col-xl-1">
+    <div class="form-group required col-xl-3">
         <label>Preço Venda</label>
 
         <div class="input-group">
@@ -235,14 +235,14 @@
             >
 
             @error('preco_venda')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-3">
         <label style="font-size: 0.95rem;">Custo Últ. Compra</label>
 
         <div class="input-group">
@@ -260,16 +260,16 @@
             >
 
             @error('custo_ultima_compra')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-4">
         <label>Data Últ. Compra</label>
         <input
             type="date"
@@ -287,7 +287,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-4">
         <label>Data Últ. Venda</label>
         <input
             type="date"

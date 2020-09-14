@@ -40,7 +40,7 @@ class ClienteRequest extends FormRequest
             'data_nascimento'       => 'required|date|date_format:Y-m-d|before:-15 years',
             'observacoes'           => 'nullable|min:5|max:255',
 
-            'cpf'                   => [
+            'cpf' => [
                 'required',
                 'cpf',
                 Rule::unique('clientes')->ignore($this->request->get('id'))

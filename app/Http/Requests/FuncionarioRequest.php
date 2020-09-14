@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FuncionarioRequest extends FormRequest
@@ -37,13 +38,18 @@ class FuncionarioRequest extends FormRequest
             'telefone'        => 'nullable|max:15',
             'whatsapp'        => 'required|max:15',
             'email'           => 'nullable|email|max:50',
-            'cpf'             => 'required|cpf',
             'rg'              => 'required',
             'salario'         => 'required|numeric|gt:0',
             'data_nascimento' => 'required|date|date_format:Y-m-d|before:-18 years',
             'data_admissao'   => 'required|date|date_format:Y-m-d|before:tomorrow',
             'data_demissao'   => 'nullable|date|date_format:Y-m-d|after:data_admissao',
-            'observacoes'     => 'nullable|min:5|max:255'
+            'observacoes'     => 'nullable|min:5|max:255',
+
+            'cpf' => [
+                'required',
+                'cpf',
+                Rule::unique('funcionarios')->ignore($this->request->get('id'))
+            ],
         ];
     }
 

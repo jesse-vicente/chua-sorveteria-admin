@@ -23,11 +23,15 @@
             @include('fornecedores.fields')
             </form>
     </div>
-</div>
 
-<div class="d-flex justify-content-end flex-column align-items-xl-end mb-3">
-    <small><b>Cadastrado em: </b>{{ isset($fornecedor) ? $fornecedor->getDataCadastro() : "__/__/____" }}</small>
-    <small><b>Alterado em: </b>{{ isset($fornecedor) ? $fornecedor->getDataAlteracao() : "__/__/____" }}</small>
-</div>
+    <div class="card-footer">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex flex-column text-secondary">
+                <small><b>Cadastrado em: </b>{{ isset($fornecedor) ? $fornecedor->getDataCadastro() : "__/__/____" }}</small>
+                <small><b>Alterado em: </b>{{ isset($fornecedor) ? $fornecedor->getDataAlteracao() : "__/__/____" }}</small>
+            </div>
 
-@include('fornecedores.actions')
+            @include('fornecedores.actions')
+        </div>
+    </div>
+</div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PaisRequest;
+use Illuminate\Http\Request;
 
 use App\Http\Dao\DaoPais;
 
@@ -60,22 +61,16 @@ class PaisController extends Controller
         return redirect('paises')->with('error', 'Erro ao inserir registro.');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\PaisRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function inlineStore(PaisRequest $request)
+    public function save(PaisRequest $request)
     {
         $pais = $this->daoPais->create($request->all());
 
         $store = $this->daoPais->store($pais);
 
         if ($store)
-            return back()->withInput($request->all())->with('success', 'Registro inserido com sucesso!');
+            return back()->withInput()->with('success', 'Registro inserido com sucesso!');
 
-        return back()->withInput($request->all())->with('error', 'Erro ao inserir registro.');
+        return back()->withInput()->with('error', 'Erro ao inserir registro.');
     }
 
     /**

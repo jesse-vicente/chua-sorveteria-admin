@@ -23,11 +23,15 @@
                 @include('condicoes-pagamento.fields')
             </form>
     </div>
-</div>
 
-<div class="d-flex justify-content-end flex-column align-items-xl-end mb-3">
-    <small><b>Cadastrado em: </b>{{ isset($condicaoPagamento) ? $condicaoPagamento->getDataCadastro() : "__/__/____" }}</small>
-    <small><b>Alterado em: </b>{{ isset($condicaoPagamento) ? $condicaoPagamento->getDataAlteracao() : "__/__/____" }}</small>
-</div>
+    <div class="card-footer">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex flex-column text-secondary">
+                <small><b>Cadastrado em: </b>{{ isset($condicaoPagamento) ? $condicaoPagamento->getDataCadastro() : "__/__/____" }}</small>
+                <small><b>Alterado em: </b>{{ isset($condicaoPagamento) ? $condicaoPagamento->getDataAlteracao() : "__/__/____" }}</small>
+            </div>
 
-@include('condicoes-pagamento.actions')
+            @include('condicoes-pagamento.actions')
+        </div>
+    </div>
+</div>

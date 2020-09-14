@@ -17,7 +17,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-3">
+    <div class="form-group required col-xl-6">
         <label>Cliente</label>
         <input
             type="text"
@@ -34,7 +34,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-5">
         <label>Apelido</label>
         <input
             type="text"
@@ -52,9 +52,9 @@
     </div>
 </div>
 
-<div class="form-row">
-    <div class="form-group required col-xl-2">
-        <label>Endereço</label>
+<div class="form-row mt-4">
+    <div class="form-group required col-xl-5">
+        <label>Logradouro</label>
         <input
             type="text"
             id="endereco"
@@ -70,7 +70,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Número</label>
         <input
             type="number"
@@ -87,7 +87,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-2">
         <label>Complemento</label>
         <input
             type="text"
@@ -104,7 +104,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-2">
+    <div class="form-group required col-xl-3">
         <label>Bairro</label>
         <input
             type="text"
@@ -123,7 +123,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group required col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>CEP</label>
         <input
             type="text"
@@ -160,7 +160,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-9">
         <label>Cidade</label>
         <div class="input-group">
             <input
@@ -201,26 +201,8 @@
     </div>
 </div>
 
-<div class="form-row">
-    <div class="form-group col-xl-2">
-        <label>Telefone</label>
-        <input
-            type="text"
-            id="telefone"
-            name="telefone"
-            class="form-control @error('telefone') is-invalid @enderror"
-            value="{{ old('telefone', isset($cliente) ? $cliente->getTelefone() : null) }}"
-            placeholder="(__) ____-____"
-        >
-
-        @error('telefone')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-
-    <div class="form-group required col-xl-2">
+<div class="form-row mt-4">
+    <div class="form-group required col-xl-3">
         <label>WhatsApp</label>
         <input
             type="text"
@@ -238,7 +220,25 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-3">
+        <label>Telefone</label>
+        <input
+            type="text"
+            id="telefone"
+            name="telefone"
+            class="form-control @error('telefone') is-invalid @enderror"
+            value="{{ old('telefone', isset($cliente) ? $cliente->getTelefone() : null) }}"
+            placeholder="(__) ____-____"
+        >
+
+        @error('telefone')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+
+    <div class="form-group col-xl-6">
         <label>E-mail</label>
         <input
             type="email"
@@ -257,7 +257,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group required col-xl-2">
+    <div class="form-group required col-xl-4">
         <label>CPF</label>
         <input
             type="text"
@@ -275,7 +275,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-4">
         <label>RG</label>
         <input
             type="text"
@@ -292,7 +292,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-2">
+    <div class="form-group required col-xl-4">
         <label>Data de Nascimento</label>
         <input
             type="date"
@@ -310,7 +310,7 @@
     </div>
 </div>
 
-<div class="form-row">
+<div class="form-row mt-4">
     <div class="form-group col-xl-1">
         <label>Código</label>
         <input
@@ -330,7 +330,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-5">
+    <div class="form-group required col-xl-11">
         <label>Condição de Pagamento</label>
         <div class="input-group">
             <input
@@ -372,7 +372,7 @@
     </div>
 </div>
 
-<div class="form-group col-xl-6 px-0">
+<div class="form-group col-xl-12 px-0">
     <label for="observacoes">Observações</label>
     <textarea name="observacoes" id="observacoes" class="form-control" rows="3">{{ old('observacoes', isset($cliente) ? $cliente->getObservacoes() : null) }}</textarea>
 </div>

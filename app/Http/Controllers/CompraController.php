@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CompraRequest;
+use Illuminate\Http\Request;
 
 use App\Http\Dao\DaoCompra;
 
@@ -49,12 +50,23 @@ class CompraController extends Controller
      */
     public function store(CompraRequest $request)
     {
+        // $compra = $this->daoCompra->create($request->all());
+
+        // $store = $this->daoCompra->store($compra);
+
+        // if ($store)
+        //     return redirect('compras')->with('success', 'Registro inserido com sucesso!');
+
+        // return redirect('compras')->with('error', 'Erro ao inserir registro.');
+    }
+
+    public function save(CompraRequest $request) {
         $compra = $this->daoCompra->create($request->all());
 
         $store = $this->daoCompra->store($compra);
 
         if ($store)
-            return redirect('compras') ->with('success', 'Registro inserido com sucesso!');
+            return redirect('compras')->with('success', 'Registro inserido com sucesso!');
 
         return redirect('compras')->with('error', 'Erro ao inserir registro.');
     }
@@ -62,28 +74,28 @@ class CompraController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $key
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($key)
     {
-        $compra = $this->daoCompra->findById($id, true);
+        // $compra = $this->daoCompra->findByPrimaryKey($key, true);
 
-        if ($compra)
-            return view('compras.show', compact('compra'));
+        // if ($compra)
+        //     return view('compras.show', compact('compra'));
 
-        return redirect('compras')->with('error', 'Registro não encontrado.');
+        // return redirect('compras')->with('error', 'Registro não encontrado.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for canceling the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $key
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function cancel($key)
     {
-        $compra = $this->daoCompra->findById($id, true);
+        $compra = $this->daoCompra->findByPrimaryKey($key, true);
 
         if ($compra)
             return view('compras.create', compact('compra'));
@@ -95,12 +107,16 @@ class CompraController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\CompraRequest  $request
-     * @param  int  $id
+     * @param  string  $key
      * @return \Illuminate\Http\Response
      */
-    public function update(CompraRequest $request, $id)
+    public function update(Request $request, $key)
     {
-        $update = $this->daoCompra->update($request, $id);
+        $request->validate([
+            'num_nota' => "unique:compras,num_nota,$request->num_nota,num_nota"
+        ]);
+
+        $update = $this->daoCompra->update($request, $key);
 
         if ($update)
             return redirect('compras') ->with('success', 'Registro alterado com sucesso!');
@@ -111,12 +127,12 @@ class CompraController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  string  $key
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($key)
     {
-        $delete = $this->daoCompra->delete($id);
+        $delete = $this->daoCompra->delete($key);
 
         if ($delete)
             return redirect('compras')->with('success', 'Registro removido com sucesso!');
@@ -124,8 +140,8 @@ class CompraController extends Controller
         return redirect('compras')->with('error', 'Este registro não pode ser removido.');
     }
 
-    public function findById(int $id) {
-        $compra = $this->daoCompra->findById($id);
+    public function findByPrimaryKey(int $key) {
+        $compra = $this->daoCompra->findByPrimaryKey($key);
 
         return [ $compra ];
     }

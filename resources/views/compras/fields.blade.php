@@ -1,92 +1,76 @@
+<div class="alert alert-danger pb-0" id="form-errors" style="display: none;">
+    <ul class="list-unstyled"></ul>
+</div>
+
 <div class="form-row">
-    <div class="form-group required col-xl-05">
+    <div class="form-group required col-xl-2">
         <label>Modelo</label>
         <input
             type="number"
             id="modelo"
             name="modelo"
             class="form-control @error('modelo') is-invalid @enderror"
-            value="{{ old('modelo', isset($compra) ? $compra->getModelo() : null) }}"
+            value="{{ old('modelo', isset($compra) ? $compra->getModelo() : 55) }}"
         >
 
-        @error('modelo')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="modelo"></span>
     </div>
 
-    <div class="form-group required col-xl-05">
+    <div class="form-group required col-xl-2">
         <label>Série</label>
         <input
             type="text"
             id="serie"
             name="serie"
             class="form-control @error('serie') is-invalid @enderror"
-            value="{{ old('serie', isset($compra) ? $compra->getSerie() : null) }}"
+            value="{{ old('serie', isset($compra) ? $compra->getSerie() : 1) }}"
         >
 
-        @error('serie')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="serie"></span>
     </div>
 
-    <div class="form-group required col-xl-05">
+    <div class="form-group required col-xl-2">
         <label>Número</label>
         <input
             type="number"
-            id="numero"
-            name="numero"
-            class="form-control @error('numero') is-invalid @enderror"
-            value="{{ old('numero', isset($compra) ? $compra->getNumero() : null) }}"
+            id="num_nota"
+            name="num_nota"
+            class="form-control @error('num_nota') is-invalid @enderror"
+            value="{{ old('num_nota', isset($compra) ? $compra->getNumeroNota() : null) }}"
         >
 
-        @error('numero')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="num_nota"></span>
     </div>
 
-    <div class="form-group required col-xl-data">
+    <div class="form-group required col-xl-3">
         <label>Data de Emissão</label>
         <input
             type="date"
             id="data_emissao"
             name="data_emissao"
             class="form-control @error('data_emissao') is-invalid @enderror"
-            value="{{ old('data_emissao', isset($compra) ? $compra->getDataEmissao() : null) }}"
+            value="{{ old('data_emissao', isset($compra) ? $compra->getDataEmissao() : date('Y-m-d')) }}"
         >
 
-        @error('data_emissao')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="data_emissao"></span>
     </div>
 
-    <div class="form-group required col-xl-data">
+    <div class="form-group required col-xl-3">
         <label>Data de Chegada</label>
         <input
             type="date"
             id="data_chegada"
             name="data_chegada"
             class="form-control @error('data_chegada') is-invalid @enderror"
-            value="{{ old('data_chegada', isset($compra) ? $compra->getDataChegada() : null) }}"
+            value="{{ old('data_chegada', isset($compra) ? $compra->getDataChegada() : date('Y-m-d')) }}"
         >
 
-        @error('data_chegada')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="data_chegada"></span>
     </div>
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -98,14 +82,10 @@
             value="{{ old('fornecedor_id', isset($compra) ? $compra->getFornecedor()->getId() : null) }}"
         >
 
-        @error('fornecedor_id')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="fornecedor_id"></span>
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-10">
         <label>Fornecedor</label>
         <div class="input-group">
             <input
@@ -129,6 +109,8 @@
                 </button>
             </div>
         </div>
+
+        <span class="invalid-feedback" role="alert" ref="fornecedor"></span>
     </div>
 
     <div id="modal-fornecedores" class="modal fade" data-field="fornecedor" role="dialog">
@@ -146,8 +128,9 @@
     </div>
 </div>
 
-<div class="form-row">
-    <div class="form-group col-xl-1">
+@empty($compra)
+<div class="form-row mt-4">
+    <div class="form-group col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -156,25 +139,17 @@
             id="produto_id"
             data-input="#produto"
             data-route="produtos"
-            value="{{ old('produto_id', isset($compra) ? $compra->getProduto()->getId() : null) }}"
-            disabled
+            readonly
         >
-
-        @error('produto_id')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-10">
         <label>Produto</label>
         <div class="input-group">
             <input
-                class="form-control"
+                class="form-control @error('produto') is-invalid @enderror"
                 name="produto"
                 id="produto"
-                value="{{ old('produto', isset($compra) ? $compra->getProduto()->getProduto() : null) }}"
                 readonly
             >
 
@@ -192,6 +167,8 @@
                 </button>
             </div>
         </div>
+
+        <span class="invalid-feedback" role="alert" ref="total_compra"></span>
     </div>
 
     <div id="modal-produtos" class="modal fade" data-field="produto" role="dialog">
@@ -208,15 +185,12 @@
         </div>
     </div>
 </div>
+@endempty
+
+@include('compras.products-table')
 
 <div class="form-row">
-    <div class="col-xl-5">
-        @include('compras.products-table')
-    </div>
-</div>
-
-<div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-3">
         <label>Frete</label>
 
         <div class="input-group">
@@ -230,19 +204,19 @@
                 name="frete"
                 placeholder="0,00"
                 class="form-control @error('frete') is-invalid @enderror"
-                value="{{ old('frete', isset($compra) ? $compra->getFrete() : null) }}"
-                disabled
+                value="{{ old('frete', isset($compra) ? number_format($compra->getFrete(), 2) : null) }}"
+                readonly
             >
 
             @error('frete')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-3">
         <label>Seguro</label>
 
         <div class="input-group">
@@ -256,19 +230,19 @@
                 name="seguro"
                 placeholder="0,00"
                 class="form-control @error('seguro') is-invalid @enderror"
-                value="{{ old('seguro', isset($compra) ? $compra->getSeguro() : null) }}"
-                disabled
+                value="{{ old('seguro', isset($compra) ? number_format($compra->getSeguro(), 2) : null) }}"
+                readonly
             >
 
             @error('seguro')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-3">
         <label>Despesas</label>
 
         <div class="input-group">
@@ -282,19 +256,19 @@
                 name="despesas"
                 placeholder="0,00"
                 class="form-control @error('despesas') is-invalid @enderror"
-                value="{{ old('despesas', isset($compra) ? $compra->getOutrasDespesas() : null) }}"
-                disabled
+                value="{{ old('despesas', isset($compra) ? number_format($compra->getDespesas(), 2) : null) }}"
+                readonly
             >
 
             @error('despesas')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-3">
         <label>Total Produtos</label>
 
         <div class="input-group">
@@ -308,19 +282,15 @@
                 name="total_produtos"
                 placeholder="0,00"
                 class="form-control @error('total_produtos') is-invalid @enderror"
-                value="{{ old('total_produtos', isset($compra) ? $compra->getTotalProdutos() : null) }}"
+                value="{{ old('total_produtos', isset($compra) ? number_format($compra->getTotalProdutos(), 2) : null) }}"
                 readonly
             >
 
-            @error('total_produtos')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
+            <span class="invalid-feedback" role="alert" ref="total_produtos"></span>
         </div>
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-2 d-none">
         <label>Total à Pagar</label>
 
         <div class="input-group">
@@ -331,24 +301,25 @@
             <input
                 type="number"
                 id="total_pagar"
-                name="total_pagar"
+                name="total_compra"
                 placeholder="0,00"
-                class="form-control @error('total_pagar') is-invalid @enderror"
-                value="{{ old('total_pagar', isset($compra) ? $compra->getTotalPagar() : null) }}"
+                class="form-control @error('total_compra') is-invalid @enderror"
+                value="{{ old('total_compra', isset($compra) ? number_format($compra->getTotalCompra(), 2) : null) }}"
                 readonly
             >
 
-            @error('total_pagar')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            @error('total_compra')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
+
 </div>
 
-<div class="form-row">
-    <div class="form-group col-xl-1">
+<div class="form-row mt-4">
+    <div class="form-group col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -358,17 +329,13 @@
             data-input="#condicao_pagamento"
             data-route="condicoes-pagamento"
             value="{{ old('condicao_pagamento_id', isset($compra) ? $compra->getCondicaoPagamento()->getId() : null) }}"
-            disabled
+            readonly
         >
 
-        @error('condicao_pagamento_id')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="condicao_pagamento_id"></span>
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-10">
         <label>Condição de Pagamento</label>
         <div class="input-group">
             <input
@@ -411,14 +378,10 @@
     </div>
 </div>
 
-<div class="form-row">
-    <div class="col-xl-5">
-        @include('contas-a-pagar.table')
-    </div>
-</div>
+@include('compras.duplicatas-table')
 
-<div class="form-row">
-    <div class="col-xl-5">
+<div class="form-row mt-4">
+    <div class="col-xl-12">
         <label for="observacoes">Observações</label>
         <textarea name="observacoes" id="observacoes" class="form-control" rows="3">{{ old('observacoes', isset($compra) ? $compra->getObservacoes() : null) }}</textarea>
     </div>

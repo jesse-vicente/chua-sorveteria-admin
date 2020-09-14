@@ -109,7 +109,7 @@ class DaoEstado implements Dao {
     public function findById(int $id, bool $model = false) {
         if (!$model) {
             return DB::table('estados', 'e')
-                    ->join('pais as p', 'e.pais_id', '=', 'p.id')
+                    ->join('paises as p', 'e.pais_id', '=', 'p.id')
                     ->get(['e.id', 'e.estado', 'e.uf', 'p.pais'])
                     ->where('id', $id)
                     ->first();

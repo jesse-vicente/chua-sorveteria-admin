@@ -1,5 +1,5 @@
 <div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-2">
         <label>Código</label>
         <input
             type="text"
@@ -17,7 +17,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-2">
+    <div class="form-group required col-xl-6">
         <label>País</label>
         <input
             type="text"
@@ -34,7 +34,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Sigla</label>
         <input
             type="text"
@@ -51,7 +51,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>DDI</label>
 
         <div class="input-group">

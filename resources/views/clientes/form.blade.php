@@ -23,11 +23,15 @@
             @include('clientes.fields')
             </form>
     </div>
-</div>
 
-<div class="d-flex justify-content-end flex-column align-items-xl-end mb-3">
-    <small><b>Cadastrado em: </b>{{ isset($cliente) ? $cliente->getDataCadastro() : "__/__/____" }}</small>
-    <small><b>Alterado em: </b>{{ isset($cliente) ? $cliente->getDataAlteracao() : "__/__/____" }}</small>
-</div>
+    <div class="card-footer">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex flex-column text-secondary">
+                <small><b>Cadastrado em: </b>{{ isset($cliente) ? $cliente->getDataCadastro() : "__/__/____" }}</small>
+                <small><b>Alterado em: </b>{{ isset($cliente) ? $cliente->getDataAlteracao() : "__/__/____" }}</small>
+            </div>
 
-@include('clientes.actions')
+            @include('clientes.actions')
+        </div>
+    </div>
+</div>

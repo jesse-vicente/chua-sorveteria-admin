@@ -17,7 +17,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-5">
         <label>Condição de Pagamento</label>
         <input
             type="text"

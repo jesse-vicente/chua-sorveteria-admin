@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card col-xl-5 p-0">
     <div class="card-header">
         <div class="d-flex align-items-center">
             @isset($formaPagamento)
@@ -23,11 +23,15 @@
                 @include('formas-pagamento.fields')
             </form>
     </div>
-</div>
 
-<div class="d-flex justify-content-end flex-column align-items-xl-end mb-3">
-    <small><b>Cadastrado em: </b>{{ isset($formaPagamento) ? $formaPagamento->getDataCadastro() : "__/__/____" }}</small>
-    <small><b>Alterado em: </b>{{ isset($formaPagamento) ? $formaPagamento->getDataAlteracao() : "__/__/____" }}</small>
-</div>
+    <div class="card-footer">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex flex-column text-secondary">
+                <small><b>Cadastrado em: </b>{{ isset($formaPagamento) ? $formaPagamento->getDataCadastro() : "__/__/____" }}</small>
+                <small><b>Alterado em: </b>{{ isset($formaPagamento) ? $formaPagamento->getDataAlteracao() : "__/__/____" }}</small>
+            </div>
 
-@include('formas-pagamento.actions')
+            @include('formas-pagamento.actions')
+        </div>
+    </div>
+</div>

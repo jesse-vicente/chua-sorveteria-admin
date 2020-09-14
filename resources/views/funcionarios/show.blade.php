@@ -22,17 +22,24 @@
         <span>Registro não encontrado.</span>
         @endif
     </div>
-</div>
 
-<div class="form-row d-flex flex-row-reverse pb-5">
-    <button type="button" class="btn btn-danger ml-2" id="delete-entry">
-        <i class="fa fa-trash-alt mr-1"></i>
-        <span>Excluir</span>
-    </button>
+    <div class="card-footer">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex flex-column text-secondary">
+                <small><b>Cadastrado em: </b>{{ isset($funcionario) ? $funcionario->getDataCadastro() : "__/__/____" }}</small>
+                <small><b>Alterado em: </b>{{ isset($funcionario) ? $funcionario->getDataAlteracao() : "__/__/____" }}</small>
+            </div>
 
-    <a class="btn btn-secondary" href="{{ route('funcionarios.index') }}">
-        <i class="fa fa-undo mr-1"></i>
-<span>Voltar</span>
-    </a>
+            <div class="btn-group-lg">
+                <button type="button" class="btn btn-danger mr-2" id="delete-entry">
+                    <span class="text-bold">Excluir</span>
+                </button>
+
+                <a class="btn btn-outline-secondary" href="{{ route('funcionarios.index') }}">
+                    <span class="text-bold">Cancelar</span>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

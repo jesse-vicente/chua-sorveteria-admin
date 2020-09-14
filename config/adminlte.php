@@ -107,7 +107,7 @@ return [
     'classes_brand_text' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-3',
+    'classes_sidebar' => 'sidebar-dark-primary elevation-2',
     'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand-md',
@@ -230,27 +230,27 @@ return [
 
         [
             'text'    => 'Financeiro',
-            'icon'    => 'mr-1 fas fa-fw fa-dollar-sign',
+            'icon'    => 'fas fa-fw fa-dollar-sign',
             'submenu' => [
                 [
                     'text'        => 'Compras',
                     'url'         => 'compras',
-                    'icon'        => 'mr-1 fas fa-fw fa-shopping-cart',
+                    'icon'        => 'fas fa-fw fa-shopping-cart',
                 ],
                 [
                     'text'        => 'Vendas',
                     'url'         => 'vendas',
-                    'icon'        => 'mr-1 fas fa-fw fa-tag',
+                    'icon'        => 'fas fa-fw fa-tags',
                 ],
                 [
                     'text'        => 'Formas de Pagamento',
                     'url'         => 'formas-pagamento',
-                    'icon'        => 'mr-1 fas fa-fw fa-credit-card',
+                    'icon'        => 'fas fa-fw fa-credit-card',
                 ],
                 [
                     'text'        => 'Condições de Pagamento',
                     'url'         => 'condicoes-pagamento',
-                    'icon'        => 'mr-1 fas fa-comments-dollar',
+                    'icon'        => 'fas fa-comments-dollar',
                 ],
             ],
         ],
@@ -258,54 +258,54 @@ return [
         [
             'text'        => 'Clientes',
             'url'         => 'clientes',
-            'icon'        => 'mr-1 fas fa-fw fa-heart',
+            'icon'        => 'fas fa-fw fa-heart',
         ],
         [
             'text'        => 'Fornecedores',
             'url'         => 'fornecedores',
-            'icon'        => 'mr-1 fas fa-fw fa-truck',
+            'icon'        => 'fas fa-fw fa-truck',
         ],
         [
             'text'        => 'Funcionários',
             'url'         => 'funcionarios',
-            'icon'        => 'mr-1 fas fa-fw fa-address-card',
+            'icon'        => 'fas fa-fw fa-address-card',
         ],
 
         [
-            'text'    => 'Produtos & Categorias',
-            'icon'    => 'mr-1 fas fa-fw fa-store',
+            'text'    => 'Categorias & Produtos',
+            'icon'    => 'fas fa-fw fa-store',
             'submenu' => [
                 [
                     'text'        => 'Categorias',
                     'url'         => 'categorias',
-                    'icon'        => 'mr-1 fas fa-fw fa-layer-group',
+                    'icon'        => 'fas fa-fw fa-layer-group',
                 ],
                 [
                     'text'        => 'Produtos',
                     'url'         => 'produtos',
-                    'icon'        => 'mr-1 fas fa-fw fa-box',
+                    'icon'        => 'fas fa-fw fa-box',
                 ],
             ],
         ],
 
         [
             'text'    => 'Países, Estados & Cidades',
-            'icon'    => 'mr-1 fas fa-fw fa-map-marker-alt',
+            'icon'    => 'fas fa-fw fa-map-marker-alt',
             'submenu' => [
                 [
                     'text' => 'Países',
                     'url'  => 'paises',
-                    'icon' => 'mr-1 fas fa-fw fa-location-arrow',
+                    'icon' => 'fas fa-fw fa-location-arrow',
                 ],
                 [
                     'text' => 'Estados',
                     'url'  => 'estados',
-                    'icon' => 'mr-1 fas fa-fw fa-location-arrow',
+                    'icon' => 'fas fa-fw fa-location-arrow',
                 ],
                 [
                     'text' => 'Cidades',
                     'url'  => 'cidades',
-                    'icon' => 'mr-1 fas fa-fw fa-location-arrow',
+                    'icon' => 'fas fa-fw fa-location-arrow',
                 ],
             ],
         ],
@@ -314,12 +314,12 @@ return [
         // [
         //     'text' => 'profile',
         //     'url'  => 'admin/settings',
-        //     'icon' => 'mr-1 fas fa-fw fa-user',
+        //     'icon' => 'fas fa-fw fa-user',
         // ],
         // [
         //     'text' => 'change_password',
         //     'url'  => 'admin/settings',
-        //     'icon' => 'mr-1 fas fa-fw fa-lock',
+        //     'icon' => 'fas fa-fw fa-lock',
         // ],
         // ['header' => 'labels'],
         // [
@@ -497,6 +497,22 @@ return [
             ],
         ],
         [
+            'name' => 'Toggle Switch',
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => false,
+                    'location' => '//cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js',
+                ],
+            ],
+        ],
+        [
             'name' => 'Form',
             'active' => true,
             'files' => [
@@ -514,6 +530,11 @@ return [
                     'type' => 'js',
                     'asset' => true,
                     'location' => '/js/table.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '/js/compra.js',
                 ],
             ],
         ],

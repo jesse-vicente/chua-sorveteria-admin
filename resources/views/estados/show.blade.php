@@ -24,15 +24,14 @@
     </div>
 </div>
 
-<div class="form-row d-flex flex-row-reverse pb-5">
-    <button type="button" class="btn btn-danger ml-2" id="delete-entry">
-        <i class="fa fa-trash-alt mr-1"></i>
-        <span>Excluir</span>
+<div class="btn-group-lg">
+    <button type="button" class="btn btn-danger mr-2" id="delete-entry">
+        <span class="text-bold">Excluir</span>
     </button>
 
-    <a class="btn btn-secondary" href="{{ route('estados.index') }}">
+    <a class="btn btn-outline-secondary" href="{{ route('estados.index') }}">
         <i class="fa fa-undo mr-1"></i>
-<span>Voltar</span>
+        <span class="text-bold">Cancelar</span>
     </a>
 </div>
 @endsection

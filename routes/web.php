@@ -23,6 +23,7 @@ Route::get('/home', function() {
     return view('home');
 })->name('home')->middleware('auth');
 
+Route::post('/paises/save', 'PaisController@save')->name('paises.save');
 Route::get('/paises/all', 'PaisController@all')->name('paises.all');
 Route::get('/estados/all', 'EstadoController@all')->name('estados.all');
 Route::get('/cidades/all', 'CidadeController@all')->name('cidades.all');
@@ -58,5 +59,15 @@ Route::resource('/clientes', 'ClienteController');
 Route::resource('/categorias', 'CategoriaController');
 Route::resource('/produtos', 'ProdutoController');
 
-Route::resource('/compras', 'CompraController');
+Route::get('/compras', 'CompraController@index')->name('compras.index');
+Route::get('/compras/create', 'CompraController@create')->name('compras.create');
+Route::get('/compras/{compra}', 'CompraController@cancel')->name('compras.cancel');
+Route::post('/compras/save', 'CompraController@save')->name('compras.save');
+
+Route::put('/compras/{compra}/update', 'CompraController@update')->name('compras.update');
+Route::get('/compras/{compra}/findByPrimaryKey', 'FornecedorController@findByPrimaryKey')->name('compras.findByPrimaryKey');
+
 Route::resource('/vendas', 'VendaController');
+
+Route::resource('/contas-a-pagar', 'ContaPagarController');
+Route::resource('/contas-a-receber', 'ContaReceberController');
