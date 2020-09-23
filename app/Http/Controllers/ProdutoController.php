@@ -27,9 +27,10 @@ class ProdutoController extends Controller
         return view('produtos.index', compact('produtos'));
     }
 
-    public function all()
+    public function all(string $action = '')
     {
-        return $this->daoProduto->all();
+        $produtos = $this->daoProduto->all(false, $action);
+        return $produtos;
     }
 
     /**
@@ -125,8 +126,8 @@ class ProdutoController extends Controller
         return redirect('produtos')->with('error', 'Este registro não pode ser removido.');
     }
 
-    public function findById(int $id) {
-        $produto = $this->daoProduto->findById($id);
+    public function findById(int $id, string $action) {
+        $produto = $this->daoProduto->findById($id, false, $action);
 
         return [ $produto ];
     }

@@ -23,12 +23,19 @@ class DaoProduto implements Dao {
         $this->daoFornecedor = new DaoFornecedor();
     }
 
-    public function all(bool $model = false) {
+    public function all(bool $model = false, string $action = '') {
         if (!$model) {
-            return DB::table('produtos', 'p')
-                    ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
-                    ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
-                    ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'p.preco_custo', 'f.fornecedor']);
+            if ($action == 'compra') {
+                return DB::table('produtos', 'p')
+                         ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
+                         ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
+                         ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'f.fornecedor', 'p.preco_custo']);
+            } else {
+                return DB::table('produtos', 'p')
+                         ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
+                         ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
+                         ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'f.fornecedor', 'p.preco_venda', 'p.estoque']);
+            }
         }
 
         $itens = DB::table('produtos')->get();
@@ -118,14 +125,23 @@ class DaoProduto implements Dao {
         }
     }
 
-    public function findById(int $id, bool $model = false) {
+    public function findById(int $id, bool $model = false, string $action = '') {
         if (!$model) {
-            return DB::table('produtos', 'p')
-                    ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
-                    ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
-                    ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'p.preco_custo', 'f.fornecedor'])
-                    ->where('id', $id)
-                    ->first();
+            if ($action == 'compra') {
+                return DB::table('produtos', 'p')
+                         ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
+                         ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
+                         ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'f.fornecedor', 'p.preco_custo'])
+                         ->where('id', $id)
+                         ->first();
+            } else {
+                return DB::table('produtos', 'p')
+                         ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
+                         ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
+                         ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'f.fornecedor', 'p.preco_venda', 'estoque'])
+                         ->where('id', $id)
+                         ->first();
+            }
         }
 
         $dados = DB::table('produtos')->where('id', $id)->first();
