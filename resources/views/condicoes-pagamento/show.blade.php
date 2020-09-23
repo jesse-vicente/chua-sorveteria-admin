@@ -16,7 +16,7 @@
 
             @csrf
             <div class="form-row">
-                <div class="form-group col-xl-1">
+                <div class="form-group required col-xl-1">
                     <label>Código</label>
                     <input
                         type="text"
@@ -28,7 +28,7 @@
                     />
                 </div>
 
-                <div class="form-group col-xl-4">
+                <div class="form-group col-xl-5">
                     <label>Condição de Pagamento</label>
                     <input
                         type="text"
@@ -41,7 +41,19 @@
                 </div>
 
                 <div class="form-group col-xl-2">
-                    <label>Multa</label>
+                    <label>Juros (%)</label>
+                    <input
+                        type="number"
+                        id="juros"
+                        name="juros"
+                        class="form-control @error('juros') is-invalid @enderror"
+                        value="{{ $condicaoPagamento->getJuros() }}"
+                        readonly
+                    />
+                </div>
+
+                <div class="form-group col-xl-2">
+                    <label>Multa (%)</label>
                     <input
                         type="number"
                         id="multa"
@@ -53,7 +65,7 @@
                 </div>
 
                 <div class="form-group col-xl-2">
-                    <label>Desconto</label>
+                    <label>Desconto (%)</label>
                     <input
                         type="number"
                         id="desconto"
@@ -68,25 +80,23 @@
             @if ($condicaoPagamento->getTotalParcelas() > 0)
             <div class="table-wrapper table-responsive">
                 <label>Parcelas</label>
-                <table id="parcelas-table" class="table table-bordered table-sm border-0">
+                <table id="parcelas-table" class="table table-bordered table-striped table-sm">
                     <thead>
                         <tr>
-                            <th class="col-form-label-sm">Parcela</th>
-                            <th class="col-form-label-sm">Forma de Pagamento</th>
-                            <th class="col-form-label-sm">Prazo</th>
-                            <th class="col-form-label-sm">Juros</th>
-                            <th class="col-form-label-sm">Percentual</th>
+                            <th class="col-form-label-sm text-center" style="width: 10%;">Parcela</th>
+                            <th class="col-form-label-sm text-center">Forma de Pagamento</th>
+                            <th class="col-form-label-sm text-center">Prazo</th>
+                            <th class="col-form-label-sm text-center">Percentual</th>
                         </tr>
                     </thead>
                     <tbody>
 
                         @foreach ($condicaoPagamento->getParcelas() as $parcela)
                             <tr>
-                                <td>{{ $parcela->getNumero() }}</td>
-                                <td>{{ $parcela->getFormaPagamento()->getFormaPagamento() }}</td>
-                                <td>{{ $parcela->getPrazo() }} dias</td>
-                                <td>{{ $condicaoPagamento->getJuros() }}%</td>
-                                <td>{{ $parcela->getPorcentagem() }}%</td>
+                                <td class="text-center">{{ $parcela->getNumero() }}</td>
+                                <td class="text-center">{{ $parcela->getFormaPagamento()->getFormaPagamento() }}</td>
+                                <td class="text-center">{{ $parcela->getPrazo() }} dias</td>
+                                <td class="text-center">{{ $parcela->getPorcentagem() }}%</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -94,20 +104,26 @@
             </div>
             @endif
         </form>
-
-        @else
-        <span>Registro não encontrado.</span>
         @endif
     </div>
-</div>
 
-<div class="btn-group-lg">
-    <button type="button" class="btn btn-danger mr-2" id="delete-entry">
-        <span class="text-bold">Excluir</span>
-    </button>
+    <div class="card-footer">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex flex-column text-secondary">
+                <small><b>Cadastrado em: </b>{{ isset($condicaoPagamento) ? $condicaoPagamento->getDataCadastro() : "__/__/____" }}</small>
+                <small><b>Alterado em: </b>{{ isset($condicaoPagamento) ? $condicaoPagamento->getDataAlteracao() : "__/__/____" }}</small>
+            </div>
 
-    <a class="btn btn-outline-secondary" href="{{ route('condicoes-pagamento.index') }}">
-        <span class="text-bold">Cancelar</span>
-    </a>
+            <div class="btn-group-lg">
+                <button type="button" class="btn btn-danger mr-2" id="btn-delete">
+                    <span class="text-bold">Excluir</span>
+                </button>
+
+                <a class="btn btn-outline-secondary" href="{{ route('condicoes-pagamento.index') }}">
+                    <span class="text-bold">Cancelar</span>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

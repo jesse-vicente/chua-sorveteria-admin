@@ -17,20 +17,26 @@
 
             @include('clientes.fields')
         </form>
-
-        @else
-        <span>Registro não encontrado.</span>
         @endif
     </div>
-</div>
 
-<div class="btn-group-lg">
-    <button type="button" class="btn btn-danger mr-2" id="delete-entry">
-        <span class="text-bold">Excluir</span>
-    </button>
+    <div class="card-footer">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex flex-column text-secondary">
+                <small><b>Cadastrado em: </b>{{ isset($cliente) ? $cliente->getDataCadastro() : "__/__/____" }}</small>
+                <small><b>Alterado em: </b>{{ isset($cliente) ? $cliente->getDataAlteracao() : "__/__/____" }}</small>
+            </div>
 
-    <a class="btn btn-outline-secondary" href="{{ route('clientes.index') }}">
-        <span class="text-bold">Cancelar</span>
-    </a>
+            <div class="btn-group-lg">
+                <button type="button" class="btn btn-danger mr-2" id="btn-delete">
+                    <span class="text-bold">Excluir</span>
+                </button>
+
+                <a class="btn btn-outline-secondary" href="{{ route('clientes.index') }}">
+                    <span class="text-bold">Cancelar</span>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
