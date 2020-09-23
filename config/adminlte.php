@@ -411,13 +411,13 @@ return [
         ],
         [
             'name' => 'Select2',
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
-                    'asset' => true,
-                    // 'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
-                    'location' => '/js/select2.min.js',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js',
+                    // 'location' => '/js/select2.min.js',
                 ],
                 [
                     'type' => 'css',
@@ -534,7 +534,7 @@ return [
                 [
                     'type' => 'js',
                     'asset' => true,
-                    'location' => '/js/compra.js',
+                    'location' => '/js/compra-venda.js',
                 ],
             ],
         ],

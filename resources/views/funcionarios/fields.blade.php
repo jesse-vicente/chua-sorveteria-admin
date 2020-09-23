@@ -165,7 +165,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -184,7 +184,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-9">
+    <div class="form-group required col-xl-8">
         <label>Cidade</label>
         <div class="input-group">
 

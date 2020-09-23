@@ -3,8 +3,7 @@
         <tr>
             <th>Cód.</th>
             <th>Cliente</th>
-            <th>Telefone</th>
-            <th>WhatsApp</th>
+            <th>CPF</th>
         </tr>
     </thead>
 </table>

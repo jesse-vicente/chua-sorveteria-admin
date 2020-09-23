@@ -61,11 +61,3 @@
         </div>
     </div>
 </div>
-
-@if(!empty(Session::get('success')))
-<script>
-    $(function() {
-        $('#modal-paises').modal('show');
-    });
-</script>
-@endif

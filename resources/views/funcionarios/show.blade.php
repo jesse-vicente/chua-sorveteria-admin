@@ -17,9 +17,6 @@
 
             @include('funcionarios.fields')
         </form>
-
-        @else
-        <span>Registro não encontrado.</span>
         @endif
     </div>
 
@@ -31,7 +28,7 @@
             </div>
 
             <div class="btn-group-lg">
-                <button type="button" class="btn btn-danger mr-2" id="delete-entry">
+                <button type="button" class="btn btn-danger mr-2" id="btn-delete">
                     <span class="text-bold">Excluir</span>
                 </button>
 

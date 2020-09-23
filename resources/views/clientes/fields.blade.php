@@ -17,7 +17,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-6">
+    <div class="form-group required col-xl-7">
         <label>Cliente</label>
         <input
             type="text"
@@ -34,7 +34,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-5">
+    <div class="form-group col-xl-4">
         <label>Apelido</label>
         <input
             type="text"
@@ -141,7 +141,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -160,7 +160,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-9">
+    <div class="form-group required col-xl-8">
         <label>Cidade</label>
         <div class="input-group">
             <input
@@ -311,7 +311,7 @@
 </div>
 
 <div class="form-row mt-4">
-    <div class="form-group col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -330,7 +330,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-11">
+    <div class="form-group required col-xl-10">
         <label>Condição de Pagamento</label>
         <div class="input-group">
             <input
