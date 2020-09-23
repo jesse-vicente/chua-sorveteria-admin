@@ -206,11 +206,16 @@ class DaoCondicaoPagamento implements Dao {
     }
 
     public function findById(int $id, bool $model = false) {
-        if (!$model)
-            return DB::table('condicoes_pagamento')
-                ->get(['id', 'condicao_pagamento', 'juros', 'multa', 'desconto', 'total_parcelas'])
-                ->where('id', $id)
-                ->first();
+        if (!$model) {
+            $queryResult = DB::table('condicoes_pagamento', 'cp')
+                             ->join('parcelas as p', 'cp.id', '=', 'p.condicao_pagamento_id')
+                             ->join('formas_pagamento as fp', 'p.forma_pagamento_id', '=', 'fp.id')
+                             ->get(['cp.id', 'cp.condicao_pagamento', 'cp.juros', 'cp.multa', 'cp.desconto', 'cp.total_parcelas', 'fp.forma_pagamento'])
+                             ->where('id', $id)
+                             ->first();
+
+            return $queryResult;
+        }
 
         $dados = DB::table('condicoes_pagamento')->where('id', $id)->first();
 
