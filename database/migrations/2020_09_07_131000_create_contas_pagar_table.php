@@ -52,6 +52,7 @@ class CreateContasPagarTable extends Migration
                 'num_nota',
                 'serie',
                 'modelo',
+                'fornecedor_id',
                 'parcela',
             ]);
         });

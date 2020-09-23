@@ -1,64 +1,60 @@
-<div class="card @isset($produtos) mt-4 @endisset" id="card-produtos">
-    <div class="card-header bg-gray-dark">
-        <h3 class="card-title">
-            <i class="fa fa-shopping-cart mr-1"></i>
-            Lista de Produtos
-        </h3>
+<table class="table table-sm table-striped table-responsive-xl table-bordered rounded" id="produtos-table">
+    @isset($compra)
+        <thead>
+            <tr>
+                <th>Cód.</th>
+                <th>Produto</th>
+                <th class="text-center">Und.</th>
+                <th>Categoria</th>
+                <th class="text-center">Qtd.</th>
+                <th class="text-right">Valor</th>
+                <th class="text-right">Valor Total</th>
+            </tr>
+        </thead>
 
-        <div class="card-tools">
-            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-        </div>
-    </div>
+        <tbody>
+        @forelse ($compra->getProdutos() as $produtoCompra)
+            <tr>
+                <td>{{ $produtoCompra->getProduto()->getId() }}</td>
+                <td>{{ $produtoCompra->getProduto()->getProduto() }}</td>
+                <td class="text-center">{{ $produtoCompra->getProduto()->getUnidade() }}</td>
+                <td>{{ $produtoCompra->getProduto()->getCategoria()->getCategoria() }}</td>
+                <td class="text-center">{{ $produtoCompra->getQuantidade() }}</td>
+                <td class="text-right">{{ 'R$ ' . number_format($produtoCompra->getProduto()->getPrecoCusto(), 2) }}</td>
+                <td class="text-right">{{ 'R$ ' . number_format($produtoCompra->getQuantidade() * $produtoCompra->getProduto()->getPrecoCusto(), 2) }}</td>
+            </tr>
+        @empty
 
-    <div class="card-body p-0">
+        @endforelse
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <th>Cód.</th>
+                <th>Produto</th>
+                <th class="text-center">Und.</th>
+                <th>Categoria</th>
+                <th class="text-center">Qtd.</th>
+                <th class="text-right">Valor</th>
+                <th class="text-right">Valor Total</th>
+            </tr>
+        </tfoot>
+    @endisset
+</table>
+
+<!-- <div class="card-footer bg-white">
+    <strong class="d-flex justify-content-end text-success text-lg">
+        <span class="mr-2 text-gray">Total à Pagar: </span>
         @isset($compra)
-            <table class="table table-sm table-striped table-responsive-xl" id="produtos-table">
-                <thead>
-                    <tr>
-                        <th>Cód.</th>
-                        <th>Produto</th>
-                        <th class="text-center">Und.</th>
-                        <th class="text-center">Qtd.</th>
-                        <th class="text-right">Valor</th>
-                        <th class="text-right">Valor Total</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                @forelse ($compra->getProdutos() as $produtoCompra)
-                    <tr>
-                        <td>{{ $produtoCompra->getProduto()->getId() }}</td>
-                        <td>{{ $produtoCompra->getProduto()->getProduto() }}</td>
-                        <td class="text-center">{{ $produtoCompra->getProduto()->getUnidade() }}</td>
-                        <td class="text-center">{{ $produtoCompra->getQuantidade() }}</td>
-                        <td class="text-right">{{ 'R$ ' . number_format($produtoCompra->getProduto()->getPrecoCusto(), 2) }}</td>
-                        <td class="text-right">{{ 'R$ ' . number_format($produtoCompra->getQuantidade() * $produtoCompra->getProduto()->getPrecoCusto(), 2) }}</td>
-                    </tr>
-                @empty
-
-                @endforelse
-                </tbody>
-            </table>
-
+            {{ 'R$' . number_format($compra->getTotalCompra(), 2) }}
         @else
-            <table class="table table-sm table-striped table-responsive-xl" id="produtos-table"></table>
-        @endisset
-    </div>
-
-    <div class="card-footer bg-white">
-        <strong class="d-flex justify-content-end text-success text-lg">
-            <span class="mr-2 text-gray">Total à Pagar: </span>
-            @isset($compra)
-                {{ 'R$' . number_format($compra->getTotalCompra(), 2) }}
-            @else
-                {{ 'R$ 0,00' }}
-            @endif
-        </strong>
-        <!-- <button id='remove-item' class="pull-right btn btn-danger" disabled>
-            <i class="fa fa-trash-alt mr-2"></i>Remover Item
-        </button> -->
-    </div>
-</div>
+            {{ 'R$ 0,00' }}
+        @endif
+    </strong>
+    <button id='remove-item' class="pull-right btn btn-danger" disabled>
+        <i class="fa fa-trash-alt mr-2"></i>Remover Item
+    </button>
+</div> -->
 
 <div id="modal-detalhes-produto" class="modal fade" data-field="fornecedor" role="dialog">
     <div class="modal-dialog modal-md">
@@ -106,20 +102,42 @@
                     </div>
                 </div>
 
-                <!-- <div class="form-row">
+                <div class="form-row">
+
+                    <!-- <div class="form-group col-xl-4">
+                        <label>Custo Últ. Compra</label>
+
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$</span>
+                            </div>
+
+                            <input
+                                type="number"
+                                id="custo_ultima_compra"
+                                name="custo_ultima_compra"
+                                placeholder="0,00"
+                                class="form-control"
+                                readonly
+                                disabled
+                            >
+                        </div>
+                    </div>
+
                     <div class="form-group col-xl-2">
-                        <label>Unidade</label>
+                        <label>Estoque</label>
                         <input
-                            type="text"
-                            id="unidade"
-                            name="unidade"
+                            type="number"
+                            id="estoque"
+                            name="estoque"
+                            placeholder="0"
                             class="form-control"
                             readonly
                             disabled
                         >
-                    </div>
+                    </div> -->
 
-                    <div class="form-group col-xl-10">
+                    <div class="form-group col-xl-7">
                         <label>Categoria</label>
                         <input
                             type="text"
@@ -130,11 +148,9 @@
                             disabled
                         >
                     </div>
-                </div> -->
 
-                <div class="form-row">
-                    <div class="form-group col-xl-4 required">
-                        <label>Quantidade</label>
+                    <div class="form-group col-xl-2 required">
+                        <label>Qtd.</label>
                         <input
                             type="number"
                             id="quantidade"
@@ -146,12 +162,12 @@
                         >
                     </div>
 
-                    <div class="form-group col-xl-4 required">
+                    <div class="form-group col-xl-3 required">
                         <label>Valor</label>
 
                         <div class="input-group">
                             <div class="input-group-prepend">
-                                <span class="input-group-text">R$</span>
+                                <span class="input-group-text px-2">R$</span>
                             </div>
 
                             <input
@@ -163,30 +179,15 @@
                             >
                         </div>
                     </div>
-
-                    <div class="form-group col-xl-4">
-                        <label>Total</label>
-
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">R$</span>
-                            </div>
-
-                            <input
-                                type="number"
-                                id="total"
-                                name="total"
-                                placeholder="0,00"
-                                class="form-control"
-                                readonly
-                                disabled
-                            >
-                        </div>
-                    </div>
                 </div>
             </div>
 
-            <div class="modal-footer">
+            <div class="modal-footer d-flex justify-content-between" id="total">
+                <strong class="text-success text-lg">
+                    <span class="text-gray">Total: </span>
+                    R$ 0,00
+                </strong>
+
                 <button id="add-item" class="pull-right btn btn-success" data-dismiss="modal" disabled>
                     <i class="fa fa-plus mr-2"></i>Adicionar Item
                 </button>

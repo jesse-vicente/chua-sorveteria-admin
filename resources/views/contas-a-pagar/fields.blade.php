@@ -63,7 +63,11 @@
             value="{{ old('fornecedor_id', isset($contaPagar) ? $contaPagar->getFornecedor()->getId() : null) }}"
         >
 
-        <span class="invalid-feedback" role="alert" ref="fornecedor_id"></span>
+        @error('fornecedor_id')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+        @enderror
     </div>
 
     <div class="form-group required col-xl-9">
@@ -122,7 +126,11 @@
             value="{{ old('forma_pagamento_id', isset($contaPagar) ? $contaPagar->getFormaPagamento()->getId() : null) }}"
         >
 
-        <span class="invalid-feedback" role="alert" ref="forma_pagamento_id"></span>
+        @error('forma_pagamento_id')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+        @enderror
     </div>
 
     <div class="form-group required col-xl-9">
@@ -252,7 +260,9 @@
                 name="juros"
                 placeholder="0"
                 class="form-control @error('juros') is-invalid @enderror"
-                value="{{ old('juros', isset($contaPagar) ? $contaPagar->getJuros() : null) }}"
+                @isset($contaPagar)
+                    value="{{ old('juros', $contaPagar->getJuros() ? number_format($contaPagar->getJuros(), 2) : null) }}"
+                @endisset
             >
 
             <div class="input-group-append">
@@ -279,9 +289,11 @@
                 type="number"
                 id="multa"
                 name="multa"
-                placeholder="0"
+                placeholder="0,00"
                 class="form-control @error('multa') is-invalid @enderror"
-                value="{{ old('multa', isset($contaPagar) ? number_format($contaPagar->getMulta(), 2) : null) }}"
+                @isset($contaPagar)
+                    value="{{ old('multa', $contaPagar->getMulta() ? number_format($contaPagar->getMulta(), 2) : null) }}"
+                @endisset
             >
 
             @error('multa')
@@ -306,7 +318,9 @@
                 name="desconto"
                 placeholder="0,00"
                 class="form-control @error('desconto') is-invalid @enderror"
-                value="{{ old('desconto', isset($contaPagar) ? number_format($contaPagar->getDesconto(), 2) : null) }}"
+                @isset($contaPagar)
+                    value="{{ old('desconto', $contaPagar->getDesconto() ? number_format($contaPagar->getDesconto(), 2) : null) }}"
+                @endisset
             >
 
             @error('desconto')
@@ -331,7 +345,14 @@
                 name="valor_pago"
                 placeholder="0,00"
                 class="form-control @error('valor_pago') is-invalid @enderror"
-                value="{{ old('valor_pago', isset($contaPagar) ? number_format($contaPagar->getValorPago(), 2) : null) }}"
+                readonly
+                @isset($contaPagar)
+                    @if ($contaPagar->getStatus() == 'Pendente')
+                        value="{{ number_format($contaPagar->getValorParcela(), 2) }}"
+                    @elseif ($contaPagar->getStatus() == 'Liquidado')
+                        value="{{ old('valor_pago', number_format($contaPagar->getValorPago(), 2)) }}"
+                    @endif
+                @endisset
             >
 
             @error('valor_pago')

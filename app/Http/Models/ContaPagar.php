@@ -259,7 +259,7 @@ class ContaPagar extends TObject
      * @param  float  $juros
      *
      */
-    public function setJuros(float $juros)
+    public function setJuros(float $juros = null)
     {
         $this->juros = $juros;
     }
@@ -280,7 +280,7 @@ class ContaPagar extends TObject
      * @param  float  $multa
      *
      */
-    public function setMulta(float $multa)
+    public function setMulta(float $multa = null)
     {
         $this->multa = $multa;
     }
@@ -301,7 +301,7 @@ class ContaPagar extends TObject
      * @param  float  $desconto
      *
      */
-    public function setDesconto(float $desconto)
+    public function setDesconto(float $desconto = null)
     {
         $this->desconto = $desconto;
     }

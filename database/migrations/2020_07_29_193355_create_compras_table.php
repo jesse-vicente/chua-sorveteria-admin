@@ -14,11 +14,11 @@ class CreateComprasTable extends Migration
     public function up()
     {
         Schema::create('compras', function (Blueprint $table) {
-            $table->unsignedInteger("num_nota")->unique()->index();
+            $table->unsignedInteger("num_nota")->index();
             $table->unsignedInteger("serie")->index();
             $table->unsignedInteger("modelo")->index();
 
-            $table->string('status', 10)->default('Ativa');
+            $table->string('status', 10)->default('Em aberto');
 
             $table->date("data_emissao");
             $table->date("data_chegada");

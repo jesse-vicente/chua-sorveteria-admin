@@ -503,7 +503,12 @@ class Compra extends TObject
      */
     public function getDataCancelamento()
     {
-        return $this->dataCancelamento ?? '-';
+        if ($this->dataCancelamento) {
+            return Carbon::parse($this->dataCancelamento)->toDate()->format('d/m/Y');
+            // $hora = Carbon::parse($this->dataCancelamento)->toTimeString('minute');
+        }
+
+        return '-';
     }
 
     /**
@@ -514,13 +519,6 @@ class Compra extends TObject
      */
     public function setDataCancelamento(string $dataCancelamento = null)
     {
-        $data = Carbon::parse($dataCancelamento)->toDate()->format('d/m/Y');
-        $hora = Carbon::parse($dataCancelamento)->toTimeString('minute');
-
-        // $data->
-
-        // $data->
-
-        $this->dataCancelamento = $data;
+        $this->dataCancelamento = $dataCancelamento;
     }
 }

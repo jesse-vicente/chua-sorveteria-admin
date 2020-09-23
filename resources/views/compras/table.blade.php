@@ -1,3 +1,5 @@
+<div id="mask"></div>
+
 <div class="table-responsive">
     <table class="table table-hover table-striped shadow-xs rounded" id="table">
         <thead>
@@ -23,12 +25,17 @@
                 <td>{{ 'R$ ' . number_format($compra->getTotalCompra(), 2) }}</td>
                 <td>
                     @php
-                        $badge = $compra->getStatus() == 'Ativa' ? 'badge-success' : 'badge-danger';
+                        if ($compra->getStatus() == 'Ativo')
+                            $badge = 'badge-success';
+                        else if ($compra->getStatus() == 'Cancelado')
+                            $badge = 'badge-danger';
+                        else
+                            $badge = 'badge-info';
                     @endphp
                     <span class="badge {{ $badge }}">{{ ucfirst($compra->getStatus()) }}</span>
                 </td>
                 <td class="d-flex justify-content-center">
-                    @if ($compra->getStatus() != 'Cancelado')
+                    @if ($compra->getStatus() == 'Em aberto')
                         <a href="{{ route('compras.cancel', $compra->getPrimaryKey()) }}" title="Cancelar Compra">
                             <i class="fa fa-2x fa-times-circle text-danger"></i>
                         </a>

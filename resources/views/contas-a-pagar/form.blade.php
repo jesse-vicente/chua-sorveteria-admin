@@ -36,8 +36,8 @@
                     @include('contas-a-pagar.actions')
                 @else
                 <div class="btn-group-lg">
-                    <button type="submit" class="btn btn-success mr-2">
-                        <span class="text-bold">Salvar</span>
+                    <button class="btn btn-success mr-2" id="btn-pagar">
+                        <span class="text-bold">Pagar</span>
                     </button>
                     <a class="btn btn-outline-secondary" href="{{ route('contas-a-pagar.index') }}">
                         <span class="text-bold">Cancelar</span>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Models;
 
-use App\Http\Models\Compra;
 use App\Http\Models\Produto;
 
 class ProdutoCompra

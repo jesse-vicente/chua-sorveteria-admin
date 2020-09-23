@@ -128,8 +128,19 @@
     </div>
 </div>
 
+<div class="d-flex mt-4">
+    <hr class="flex-grow-1">
+    <div class="px-4">
+        <h4 class="text-gray">
+            <i class="fa fa-shopping-cart mr-1"></i>
+            Produtos
+        </h4>
+    </div>
+    <hr class="flex-grow-1">
+</div>
+
 @empty($compra)
-<div class="form-row mt-4">
+<div class="form-row">
     <div class="form-group col-xl-2">
         <label>Código</label>
         <input
@@ -179,7 +190,7 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    @include('produtos.search')
+                    @include('produtos.search-compra')
                 </div>
             </div>
         </div>
@@ -189,7 +200,7 @@
 
 @include('compras.products-table')
 
-<div class="form-row">
+<div class="form-row mt-2">
     <div class="form-group col-xl-3">
         <label>Frete</label>
 
@@ -315,7 +326,6 @@
             @enderror
         </div>
     </div>
-
 </div>
 
 <div class="form-row mt-4">

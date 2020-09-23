@@ -72,9 +72,9 @@ class DaoContaPagar implements Dao {
         $conta->setDataVencimento($dados["data_vencimento"]);
         $conta->setDataPagamento($dados["data_pagamento"]);
 
-        $conta->setJuros(floatval($dados["juros"]));
-        $conta->setMulta(floatval($dados["multa"]));
-        $conta->setDesconto(floatval($dados["desconto"]));
+        $conta->setJuros(floatval($dados["juros"]) ?? null);
+        $conta->setMulta(floatval($dados["multa"]) ?? null);
+        $conta->setDesconto(floatval($dados["desconto"]) ?? null);
 
         $fornecedor = $this->daoFornecedor->findById($dados["fornecedor_id"], true);
         // $funcionario = $this->daoFornecedor->findById($dados["funcionario_id"], true);
@@ -143,21 +143,24 @@ class DaoContaPagar implements Dao {
             $contaPagar = $this->findByPrimaryKey($key, true);
             $compra = $contaPagar->getCompra();
 
-            // $numero = $compra->getNumeroNota();
-            // $serie  = $compra->getSerie();
-            // $modelo = $compra->getModelo();
+            $numero = $compra->getNumeroNota();
+            $serie  = $compra->getSerie();
+            $modelo = $compra->getModelo();
+            $idFornecedor = $compra->getFornecedor()->getId();
 
-            // DB::table('compras')
-            //     ->where('num_nota', $numero)
-            //     ->where('serie', $serie)
-            //     ->where('modelo', $modelo)
-            //     ->where('fornecedor_id', $compra->getFornecedor()->getId())
-            //     ->update(['status' => 'Cancelado']);
+            DB::table('compras')
+                ->where('num_nota', $numero)
+                ->where('serie', $serie)
+                ->where('modelo', $modelo)
+                ->where('fornecedor_id', $idFornecedor)
+                ->update(['status' => 'Ativo']);
 
             DB::table('contas_pagar')
-                ->where('num_nota', $compra->getNumeroNota())
-                ->where('serie', $compra->getSerie())
-                ->where('modelo', $compra->getModelo())
+                ->where('num_nota', $numero)
+                ->where('serie', $serie)
+                ->where('modelo', $modelo)
+                ->where('parcela', $contaPagar->getParcela())
+                ->where('fornecedor_id', $idFornecedor)
                 ->update(['status' => 'Liquidado']);
 
             DB::commit();
@@ -186,17 +189,19 @@ class DaoContaPagar implements Dao {
     public function findByPrimaryKey(string $pk, bool $model = false) {
         $key = explode('-', $pk);
 
-        $numero       = $key[0];
-        $serie        = $key[1];
-        $modelo       = $key[2];
-        $idFornecedor = $key[3];
+        $numero     = $key[0];
+        $serie      = $key[1];
+        $modelo     = $key[2];
+        $fornecedor = $key[3];
+        $parcela    = $key[4];
 
         if (!$model) {
             $dados = DB::table('contas_pagar')
                        ->where('num_nota', $numero)
                        ->where('serie', $serie)
                        ->where('modelo', $modelo)
-                       ->where('fornecedor_id', $idFornecedor)
+                       ->where('fornecedor_id', $fornecedor)
+                       ->where('parcela', $parcela)
                        ->first();
 
             return $dados;
@@ -206,7 +211,9 @@ class DaoContaPagar implements Dao {
                          ->where('num_nota', $numero)
                          ->where('serie', $serie)
                          ->where('modelo', $modelo)
-                         ->where('fornecedor_id', $idFornecedor)
+                         ->where('modelo', $modelo)
+                         ->where('fornecedor_id', $fornecedor)
+                         ->where('parcela', $parcela)
                          ->first();
 
         if ($dados) {

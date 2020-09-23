@@ -66,9 +66,9 @@ class CompraController extends Controller
         $store = $this->daoCompra->store($compra);
 
         if ($store)
-            return redirect('compras')->with('success', 'Registro inserido com sucesso!');
-
-        return redirect('compras')->with('error', 'Erro ao inserir registro.');
+            $request->session()->flash('success', 'Registro inserido com sucesso!');
+        else
+            $request->session()->flash('error', 'Erro ao inserir registro.');
     }
 
     /**

@@ -37,7 +37,7 @@ class DaoCompra implements Dao {
         if (!$model)
             return DB::table('compras')->get();
 
-        $dados = DB::table('compras')->get();
+        $dados = DB::table('compras')->orderBy('data_emissao', 'desc')->get();
 
         $compras = array();
 
@@ -91,8 +91,9 @@ class DaoCompra implements Dao {
                 $id = $dados["produto_id"][$i];
                 $produtoEstoque = $this->daoProduto->findById($id, true);
 
-                $valor = str_replace("R$ ", "", $dados["produto_val"][$i]);
-                $produtoEstoque->setPrecoCusto(floatval($valor));
+                $valor = floatval($dados["produto_val"][$i]);
+
+                $produtoEstoque->setPrecoCusto(($valor));
 
                 $produtoCompra = new ProdutoCompra();
 
@@ -131,10 +132,7 @@ class DaoCompra implements Dao {
                 $duplicata->setFormaPagamento($parcelas[$i]->getFormaPagamento());
 
                 $duplicata->setParcela($parcelas[$i]->getNumero());
-
-                $valorParcela = str_replace("R$ ", "", $dados["valor_parcela"][$i]);
-
-                $duplicata->setValorParcela(floatval($valorParcela));
+                $duplicata->setValorParcela(floatval($dados["valor_parcela"][$i]));
 
                 $duplicata->setDataVencimento($dados["vencimento"][$i]);
 
@@ -213,18 +211,20 @@ class DaoCompra implements Dao {
                 $numero = $compra->getNumeroNota();
                 $serie  = $compra->getSerie();
                 $modelo = $compra->getModelo();
+                $idFornecedor = $compra->getFornecedor()->getId();
 
                 DB::table('compras')
                     ->where('num_nota', $numero)
                     ->where('serie', $serie)
                     ->where('modelo', $modelo)
-                    ->where('fornecedor_id', $compra->getFornecedor()->getId())
+                    ->where('fornecedor_id', $idFornecedor)
                     ->update(['status' => 'Cancelado']);
 
                 DB::table('contas_pagar')
                     ->where('num_nota', $numero)
                     ->where('serie', $serie)
                     ->where('modelo', $modelo)
+                    ->where('fornecedor_id', $idFornecedor)
                     ->update(['status' => 'Cancelado']);
 
                 $produtosCompra = $compra->getProdutos();
@@ -273,29 +273,32 @@ class DaoCompra implements Dao {
         $idFornecedor = $key[3];
 
         if (!$model) {
-            $dados = DB::table('compras')->where('num_nota', $numero)
-                                         ->where('serie', $serie)
-                                         ->where('modelo', $modelo)
-                                         ->where('fornecedor_id', $idFornecedor)
-                                         ->first();
+            $dados = DB::table('compras')
+                       ->where('num_nota', $numero)
+                       ->where('serie', $serie)
+                       ->where('modelo', $modelo)
+                       ->where('fornecedor_id', $idFornecedor)
+                       ->first();
 
             return $dados;
         }
 
-        $dadosCompra = DB::table('compras')->where('num_nota', $numero)
-                                           ->where('serie', $serie)
-                                           ->where('modelo', $modelo)
-                                           ->where('fornecedor_id', $idFornecedor)
-                                           ->first();
+        $dadosCompra = DB::table('compras')
+                         ->where('num_nota', $numero)
+                         ->where('serie', $serie)
+                         ->where('modelo', $modelo)
+                         ->where('fornecedor_id', $idFornecedor)
+                         ->first();
 
         if ($dadosCompra) {
             $compra = $this->create(get_object_vars($dadosCompra));
 
             // Buscar produtos
-            $dadosProdutos =  DB::table('produtos_compra')->where('num_nota', $numero)
-                                                          ->where('serie', $serie)
-                                                          ->where('modelo', $modelo)
-                                                          ->get(['produto_id', 'quantidade']);
+            $dadosProdutos =  DB::table('produtos_compra')
+                                ->where('num_nota', $numero)
+                                ->where('serie', $serie)
+                                ->where('modelo', $modelo)
+                                ->get(['produto_id', 'quantidade']);
 
             $produtos = array();
 
@@ -312,10 +315,12 @@ class DaoCompra implements Dao {
             }
 
             // Buscar parcelas
-            $dadosParcelas =  DB::table('contas_pagar')->where('num_nota', $numero)
-                                                       ->where('serie', $serie)
-                                                       ->where('modelo', $modelo)
-                                                       ->get(['data_vencimento', 'valor_parcela']);
+            $dadosParcelas =  DB::table('contas_pagar')
+                                ->where('num_nota', $numero)
+                                ->where('serie', $serie)
+                                ->where('modelo', $modelo)
+                                ->where('fornecedor_id', $idFornecedor)
+                                ->get(['data_vencimento', 'valor_parcela']);
 
             $contasPagar = array();
             $condicaoPagamento = $compra->getCondicaoPagamento();
@@ -325,6 +330,7 @@ class DaoCompra implements Dao {
                 $duplicata = new ContaPagar();
                 $duplicata->setCompra($compra);
                 $duplicata->setFornecedor($compra->getFornecedor());
+
                 $duplicata->setFormaPagamento($parcelas[$i]->getFormaPagamento());
 
                 $duplicata->setParcela($parcelas[$i]->getNumero());
