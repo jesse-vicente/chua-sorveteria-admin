@@ -5,8 +5,9 @@
             <th>Produto</th>
             <th>Unidade</th>
             <th>Categoria</th>
-            <th>Preço Custo</th>
             <th>Fornecedor</th>
+            <th>Preço Venda</th>
+            <th>Em Estoque</th>
         </tr>
     </thead>
 </table>
