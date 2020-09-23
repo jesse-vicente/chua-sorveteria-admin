@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\VendaRequest;
+use Illuminate\Http\Request;
 
 use App\Http\Dao\DaoVenda;
+use Facade\FlareClient\Http\Response;
+use Illuminate\Http\Response as HttpResponse;
 
 class VendaController extends Controller
 {
@@ -49,41 +52,49 @@ class VendaController extends Controller
      */
     public function store(VendaRequest $request)
     {
+        //
+    }
+
+    public function save(VendaRequest $request) {
         $venda = $this->daoVenda->create($request->all());
 
-        $store = $this->daoVenda->store($venda);
+        $response = $this->daoVenda->store($venda);
 
-        if ($store)
-            return redirect('vendas') ->with('success', 'Registro inserido com sucesso!');
-
-        return redirect('vendas')->with('error', 'Erro ao inserir registro.');
+        if ($response->getStatusCode() == 200) {
+            $request->session()->flash('success', 'Registro inserido com sucesso!');
+            return $response;
+        }
+        else {
+            $request->session()->flash('error', $response->getData()->message);
+            return $response;
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $key
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($key)
     {
-        $venda = $this->daoVenda->findById($id, true);
+        // $venda = $this->daoVenda->findByPrimaryKey($key, true);
 
-        if ($venda)
-            return view('vendas.show', compact('venda'));
+        // if ($venda)
+        //     return view('vendas.show', compact('venda'));
 
-        return redirect('vendas')->with('error', 'Registro não encontrado.');
+        // return redirect('vendas')->with('error', 'Registro não encontrado.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for canceling the specified resource.
      *
-     * @param  int  $id
+     * @param  string  $key
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function cancel($key)
     {
-        $venda = $this->daoVenda->findById($id, true);
+        $venda = $this->daoVenda->findByPrimaryKey($key, true);
 
         if ($venda)
             return view('vendas.create', compact('venda'));
@@ -95,12 +106,16 @@ class VendaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\VendaRequest  $request
-     * @param  int  $id
+     * @param  string  $key
      * @return \Illuminate\Http\Response
      */
-    public function update(VendaRequest $request, $id)
+    public function update(Request $request, $key)
     {
-        $update = $this->daoVenda->update($request, $id);
+        $request->validate([
+            'num_nota' => "unique:vendas,num_nota,$request->num_nota,num_nota"
+        ]);
+
+        $update = $this->daoVenda->update($request, $key);
 
         if ($update)
             return redirect('vendas') ->with('success', 'Registro alterado com sucesso!');
@@ -111,12 +126,12 @@ class VendaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  string  $key
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($key)
     {
-        $delete = $this->daoVenda->delete($id);
+        $delete = $this->daoVenda->delete($key);
 
         if ($delete)
             return redirect('vendas')->with('success', 'Registro removido com sucesso!');
@@ -124,8 +139,8 @@ class VendaController extends Controller
         return redirect('vendas')->with('error', 'Este registro não pode ser removido.');
     }
 
-    public function findById(int $id) {
-        $venda = $this->daoVenda->findById($id);
+    public function findByPrimaryKey(int $key) {
+        $venda = $this->daoVenda->findByPrimaryKey($key);
 
         return [ $venda ];
     }

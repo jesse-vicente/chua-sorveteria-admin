@@ -2,10 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\ContaReceberRequest;
+
+use App\Http\Dao\DaoContaReceber;
 
 class ContaReceberController extends Controller
 {
+    private DaoContaReceber $daoContaReceber;
+
+    public function __construct()
+    {
+        $this->daoContaReceber = new DaoContaReceber();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +22,8 @@ class ContaReceberController extends Controller
      */
     public function index()
     {
-        //
+        $contas = $this->daoContaReceber->all(true);
+        return view('contas-a-receber.index', compact('contas'));
     }
 
     /**
@@ -23,16 +33,16 @@ class ContaReceberController extends Controller
      */
     public function create()
     {
-        //
+        return view('contas-a-receber.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\ContaReceberRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ContaReceberRequest $request)
     {
         //
     }
@@ -40,35 +50,50 @@ class ContaReceberController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $key
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($key)
     {
-        //
+        $contaReceber = $this->daoContaReceber->findByPrimaryKey($key, true);
+
+        if ($contaReceber)
+            return view('contas-a-receber.show', compact('contaReceber'));
+
+        return redirect('contas-a-receber')->with('error', 'Registro não encontrado.');
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int  $key
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($key)
     {
-        //
+        $contaReceber = $this->daoContaReceber->findByPrimaryKey($key, true);
+
+        if ($contaReceber)
+            return view('contas-a-receber.create', compact('contaReceber'));
+
+        return redirect('contas-a-receber')->with('error', 'Registro não encontrado.');
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\ContaReceberRequest  $request
+     * @param  int  $key
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ContaReceberRequest $request, $key)
     {
-        //
+        $update = $this->daoContaReceber->update($request, $key);
+
+        if ($update)
+            return redirect('contas-a-receber') ->with('success', 'Registro alterado com sucesso!');
+
+        return redirect('contas-a-receber')->with('error', 'Erro ao alterar registro.');
     }
 
     /**

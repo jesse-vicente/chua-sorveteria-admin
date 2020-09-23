@@ -29,6 +29,7 @@ Route::get('/estados/all', 'EstadoController@all')->name('estados.all');
 Route::get('/cidades/all', 'CidadeController@all')->name('cidades.all');
 Route::get('/categorias/all', 'CategoriaController@all')->name('categorias.all');
 Route::get('/produtos/all', 'ProdutoController@all')->name('produtos.all');
+Route::get('/produtos/all/{action}', 'ProdutoController@all')->name('produtos.all');
 Route::get('/clientes/all', 'ClienteController@all')->name('clientes.all');
 Route::get('/fornecedores/all', 'FornecedorController@all')->name('fornecedores.all');
 Route::get('/formas-pagamento/all', 'FormaPagamentoController@all')->name('formas-pagamento.all');
@@ -38,8 +39,9 @@ Route::get('/paises/{id}/findById', 'PaisController@findById')->name('paises.fin
 Route::get('/estados/{id}/findById', 'EstadoController@findById')->name('estados.findById');
 Route::get('/cidades/{id}/findById', 'CidadeController@findById')->name('cidades.findById');
 Route::get('/categorias/{id}/findById', 'CategoriaController@findById')->name('categorias.findById');
-Route::get('/produtos/{id}/findById', 'ProdutoController@findById')->name('produtos.findById');
+Route::get('/produtos/{id}/findById/{action}', 'ProdutoController@findById')->name('produtos.findById');
 Route::get('/fornecedores/{id}/findById', 'FornecedorController@findById')->name('fornecedores.findById');
+Route::get('/clientes/{id}/findById', 'ClienteController@findById')->name('clientes.findById');
 
 Route::get('/formas-pagamento/{id}/findById', 'FormaPagamentoController@findById')->name('formas-pagamento.findById');
 Route::get('/condicoes-pagamento/{id}/findById', 'CondicaoPagamentoController@findById')->name('condicoes-pagamento.findById');
@@ -61,13 +63,19 @@ Route::resource('/produtos', 'ProdutoController');
 
 Route::get('/compras', 'CompraController@index')->name('compras.index');
 Route::get('/compras/create', 'CompraController@create')->name('compras.create');
-Route::get('/compras/{compra}', 'CompraController@cancel')->name('compras.cancel');
+Route::get('/compras/{compra}/cancel', 'CompraController@cancel')->name('compras.cancel');
 Route::post('/compras/save', 'CompraController@save')->name('compras.save');
 
 Route::put('/compras/{compra}/update', 'CompraController@update')->name('compras.update');
-Route::get('/compras/{compra}/findByPrimaryKey', 'FornecedorController@findByPrimaryKey')->name('compras.findByPrimaryKey');
+Route::get('/compras/{compra}/findByPrimaryKey', 'CompraController@findByPrimaryKey')->name('compras.findByPrimaryKey');
 
-Route::resource('/vendas', 'VendaController');
+Route::get('/vendas', 'VendaController@index')->name('vendas.index');
+Route::get('/vendas/create', 'VendaController@create')->name('vendas.create');
+Route::get('/vendas/{venda}/cancel', 'VendaController@cancel')->name('vendas.cancel');
+Route::post('/vendas/save', 'VendaController@save')->name('vendas.save');
+
+Route::put('/vendas/{venda}/update', 'VendaController@update')->name('vendas.update');
+Route::get('/vendas/{venda}/findByPrimaryKey', 'VendaController@findByPrimaryKey')->name('vendas.findByPrimaryKey');
 
 Route::resource('/contas-a-pagar', 'ContaPagarController');
 Route::resource('/contas-a-receber', 'ContaReceberController');

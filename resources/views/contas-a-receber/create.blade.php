@@ -1,5 +1,5 @@
 @extends('adminlte::page')
 
 @section('content')
-    @include('vendas.form')
+    @include('contas-a-receber.form')
 @endsection

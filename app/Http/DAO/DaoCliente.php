@@ -25,7 +25,7 @@ class DaoCliente implements Dao {
 
     public function all(bool $model = false) {
         if (!$model)
-            return DB::table('clientes')->get(['id', 'cliente', 'whatsapp']);
+            return DB::table('clientes')->get(['id', 'cliente', 'cpf']);
 
         $itens = DB::table('clientes')->get();
 

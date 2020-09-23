@@ -1,79 +1,68 @@
+<div class="alert alert-danger pb-0" id="form-errors" style="display: none;">
+    <ul class="list-unstyled"></ul>
+</div>
+
 <div class="form-row">
-    <div class="form-group required col-xl-05">
+    <div class="form-group required col-xl-2">
         <label>Modelo</label>
         <input
             type="number"
             id="modelo"
             name="modelo"
             class="form-control @error('modelo') is-invalid @enderror"
-            value="{{ old('modelo', isset($venda) ? $venda->getModelo() : null) }}"
+            value="{{ old('modelo', isset($venda) ? $venda->getModelo() : 55) }}"
+            required
         >
 
-        @error('modelo')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="modelo"></span>
     </div>
 
-    <div class="form-group required col-xl-05">
+    <div class="form-group required col-xl-2">
         <label>Série</label>
         <input
             type="text"
             id="serie"
             name="serie"
             class="form-control @error('serie') is-invalid @enderror"
-            value="{{ old('serie', isset($venda) ? $venda->getSerie() : null) }}"
+            value="{{ old('serie', isset($venda) ? $venda->getSerie() : 1) }}"
         >
 
-        @error('serie')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="serie"></span>
     </div>
 
-    <div class="form-group required col-xl-05">
+    <div class="form-group required col-xl-2">
         <label>Número</label>
         <input
             type="number"
-            id="numero"
-            name="numero"
-            class="form-control @error('numero') is-invalid @enderror"
-            value="{{ old('numero', isset($venda) ? $venda->getNumero() : null) }}"
+            id="num_nota"
+            name="num_nota"
+            class="form-control @error('num_nota') is-invalid @enderror"
+            value="{{ old('num_nota', isset($venda) ? $venda->getNumeroNota() : null) }}"
         >
 
-        @error('numero')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="num_nota"></span>
     </div>
 
-    <div class="form-group required col-xl-data">
-        <label>Data de Emissão</label>
+    <div class="form-group required col-xl-3">
+        <label>Data</label>
         <input
             type="date"
-            id="data_emissao"
-            name="data_emissao"
-            class="form-control @error('data_emissao') is-invalid @enderror"
-            value="{{ old('data_emissao', isset($venda) ? $venda->getDataEmissao() : null) }}"
+            id="data_venda"
+            name="data_venda"
+            class="form-control @error('data_venda') is-invalid @enderror"
+            value="{{ old('data_venda', isset($venda) ? $venda->getDataVenda() : date('Y-m-d')) }}"
         >
 
-        @error('data_emissao')
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="data_venda"></span>
     </div>
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
             type="number"
-            class="form-control @error('cliente_id') is-invalid @enderror"
+            class="form-control @error('fornecedor_id') is-invalid @enderror"
             name="cliente_id"
             id="cliente_id"
             data-input="#cliente"
@@ -81,21 +70,17 @@
             value="{{ old('cliente_id', isset($venda) ? $venda->getCliente()->getId() : null) }}"
         >
 
-        @error('cliente_id')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="cliente_id"></span>
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-10">
         <label>Cliente</label>
         <div class="input-group">
             <input
                 class="form-control"
                 name="cliente"
                 id="cliente"
-                value="{{ old('cliente', isset($venda) ? $venda->getCliente()->getRazaoSocial() : null) }}"
+                value="{{ old('cliente', isset($venda) ? $venda->getCliente()->getNome() : null) }}"
                 readonly
             >
 
@@ -112,6 +97,8 @@
                 </button>
             </div>
         </div>
+
+        <span class="invalid-feedback" role="alert" ref="cliente"></span>
     </div>
 
     <div id="modal-clientes" class="modal fade" data-field="cliente" role="dialog">
@@ -129,8 +116,20 @@
     </div>
 </div>
 
+<div class="d-flex mt-4">
+    <hr class="flex-grow-1">
+    <div class="px-4">
+        <h4 class="text-gray">
+            <i class="fa fa-shopping-cart mr-1"></i>
+            Produtos
+        </h4>
+    </div>
+    <hr class="flex-grow-1">
+</div>
+
+@empty($venda)
 <div class="form-row">
-    <div class="form-group col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -139,25 +138,17 @@
             id="produto_id"
             data-input="#produto"
             data-route="produtos"
-            value="{{ old('produto_id', isset($venda) ? $venda->getProduto()->getId() : null) }}"
-            disabled
+            readonly
         >
-
-        @error('produto_id')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-10">
         <label>Produto</label>
         <div class="input-group">
             <input
-                class="form-control"
+                class="form-control @error('produto') is-invalid @enderror"
                 name="produto"
                 id="produto"
-                value="{{ old('produto', isset($venda) ? $venda->getProduto()->getProduto() : null) }}"
                 readonly
             >
 
@@ -175,6 +166,8 @@
                 </button>
             </div>
         </div>
+
+        <span class="invalid-feedback" role="alert" ref="total_venda"></span>
     </div>
 
     <div id="modal-produtos" class="modal fade" data-field="produto" role="dialog">
@@ -185,41 +178,43 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    @include('produtos.search')
+                    @include('produtos.search-venda')
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endempty
 
-<div class="form-row">
-    <div class="col-xl-5">
-        @include('vendas.products-table')
-    </div>
-</div>
+@include('vendas.products-table')
 
-<div class="form-row">
-    <div class="form-group col-xl-1">
-        <label>Descontos (%)</label>
+<div class="form-row mt-2">
+    <div class="form-group col-xl-2">
+        <label>Descontos</label>
 
-        <input
-            type="number"
-            id="despesas"
-            name="despesas"
-            placeholder="0,00"
-            class="form-control @error('despesas') is-invalid @enderror"
-            value="{{ old('despesas', isset($venda) ? $venda->getOutrasDespesas() : null) }}"
-            disabled
-        >
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">R$</span>
+            </div>
 
-        @error('despesas')
+            <input
+                type="number"
+                id="descontos"
+                name="descontos"
+                placeholder="0,00"
+                class="form-control @error('descontos') is-invalid @enderror"
+                value="{{ old('descontos', isset($venda) ? number_format($venda->getDescontos(), 2) : null) }}"
+            >
+
+            @error('descontos')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
             </span>
-        @enderror
+            @enderror
+        </div>
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group col-xl-2">
         <label>Total Produtos</label>
 
         <div class="input-group">
@@ -233,20 +228,16 @@
                 name="total_produtos"
                 placeholder="0,00"
                 class="form-control @error('total_produtos') is-invalid @enderror"
-                value="{{ old('total_produtos', isset($venda) ? $venda->getTotalProdutos() : null) }}"
+                value="{{ old('total_produtos', isset($venda) ? number_format($venda->getTotalProdutos(), 2) : null) }}"
                 readonly
             >
 
-            @error('total_produtos')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
-            @enderror
+            <span class="invalid-feedback" role="alert" ref="total_produtos"></span>
         </div>
     </div>
 
-    <div class="form-group col-xl-1">
-        <label>Total Venda</label>
+    <div class="form-group col-xl-2">
+        <label>Total da Venda</label>
 
         <div class="input-group">
             <div class="input-group-prepend">
@@ -255,25 +246,25 @@
 
             <input
                 type="number"
-                id="total_venda"
+                id="total_pagar"
                 name="total_venda"
                 placeholder="0,00"
                 class="form-control @error('total_venda') is-invalid @enderror"
-                value="{{ old('total_venda', isset($venda) ? $venda->getTotal() : null) }}"
+                value="{{ old('total_venda', isset($venda) ? number_format($venda->getTotalVenda(), 2) : null) }}"
                 readonly
             >
 
             @error('total_venda')
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $message }}</strong>
-                </span>
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
             @enderror
         </div>
     </div>
 </div>
 
-<div class="form-row">
-    <div class="form-group col-xl-1">
+<div class="form-row mt-4">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -283,17 +274,13 @@
             data-input="#condicao_pagamento"
             data-route="condicoes-pagamento"
             value="{{ old('condicao_pagamento_id', isset($venda) ? $venda->getCondicaoPagamento()->getId() : null) }}"
-            disabled
+            readonly
         >
 
-        @error('condicao_pagamento_id')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
+        <span class="invalid-feedback" role="alert" ref="condicao_pagamento_id"></span>
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-10">
         <label>Condição de Pagamento</label>
         <div class="input-group">
             <input
@@ -336,14 +323,10 @@
     </div>
 </div>
 
-<div class="form-row">
-    <div class="col-xl-5">
-        @include('contas-a-receber.table')
-    </div>
-</div>
+@include('vendas.duplicatas-table')
 
-<div class="form-row">
-    <div class="col-xl-5">
+<div class="form-row mt-4">
+    <div class="col-xl-12">
         <label for="observacoes">Observações</label>
         <textarea name="observacoes" id="observacoes" class="form-control" rows="3">{{ old('observacoes', isset($venda) ? $venda->getObservacoes() : null) }}</textarea>
     </div>
