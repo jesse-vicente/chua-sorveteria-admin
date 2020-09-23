@@ -90,8 +90,9 @@ $(document).ready(function() {
 
     var parcelas = Number($("#total_parcelas").val());
 
-    const table = $('#parcelas-table').DataTable({
+    $('#parcelas-table').DataTable({
         "dom": '<"row d-none"<"col-md-4"f>l>rtip',
+        bSort: false,
     });
 
     // table.clear().draw();
@@ -136,8 +137,6 @@ $(document).ready(function() {
         const prevRow = newRow.prev();
 
         const index =  prevRow.index() + 1;
-
-        console.log(index)
 
         newRow.find(".forma-pagamento-id").attr("data-input", `#forma_pagamento_${index}`);
         newRow.find(".forma-pagamento").attr("id", `forma_pagamento_${index}`);
@@ -196,8 +195,6 @@ $(document).ready(function() {
             // if (Math.round(percentual) === 100)
             //     percentual = 100;
         });
-
-        console.log(percentual)
 
         return percentual;
     }

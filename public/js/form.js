@@ -1,6 +1,6 @@
 var table, listaProdutos, listaDuplicatas = null;
-
 var fieldIndex = 0;
+var sofreuAlteracao = false;
 
 var adicionais = {
     "frete"    : Number($("#frete").val()),
@@ -8,10 +8,12 @@ var adicionais = {
     "despesas" : Number($("#despesas").val()),
 }
 
-var sofreuAlteracao = false;
+var descontos = Number($("#descontos").val());
+
+const compra = $("#form-compra").length;
+const venda  = $("#form-venda").length;
 
 $(document).ready(function() {
-
     tableList = $("#table").DataTable({
         dom: "<'row options-bar'<'col-md-4'f>l>rtip",
         fixedHeader: true,
@@ -80,26 +82,48 @@ $(document).ready(function() {
     const confirmDelete = Swal.mixin({
         customClass: {
             confirmButton: 'btn btn-danger mr-2',
-            cancelButton:  'btn btn-secondary'
+            cancelButton:  'btn btn-outline-secondary'
         },
         buttonsStyling: false
     });
 
     const confirmCancel = Swal.mixin({
         customClass: {
+            confirmButton: 'btn btn-outline-danger',
+        },
+        buttonsStyling: false
+    });
+
+    const confirmCancelForm = Swal.mixin({
+        customClass: {
             confirmButton: 'btn btn-primary',
         },
         buttonsStyling: false
     });
 
-    // Cancelar
+    // Botão Cancelar (compra/venda)
+    $("#btn-cancel").click(function() {
+        confirmCancel.fire({
+            title: "Atenção!",
+            text: "Os dados referente a este registro serão descartados. Deseja mesmo prosseguir?",
+            icon: "warning",
+            showCloseButton: true,
+            confirmButtonText: "Sim, prosseguir com o cancelamento.",
+        }).then((result) => {
+            if (result.value) {
+                $("#form-cancel").submit();
+            }
+        })
+    });
+
+    // Botão Cancelar (voltar tela consulta)
     $(".btn-outline-secondary").click(function(e) {
         if (sofreuAlteracao) {
             e.preventDefault();
 
             href = $(this).attr('href');
 
-            confirmCancel.fire({
+            confirmCancelForm.fire({
                 title: "Atenção!",
                 text: "Os dados informados serão perdidos.",
                 icon: "warning",
@@ -112,14 +136,14 @@ $(document).ready(function() {
         }
     });
 
-    // Excluir
-    $("#delete-entry").not(".delete").click(function() {
+    // Botão Excluir
+    $("#btn-delete").not(".delete").click(function() {
         confirmDelete.fire({
-            title: "Aviso!",
-            text: "Esta operação não poderá ser revertida.",
-            icon: "warning",
+            title: "Você tem certeza?",
+            text: "Deseja realmente excluir este registro? Esta operação não poderá ser desfeita.",
+            icon: "error",
             showCancelButton: true,
-            confirmButtonText: "Remover",
+            confirmButtonText: "Excluir",
             cancelButtonText: "Cancelar",
         }).then((result) => {
             if (result.value) {
@@ -133,59 +157,33 @@ $(document).ready(function() {
         $("form").submit();
     });
 
-    $("#form-compra").submit(function(e) {
+    $("#form-compra, #form-venda").submit(function(e) {
         e.preventDefault();
 
         $("#form-errors").hide();
         $('#form-errors .list-unstyled li').remove();
 
-        $.post("save", $(this).serialize(), function(data) {
-            console.log(data)
-        })
+        const routeList = ($(this).attr("id") == "form_compra") ? '/compras' : '/vendas';
+
+        $.post("save", $(this).serialize(), function(data) { })
 
         .done(function(data) {
-            console.table(data);
-            // window.location.href = '/compras';
+            if (data.success)
+                window.location.href = routeList;
         })
 
         .fail(function (request, status, error) {
-            $("html, body").animate({scrollTop: "0px"}, 300);
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "preventDuplicates": true,
+            }
 
-            $.each(request.responseJSON.errors, function(key,value) {
-                console.log(key + ' - ' + value)
-                $(`#form-errors .list-unstyled`).append(`<li><i class='fa fa-info-circle'></i> ${value}</li>`);
-            });
-
-            $("#form-errors").slideDown();
-        });
-    });
-
-    $("#form-compra-cancel").submit(function(e) {
-        e.preventDefault();
-
-        $('.invalid-feedback').hide();
-
-        $.post(`${$(this).attr('key')}/update`, $(this).serialize(), function(data) {
-            console.table(data)
-        })
-
-        .done(function(data) {
-            // window.location.href = '/compras';
-        })
-
-        .fail(function (request, status, error) {
-            // $('[name="mandapName"]').next('span').html(request.responseJSON.errors.mandapName);
-            //.......
-            // console.table(request.responseJSON.errors)
-            $.each(request.responseJSON.errors, function(key,value) {
-                console.log(key + ' - ' + value)
-                $(`.invalid-feedback[ref='${key}']`).html(`<strong>${value}</strong>`).show();
+            $.each(request.responseJSON.errors, function(key, value) {
+                toastr["error"](value)
             });
         });
     });
-
-    // $(".modal form").attr("action", "#");
-    // $(".modal form").attr("onsubmit", "return false");
 
     $(".modal form").submit(function(e) {
 
@@ -194,9 +192,6 @@ $(document).ready(function() {
     $(".btn-save-modal").click(function() {
         const form = $(this).parents(".modal").find("form");
         const route = form.data("route");
-
-        // // console.log(route)
-        // const data = form.serialize();
 
         console.log(data)
 
@@ -265,30 +260,43 @@ $(document).ready(function() {
             return;
 
         const route = $(this).data("route");
-
         const input = $($(this).data("input"));
 
-        $.get(`/${route}/${id}/findById`, function(data) {
+        let action = '';
 
-            const chave = input.attr("id");
+        if (route == 'produtos')
+            action = compra ? 'compra' : 'venda';
+
+        const routeURL = action ? `/${route}/${id}/findById/${action}` : `/${route}/${id}/findById`;
+
+        $.get(routeURL, function(data) {
+
+            let chave = input.attr("id");
 
             const dados = data[0];
 
-            if (dados)
-                input.val(dados[chave])
-            else
-                input.val("Nenhum registro encontrado.");
+            if (chave.substr(0, 15) == 'forma_pagamento')
+                chave = chave.substr(0, 15);
+
+            (dados) ? input.val(dados[chave]) : input.val("Nenhum registro encontrado.");
 
             if (route === 'produtos') {
-                const detalhesProduto = {
+                let detalhesProduto = {
                     'id'        : dados['id'],
                     'descricao' : dados['produto'],
                     'categoria' : dados['categoria'],
                     'unidade'   : dados['unidade'],
                 };
 
+                if (venda) {
+                    detalhesProduto.preco = dados['preco_venda'];
+                    detalhesProduto.estoque = dados['estoque'];
+                }
+
                 mostrarDetalhesProduto(detalhesProduto)
             } else if (route === 'condicoes-pagamento') {
+                //
+            } else if (route === 'formas-pagamento') {
                 //
             }
         });
@@ -307,16 +315,23 @@ $(document).ready(function() {
         const descricao = data[1];
 
         if (field === 'forma_pagamento[]') {
-            $(`input[name='forma_pagamento_id[]']`).eq(fieldIndex).val(id);
-            $(`input[name='forma_pagamento[]']`).eq(fieldIndex).val(descricao);
+            $('.forma_pagamento_id').eq(fieldIndex).val(id);
+            $('.forma_pagamento').eq(fieldIndex).val(descricao);
         }
         else if (field === 'produto') {
-            const detalhesProduto = {
+            let detalhesProduto = {
                 'id'        : id,
                 'descricao' : descricao,
                 'unidade'   : $(this).find("td").eq(2).text(),
-                // 'categoria' : $(this).find("td").eq(3).text(),
+                'categoria' : $(this).find("td").eq(3).text(),
+                // 'custoUltimaCompra' : $(this).find("td").eq(5).text(),
+                // 'estoque' : $(this).find("td").eq(6).text(),
             };
+
+            if (venda) {
+                detalhesProduto.preco = Number($(this).find("td").eq(5).text());
+                detalhesProduto.estoque = Number($(this).find("td").eq(6).text());
+            }
 
             mostrarDetalhesProduto(detalhesProduto);
         }
@@ -329,21 +344,28 @@ $(document).ready(function() {
             let duplicatas = Array();
 
             parcelas.map(function(parcela) {
-                const dataEmissao = new Date($("#data_emissao").val());
+                const inputData = $("#form-compra").length ? $("#data_emissao") : $("#data_venda");
+                const dataEmissao = new Date(inputData.val());
 
                 var prazo = new Date();
 
                 prazo.setDate(dataEmissao.getDate() + parcela.prazo + 1);
 
                 const numParcela  = `${$("#num_nota").val()}/${parcela.numero}`;
+                const formaPagamento = parcela.forma_pagamento;
                 const vencimento = prazo.toLocaleDateString();
-                const valParcela = 'R$ ' + getPercentual(totalPagar, parcela.porcentagem);
+                const valParcela = getPercentual(totalPagar, parcela.porcentagem);
+                const valParcelaTexto = formatarValor(valParcela);
 
-                const duplicata = [
+                const duplicata = {
                     numParcela,
+                    formaPagamento,
                     vencimento,
                     valParcela,
-                ];
+                    valParcelaTexto,
+                };
+
+                console.table(duplicata);
 
                 duplicatas.push(duplicata);
             });
@@ -384,10 +406,9 @@ $(document).ready(function() {
         }
     });
 
-    var route = null;
-
     $(document).on("click", ".btn-search", function(e) {
         e.preventDefault();
+        let route = null;
 
         if ($("#table").length)
             route = $("#table").data("route");
@@ -399,8 +420,15 @@ $(document).ready(function() {
 
         const val = Number($($(this).data("input")).val());
 
+        let action = '';
+
+        if (route == 'produtos')
+            action = compra ? 'compra' : 'venda';
+
+        const routeURL = action ? `/${route}/all/${action}` : `/${route}/all`;
+
         if (!val) {
-            $.get(`/${route}/all`, function(data) {
+            $.get(routeURL, function(data) {
 
              })
 
@@ -464,7 +492,7 @@ function fillDataTable(result, route) {
 
 function getPercentual(num, per)
 {
-    return ((num / 100) * per).toFixed(2);
+    return (num / 100) * per;
 }
 
 // COMPRA E VENDA
@@ -472,7 +500,7 @@ function mostrarDetalhesProduto(detalhesProduto, alterar = false) {
     $("#produto_cod").val(detalhesProduto.id);
     $("#descricao").val(detalhesProduto.descricao);
     $("#unidade").val(detalhesProduto.unidade);
-    // $("#categoria").val(detalhesProduto.categoria);
+    $("#categoria").val(detalhesProduto.categoria);
 
     if (alterar) {
         $("#quantidade").val(detalhesProduto.quantidade);
@@ -484,6 +512,11 @@ function mostrarDetalhesProduto(detalhesProduto, alterar = false) {
         $("#quantidade, #valor, #total").val('');
     }
 
+    if (venda) {
+        $("#valor").val(detalhesProduto.preco.toFixed(2));
+        $("#estoque").val(detalhesProduto.estoque);
+    }
+
     $("#modal-detalhes-produto").modal("show");
 }
 
@@ -491,60 +524,51 @@ function listarProdutos(dadosProduto) {
     if (listaProdutos) {
         listaProdutos.rows( { selected: true } ).remove().draw(false);
     } else {
-        // listaProdutos = gerarListaProdutos();
         gerarListaProdutos();
     }
 
-    // listaProdutos.row.add(dadosProduto).draw();
-    // console.table(dadosProduto)
-
     listaProdutos.row.add([
-        `<input type='hidden' class='produto_id'  name='produto_id[]'  value='${dadosProduto[0]}' /> ${dadosProduto[0]}`,
-        `<input type='hidden' class='produto'     name='produto[]'     value='${dadosProduto[1]}' /> ${dadosProduto[1]}`,
-        `<input type='hidden' class='produto_und' name='produto_und[]' value='${dadosProduto[2]}' /> ${dadosProduto[2]}`,
-        `<input type='hidden' class='produto_qtd' name='produto_qtd[]' value='${dadosProduto[3]}' /> ${dadosProduto[3]}`,
-        `<input type='hidden' class='produto_val' name='produto_val[]' value='${dadosProduto[4]}' /> ${dadosProduto[4]}`,
-        `<input type='hidden' class='produto_tot' name='produto_tot[]' value='${dadosProduto[5]}' /> ${dadosProduto[5]}`,
+        `<input type='hidden' class='produto_id'  name='produto_id[]'  value='${dadosProduto.id}' /> ${dadosProduto.id}`,
+        `<input type='hidden' class='produto'     name='produto[]'     value='${dadosProduto.descricao}' /> ${dadosProduto.descricao}`,
+        `<input type='hidden' class='produto_und' name='produto_und[]' value='${dadosProduto.unidade}' /> ${dadosProduto.unidade}`,
+        `<input type='hidden' class='produto_cat' name='produto_cat[]' value='${dadosProduto.categoria}' /> ${dadosProduto.categoria}`,
+        `<input type='hidden' class='produto_qtd' name='produto_qtd[]' value='${dadosProduto.qtd}' /> ${dadosProduto.qtd}`,
+        `<input type='hidden' class='produto_val' name='produto_val[]' value='${dadosProduto.val}' /> ${dadosProduto.valTexto}`,
+        `<input type='hidden' class='produto_tot' name='produto_tot[]' value='${dadosProduto.total}' /> ${dadosProduto.totalTexto}`,
     ]).draw(false);
 }
 
 function gerarListaProdutos() {
+    const tituloValor = $("#form-compra").length ? 'Valor' : 'Preço';
+
     if (!$.fn.DataTable.isDataTable('#produtos-table')) {
         listaProdutos = $('#produtos-table').DataTable({
             dom: '<"row"<"col-md-4">>rt',
             columns: [
                 { title: 'Cód.', width: '5%', className: 'text-center' },
-                { title: 'Produto', width: '35%' },
+                { title: 'Produto', width: '30%' },
                 { title: 'Und.', width: '5%', className: 'text-center' },
+                { title: 'Categoria', width: '25%' },
                 { title: 'Qtd.', width: '5%', className: 'text-center' },
-                { title: 'Valor', width: '15%', className: 'text-right' },
-                { title: 'Valor Total', width: '20%', className: 'text-right' },
+                { title: tituloValor, width: '15%', className: 'text-right' },
+                { title: 'Subtotal', width: '15%', className: 'text-right' },
                 {
                     title: 'Ações',
-                    width: '20%',
-                    className: 'text-center',
+                    className: 'px-2 text-center',
                     render: data =>
                         `<div class="btn-group btn-group-sm">
-                            <button class='btn btn-warning alterar'>
+                            <button class='btn btn-warning' onclick='alterarProduto(this)'>
                                 <i class="fa fa-edit text-white"></i>
                             </button>
-                            <button class='btn btn-danger remover'>
+                            <button class='btn btn-danger' onclick='removerProduto(this)'>
                                 <i class="fa fa-trash-alt text-white"></i>
                             </button>
                          </div>`
                 }
             ],
-            columnDefs: [
-                {
-                    targets: 0,
-                        "className": "select-checkbox",
-                    checkboxes: {
-                        "selectRow": true
-                    }
-                }
-            ],
-            select: {
-                style: "multi"
+            fixedHeader: {
+                header: true,
+                footer: true,
             },
             bSort: false,
             language: {
@@ -552,8 +576,6 @@ function gerarListaProdutos() {
             }
         });
     }
-
-    $("#produtos-table .dataTables_empty").addClass("bg-warning");
 }
 
 function listarDuplicatas(duplicatas) {
@@ -561,9 +583,10 @@ function listarDuplicatas(duplicatas) {
 
     duplicatas.map(function(duplicata) {
         listaDuplicatas.row.add([
-            `<input type='hidden' class='parcela'       name='parcela[]'       value='${duplicata[0]}' /> ${duplicata[0]}`,
-            `<input type='hidden' class='vencimento'    name='vencimento[]'    value='${duplicata[1]}' /> ${duplicata[1]}`,
-            `<input type='hidden' class='valor_parcela' name='valor_parcela[]' value='${duplicata[2]}' /> ${duplicata[2]}`,
+            `<input type='hidden' class='parcela'         name='parcela[]'         value='${duplicata.numParcela}' /> ${duplicata.numParcela}`,
+            `<input type='hidden' class='forma_pagamento' name='forma_pagamento[]' value='${duplicata.formaPagamento}' /> ${duplicata.formaPagamento}`,
+            `<input type='hidden' class='vencimento'      name='vencimento[]'      value='${duplicata.vencimento}' /> ${duplicata.vencimento}`,
+            `<input type='hidden' class='valor_parcela'   name='valor_parcela[]'   value='${duplicata.valParcela}' /> ${duplicata.valParcelaTexto}`,
         ]).draw(false);
     });
 }
@@ -574,12 +597,19 @@ function gerarListaDuplicatas() {
             dom: '<"row"<"col-md-4">>rt',
             columns: [
                 { title: 'Duplicata' },
-                { title: 'Vencimento' },
-                { title: 'Valor da Parcela' },
+                { title: 'Forma de Pagamento' },
+                {
+                    title: 'Vencimento',
+                    className: 'text-center',
+                },
+                {
+                    title: 'Valor da Parcela',
+                    className: 'text-right',
+                },
             ],
             bSort: false,
             language: {
-                emptyTable: "Condição de Pagamento não informada."
+                emptyTable: "Nenhuma condição de pagamento selecionada."
             }
         });
     }
@@ -588,8 +618,6 @@ function gerarListaDuplicatas() {
 
     if ($("#card-duplicatas").hasClass("collapsed-card"))
         $("#card-duplicatas .card-tools .btn").click();
-
-    $("#duplicatas-table .dataTables_empty").addClass("bg-warning");
 }
 
 function bloquearCampos() {
@@ -609,32 +637,41 @@ function calcularAdicionais() {
     return adicionais.frete + adicionais.seguro + adicionais.despesas;
 }
 
+function calcularDescontos() {
+    return descontos;
+}
+
 function calcularTotal(total = 0) {
     if (listaProdutos) {
-
         let totalPagar    = 0;
         let totalProdutos = 0;
 
         const itens = listaProdutos.$('tbody tr');
 
         itens.map(function(i, item) {
-
             const qtd   = Number($(item).find(".produto_qtd").val());
-            const val   = parseFloat(Number($(item).find(".produto_val").val().replace("R$ ", "")));
-            const total = parseFloat(Number($(item).find(".produto_tot").val().replace("R$ ", "")));
+            const val   = Number($(item).find(".produto_val").val());
+            const total = Number($(item).find(".produto_tot").val());
 
             totalProdutos += val * qtd;
             totalPagar += total;
         });
 
-        totalPagar += calcularAdicionais();
-
-        console.log(totalProdutos);
-        console.log(totalPagar);
+        if (compra)
+            totalPagar += calcularAdicionais();
+        else
+            totalPagar -= calcularDescontos();
 
         $("#total_produtos").val(totalProdutos.toFixed(2));
-        $("#total_pagar").val(totalPagar.toFixed(2));
-        $("#card-produtos strong").html(`<span class="mr-2 text-gray">Total à Pagar: </span>R$ ${totalPagar.toFixed(2)}`);
+        $("#total_pagar, #total_venda").val(totalPagar.toFixed(2));
+        $("#card-produtos strong").html(`<span class="mr-2 text-gray">Total à Pagar: </span>${formatarValor(totalPagar)}`);
     }
+}
+
+function formatarValor(valor) {
+    return valor.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+    });
 }
 
