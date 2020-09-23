@@ -18,7 +18,7 @@
                 <td>{{ $produto->getProduto() }}</td>
                 <td>{{ $produto->getCategoria()->getCategoria() }}</td>
                 <td>{{ $produto->getFornecedor()->getRazaoSocial() }}</td>
-                <td>{{ $produto->getEstoque() }}</td>
+                <td>{{ $produto->getEstoque() ?? '-' }}</td>
                 <td>R$ {{ $produto->getPrecoVenda() }}</td>
                 <td class="text-center">
                     <div class="row flex-nowrap justify-content-center">

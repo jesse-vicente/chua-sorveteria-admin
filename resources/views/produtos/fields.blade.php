@@ -175,8 +175,8 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-3">
-        <label>Estoque Atual</label>
+    <div class="form-group col-xl-2">
+        <label>Estoque</label>
         <input
             type="number"
             id="estoque"
@@ -206,7 +206,7 @@
                 id="preco_custo"
                 name="preco_custo"
                 class="form-control @error('preco_custo') is-invalid @enderror"
-                value="{{ old('preco_custo', isset($produto) ? $produto->getPrecoCusto() : null) }}"
+                value="{{ old('preco_custo', isset($produto) ? number_format($produto->getPrecoCusto(), 2) : null) }}"
                 readonly
             >
 
@@ -231,7 +231,7 @@
                 id="preco_venda"
                 name="preco_venda"
                 class="form-control @error('preco_venda') is-invalid @enderror"
-                value="{{ old('preco_venda', isset($produto) ? $produto->getPrecoVenda() : null) }}"
+                value="{{ old('preco_venda', isset($produto) ? number_format($produto->getPrecoVenda(), 2) : null) }}"
             >
 
             @error('preco_venda')
@@ -242,8 +242,8 @@
         </div>
     </div>
 
-    <div class="form-group col-xl-3">
-        <label style="font-size: 0.95rem;">Custo Últ. Compra</label>
+    <div class="form-group col-xl-4">
+        <label>Custo Última Compra</label>
 
         <div class="input-group">
             <div class="input-group-prepend">
@@ -255,7 +255,7 @@
                 id="custo_ultima_compra"
                 name="custo_ultima_compra"
                 class="form-control @error('custo_ultima_compra') is-invalid @enderror"
-                value="{{ old('custo_ultima_compra', isset($produto) ? $produto->getCustoUltimaCompra() : null) }}"
+                value="{{ old('custo_ultima_compra', isset($produto) ? number_format($produto->getCustoUltimaCompra(), 2) : null) }}"
                 readonly
             >
 
