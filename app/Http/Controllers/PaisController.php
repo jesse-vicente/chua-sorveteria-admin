@@ -67,10 +67,17 @@ class PaisController extends Controller
 
         $store = $this->daoPais->store($pais);
 
-        if ($store)
-            return back()->withInput()->with('success', 'Registro inserido com sucesso!');
+        if ($store) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro inserido com sucesso!'
+            ]);
+        }
 
-        return back()->withInput()->with('error', 'Erro ao inserir registro.');
+        return response()->json([
+            'error' => true,
+            'message' => 'Erro ao inserir registro!'
+        ]);
     }
 
     /**

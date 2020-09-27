@@ -50,25 +50,22 @@ class CompraController extends Controller
      */
     public function store(CompraRequest $request)
     {
-        // $compra = $this->daoCompra->create($request->all());
-
-        // $store = $this->daoCompra->store($compra);
-
-        // if ($store)
-        //     return redirect('compras')->with('success', 'Registro inserido com sucesso!');
-
-        // return redirect('compras')->with('error', 'Erro ao inserir registro.');
+        //
     }
 
     public function save(CompraRequest $request) {
         $compra = $this->daoCompra->create($request->all());
 
-        $store = $this->daoCompra->store($compra);
+        $response = $this->daoCompra->store($compra);
 
-        if ($store)
+        if ($response->getStatusCode() == 200) {
             $request->session()->flash('success', 'Registro inserido com sucesso!');
-        else
-            $request->session()->flash('error', 'Erro ao inserir registro.');
+            return $response;
+        }
+        else {
+            $request->session()->flash('error', $response->getData()->message);
+            return $response;
+        }
     }
 
     /**

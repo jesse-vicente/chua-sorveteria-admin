@@ -192,7 +192,11 @@ class DaoCompra implements Dao {
             }
 
             DB::commit();
-            return true;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro inserido com sucesso!'
+            ]);
 
         } catch (\Throwable $th) {
             DB::rollBack();

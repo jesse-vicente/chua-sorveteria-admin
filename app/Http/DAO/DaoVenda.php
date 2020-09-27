@@ -162,8 +162,12 @@ class DaoVenda implements Dao {
 
                 $estoque    = intval($produtoEstoque->getEstoque());
 
-                if ($estoque == 0)
-                    return response()->json(['error' => true, 'message' => 'Produto indisponível no estoque!'], 400);
+                if ($estoque == 0) {
+                    return response()->json([
+                        'error' => true,
+                        'message' => 'Produto indisponível no estoque!'
+                    ], 400);
+                }
 
                 $estoque -= $produtoVenda->getQuantidade();
 
@@ -175,7 +179,12 @@ class DaoVenda implements Dao {
             }
 
             DB::commit();
-            return response()->json(['success' => true, 'message' => 'Registro inserido com sucesso!']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro inserido com sucesso!'
+            ]);
+
         } catch (\Throwable $th) {
             DB::rollBack();
             dd($th->getMessage());
