@@ -67,7 +67,7 @@
             id="cliente_id"
             data-input="#cliente"
             data-route="clientes"
-            value="{{ old('cliente_id', isset($venda) ? $venda->getCliente()->getId() : 0) }}"
+            value="{{ old('cliente_id', isset($venda) ? $venda->getCliente()->getId() : null) }}"
         >
 
         <span class="invalid-feedback" role="alert" ref="cliente_id"></span>
@@ -275,7 +275,7 @@
             id="condicao_pagamento_id"
             data-input="#condicao_pagamento"
             data-route="condicoes-pagamento"
-            value="{{ old('condicao_pagamento_id', isset($venda) ? $venda->getCondicaoPagamento()->getId() : 0) }}"
+            value="{{ old('condicao_pagamento_id', isset($venda) ? $venda->getCondicaoPagamento()->getId() : null) }}"
             readonly
         >
 

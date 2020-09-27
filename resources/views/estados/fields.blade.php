@@ -2,11 +2,11 @@
     <div class="form-group col-xl-2">
         <label>Código</label>
         <input
-            type="number"
+            type="text"
             id="id"
             name="id"
             class="form-control @error('id') is-invalid @enderror"
-            value="{{ old('id', isset($estado) ? $estado->getId() : 0) }}"
+            value="{{ old('id', isset($estado) ? $estado->getId() : null) }}"
             readonly
         >
 
@@ -63,7 +63,7 @@
             name="pais_id"
             data-input="#pais"
             data-route="paises"
-            value="{{ old('pais_id', isset($estado) ? $estado->getPais()->getId() : 0) }}"
+            value="{{ old('pais_id', isset($estado) ? $estado->getPais()->getId() : null) }}"
         >
 
         @error('pais_id')

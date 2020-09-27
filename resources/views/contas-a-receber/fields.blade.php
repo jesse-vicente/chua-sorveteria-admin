@@ -60,7 +60,7 @@
             id="cliente_id"
             data-input="#cliente"
             data-route="clientes"
-            value="{{ old('cliente_id', isset($contaReceber) ? $contaReceber->getCliente()->getId() : 0) }}"
+            value="{{ old('cliente_id', isset($contaReceber) ? $contaReceber->getCliente()->getId() : null) }}"
         >
 
         @error('cliente_id')
@@ -123,7 +123,7 @@
             id="forma_pagamento_id"
             data-input="#forma_pagamento"
             data-route="formas-pagamento"
-            value="{{ old('forma_pagamento_id', isset($contaReceber) ? $contaReceber->getFormaPagamento()->getId() : 0) }}"
+            value="{{ old('forma_pagamento_id', isset($contaReceber) ? $contaReceber->getFormaPagamento()->getId() : null) }}"
         >
 
         @error('forma_pagamento_id')

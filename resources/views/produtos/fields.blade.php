@@ -2,11 +2,11 @@
     <div class="form-group col-xl-2">
         <label>Código</label>
         <input
-            type="number"
+            type="text"
             id="id"
             name="id"
             class="form-control @error('id') is-invalid @enderror"
-            value="{{ old('id', isset($produto) ? $produto->getId() : 0) }}"
+            value="{{ old('id', isset($produto) ? $produto->getId() : null) }}"
             readonly
         >
 
@@ -62,7 +62,7 @@
             id="fornecedor_id"
             data-input="#fornecedor"
             data-route="fornecedores"
-            value="{{ old('fornecedor_id', isset($produto) ? $produto->getFornecedor()->getId() : 0) }}"
+            value="{{ old('fornecedor_id', isset($produto) ? $produto->getFornecedor()->getId() : null) }}"
         >
 
         @error('fornecedor_id')
@@ -123,7 +123,7 @@
             id="categoria_id"
             data-input="#categoria"
             data-route="categorias"
-            value="{{ old('categoria_id', isset($produto) ? $produto->getCategoria()->getId() : 0) }}"
+            value="{{ old('categoria_id', isset($produto) ? $produto->getCategoria()->getId() : null) }}"
         >
 
         @error('categoria_id')

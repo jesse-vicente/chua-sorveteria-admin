@@ -2,11 +2,11 @@
     <div class="form-group col-xl-1">
         <label>Código</label>
         <input
-            type="number"
+            type="text"
             id="id"
             name="id"
             class="form-control @error('id') is-invalid @enderror"
-            value="{{ old('id', isset($funcionario) ? $funcionario->getId() : 0) }}"
+            value="{{ old('id', isset($funcionario) ? $funcionario->getId() : null) }}"
             readonly
         >
 
@@ -174,7 +174,7 @@
             id="cidade_id"
             data-input="#cidade"
             data-route="cidades"
-            value="{{ old('cidade_id', isset($funcionario) ? $funcionario->getCidade()->getId() : 0) }}"
+            value="{{ old('cidade_id', isset($funcionario) ? $funcionario->getCidade()->getId() : null) }}"
         >
 
         @error('cidade_id')
