@@ -223,7 +223,7 @@
 </div>
 
 <div id="modal-formas-pagamento" class="modal fade" data-field="forma_pagamento[]" role="dialog">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header align-items-center py-2 bg-dark">
                 <h3 class="modal-title">Buscar Forma de Pagamento</h3>

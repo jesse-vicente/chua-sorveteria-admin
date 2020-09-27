@@ -103,7 +103,7 @@
     </div>
 
     <div id="modal-estados" class="modal fade" data-field="estado" role="dialog">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar Estado</h3>

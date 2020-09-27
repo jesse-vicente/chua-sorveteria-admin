@@ -214,7 +214,7 @@
     </div>
 
     <div id="modal-cidades" class="modal fade" data-field="cidade" role="dialog">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar Cidade</h3>

@@ -99,7 +99,7 @@
     </div>
 
     <div id="modal-fornecedores" class="modal fade" data-field="fornecedor" role="dialog">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar Fornecedor</h3>
@@ -160,7 +160,7 @@
     </div>
 
     <div id="modal-categorias" class="modal fade" data-field="categoria" role="dialog">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar Categoria</h3>

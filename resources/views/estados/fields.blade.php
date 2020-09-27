@@ -101,7 +101,7 @@
     </div>
 
     <div id="modal-paises" data-field="pais" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar País</h3>
