@@ -204,6 +204,8 @@
                 placeholder="0,00"
                 class="form-control @error('descontos') is-invalid @enderror"
                 value="{{ old('descontos', isset($venda) ? number_format($venda->getDescontos(), 2) : null) }}"
+                step=".01"
+                oninput="validity.valid || (value = '');"
             >
 
             @error('descontos')

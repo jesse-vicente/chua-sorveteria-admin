@@ -201,7 +201,7 @@
 @include('compras.products-table')
 
 <div class="form-row mt-2">
-    <div class="form-group col-xl-3">
+    <div class="form-group col-xl-2">
         <label>Frete</label>
 
         <div class="input-group">
@@ -216,6 +216,8 @@
                 placeholder="0,00"
                 class="form-control @error('frete') is-invalid @enderror"
                 value="{{ old('frete', isset($compra) ? number_format($compra->getFrete(), 2) : null) }}"
+                step=".01"
+                oninput="validity.valid || (value = '');"
                 readonly
             >
 
@@ -227,7 +229,7 @@
         </div>
     </div>
 
-    <div class="form-group col-xl-3">
+    <div class="form-group col-xl-2">
         <label>Seguro</label>
 
         <div class="input-group">
@@ -242,6 +244,8 @@
                 placeholder="0,00"
                 class="form-control @error('seguro') is-invalid @enderror"
                 value="{{ old('seguro', isset($compra) ? number_format($compra->getSeguro(), 2) : null) }}"
+                step=".01"
+                oninput="validity.valid || (value = '');"
                 readonly
             >
 
@@ -253,7 +257,7 @@
         </div>
     </div>
 
-    <div class="form-group col-xl-3">
+    <div class="form-group col-xl-2">
         <label>Despesas</label>
 
         <div class="input-group">
@@ -268,6 +272,7 @@
                 placeholder="0,00"
                 class="form-control @error('despesas') is-invalid @enderror"
                 value="{{ old('despesas', isset($compra) ? number_format($compra->getDespesas(), 2) : null) }}"
+                oninput="validity.valid || (value = '');"
                 readonly
             >
 
@@ -279,7 +284,7 @@
         </div>
     </div>
 
-    <div class="form-group col-xl-3">
+    <div class="form-group col-xl-2">
         <label>Total Produtos</label>
 
         <div class="input-group">
@@ -301,7 +306,7 @@
         </div>
     </div>
 
-    <div class="form-group col-xl-2 d-none">
+    <div class="form-group col-xl-2">
         <label>Total à Pagar</label>
 
         <div class="input-group">

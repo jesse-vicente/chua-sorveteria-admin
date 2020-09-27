@@ -176,6 +176,8 @@
                                 name="valor"
                                 placeholder="0,00"
                                 class="form-control"
+                                step=".01"
+                                oninput="validity.valid || (value = '');"
                             >
                         </div>
                     </div>
