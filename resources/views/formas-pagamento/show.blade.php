@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content')
-<div class="card col-xl-5 p-0">
+<div class="card col-xl-5 p-0 mx-auto">
     <div class="card-header bg-danger">
         <div class="d-flex align-items-center">
             <i class="fa fa-trash-alt"></i>

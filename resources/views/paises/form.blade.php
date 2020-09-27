@@ -1,4 +1,4 @@
-<div class="card col-xl-5 p-0">
+<div class="card col-xl-5 p-0 mx-auto">
     <div class="card-header">
         <div class="d-flex align-items-center">
             @isset($pais)
