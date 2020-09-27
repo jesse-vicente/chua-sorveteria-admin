@@ -2,11 +2,11 @@
     <div class="form-group col-xl-2">
         <label>Código</label>
         <input
-            type="text"
+            type="number"
             id="id"
             name="id"
             class="form-control @error('id') is-invalid @enderror"
-            value="{{ old('id', isset($pais) ? $pais->getId() : null) }}"
+            value="{{ old('id', isset($pais) ? $pais->getId() : 0) }}"
             readonly
         >
 

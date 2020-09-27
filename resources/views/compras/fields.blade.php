@@ -79,7 +79,7 @@
             id="fornecedor_id"
             data-input="#fornecedor"
             data-route="fornecedores"
-            value="{{ old('fornecedor_id', isset($compra) ? $compra->getFornecedor()->getId() : null) }}"
+            value="{{ old('fornecedor_id', isset($compra) ? $compra->getFornecedor()->getId() : 0) }}"
         >
 
         <span class="invalid-feedback" role="alert" ref="fornecedor_id"></span>
@@ -343,7 +343,7 @@
             id="condicao_pagamento_id"
             data-input="#condicao_pagamento"
             data-route="condicoes-pagamento"
-            value="{{ old('condicao_pagamento_id', isset($compra) ? $compra->getCondicaoPagamento()->getId() : null) }}"
+            value="{{ old('condicao_pagamento_id', isset($compra) ? $compra->getCondicaoPagamento()->getId() : 0) }}"
             readonly
         >
 

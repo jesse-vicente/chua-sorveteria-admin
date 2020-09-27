@@ -60,7 +60,7 @@
             id="fornecedor_id"
             data-input="#fornecedor"
             data-route="fornecedores"
-            value="{{ old('fornecedor_id', isset($contaPagar) ? $contaPagar->getFornecedor()->getId() : null) }}"
+            value="{{ old('fornecedor_id', isset($contaPagar) ? $contaPagar->getFornecedor()->getId() : 0) }}"
         >
 
         @error('fornecedor_id')
@@ -123,7 +123,7 @@
             id="forma_pagamento_id"
             data-input="#forma_pagamento"
             data-route="formas-pagamento"
-            value="{{ old('forma_pagamento_id', isset($contaPagar) ? $contaPagar->getFormaPagamento()->getId() : null) }}"
+            value="{{ old('forma_pagamento_id', isset($contaPagar) ? $contaPagar->getFormaPagamento()->getId() : 0) }}"
         >
 
         @error('forma_pagamento_id')

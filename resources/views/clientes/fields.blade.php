@@ -2,11 +2,11 @@
     <div class="form-group col-xl-1">
         <label>Código</label>
         <input
-            type="text"
+            type="number"
             id="id"
             name="id"
             class="form-control @error('id') is-invalid @enderror"
-            value="{{ old('id', isset($cliente) ? $cliente->getId() : null) }}"
+            value="{{ old('id', isset($cliente) ? $cliente->getId() : 0) }}"
             readonly
         >
 
@@ -150,7 +150,7 @@
             id="cidade_id"
             data-input="#cidade"
             data-route="cidades"
-            value="{{ old('cidade_id', isset($cliente) ? $cliente->getCidade()->getId() : null) }}"
+            value="{{ old('cidade_id', isset($cliente) ? $cliente->getCidade()->getId() : 0) }}"
         >
 
         @error('cidade_id')
@@ -320,7 +320,7 @@
             id="condicao_pagamento_id"
             data-input="#condicao_pagamento"
             data-route="condicoes-pagamento"
-            value="{{ old('condicao_pagamento_id', isset($cliente) ? $cliente->getCondicaoPagamento()->getId() : null) }}"
+            value="{{ old('condicao_pagamento_id', isset($cliente) ? $cliente->getCondicaoPagamento()->getId() : 0) }}"
         >
 
         @error('condicao_pagamento_id')
