@@ -105,9 +105,9 @@
     <div id="modal-estados" class="modal fade" data-field="estado" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header align-items-center py-2">
+                <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar Estado</h3>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     @include('estados.search')

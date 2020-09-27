@@ -104,9 +104,9 @@
     <div id="modal-clientes" class="modal fade" data-field="cliente" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header align-items-center py-2">
+                <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar Cliente</h3>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     @include('clientes.search')
@@ -173,9 +173,9 @@
     <div id="modal-produtos" class="modal fade" data-field="produto" role="dialog">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header align-items-center py-2">
+                <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar Produto</h3>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     @include('produtos.search-venda')
@@ -313,9 +313,9 @@
     <div id="modal-condicoes-pagamento" class="modal fade" data-field="condicao_pagamento" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header align-items-center py-2">
+                <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar Condição de Pagamento</h3>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     @include('condicoes-pagamento.search')

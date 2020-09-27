@@ -59,7 +59,7 @@
 <div id="modal-detalhes-produto" class="modal fade" data-field="fornecedor" role="dialog">
     <div class="modal-dialog modal-md">
         <div class="modal-content">
-            <div class="modal-header align-items-center py-2 bg-primary">
+            <div class="modal-header align-items-center py-2 bg-dark bg-primary">
                 <h3 class="modal-title">Detalhes do Produto</h3>
                 <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
