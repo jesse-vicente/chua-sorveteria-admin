@@ -1,5 +1,5 @@
 var table, listaProdutos, listaDuplicatas = null;
-var fieldIndex = 0;
+var fieldIndex, idBusca = 0;
 var sofreuAlteracao = false;
 
 var adicionais = {
@@ -24,7 +24,7 @@ $(document).ready(function() {
         sofreuAlteracao = true;
     });
 
-    // //Creamos una fila en el head de la tabla y lo clonamos para cada columna
+    // TODO - Filtros
     // $('#table thead tr').clone(true).appendTo( '#table thead' );
 
     // $('#table thead tr:eq(1) th').each( function (i) {
@@ -52,10 +52,6 @@ $(document).ready(function() {
     });
 
     var url = window.location.href;
-
-    if ($('form').length) {
-        $(".content-wrapper .container-fluid").attr('class', 'd-flex justify-content-center')
-    }
 
     url = url.replace('/create', '');
 
@@ -154,7 +150,7 @@ $(document).ready(function() {
 
     // Submit
     $("button[type='submit']").click(function() {
-        $("form").submit();
+        $("form").eq(0).submit();
     });
 
     $("#form-compra, #form-venda").submit(function(e) {
@@ -185,78 +181,61 @@ $(document).ready(function() {
         });
     });
 
-    $(".modal form").submit(function(e) {
+    $(".btn-save-modal").click(function(e) {
+        e.preventDefault();
 
-    })
-
-    $(".btn-save-modal").click(function() {
-        const form = $(this).parents(".modal").find("form");
+        const modal = $(this).parents(".modal");
+        const form = modal.find("form");
         const route = form.data("route");
 
-        console.log(data)
+        $.post(`/${route}/save`, form.serialize(), function(data) {
 
-        return false;
+        })
 
-        $.ajax({
-            url: $inlineCreateRoute,
-            data: $formData,
-            processData: false,
-            contentType: false,
-            type: 'POST',
-            success: function (result) {
-
-                $createdEntity = result.data;
-
-                if(!$force_select) {
-                    //if developer did not force the created entity to be selected we first try to
-                    //check if created is still available upon model re-search.
-                    ajaxSearch(element, result.data);
-
-                }else{
-                    selectOption(element, result.data);
+        .done(function(data) {
+            if (data.success) {
+                toastr.options = {
+                    "closeButton": true,
+                    "progressBar": true,
+                    "preventDuplicates": true,
                 }
 
-                $modal.modal('hide');
+                toastr["success"](data.message);
 
-
-
-                new Noty({
-                    type: "info",
-                    text: 'Related entry has been created and selected.',
-                }).show();
-            },
-            error: function (result) {
-
-                var $errors = result.responseJSON.errors;
-
-                let message = '';
-                for (var i in $errors) {
-                    message += $errors[i] + ' \n';
-                }
-
-                new Noty({
-                    type: "error",
-                    text: '<strong>Could not create related entry.</strong><br> '+message,
-                }).show();
-
-                //revert save button back to normal
-                $modalSaveButton.prop('disabled', false);
-                $modalSaveButton.html($modalSaveButton.data('original-text'));
+                modal.find(".close").click();
             }
+        })
+
+        .fail(function (request, status, error) {
+            modal.find(".form-control").removeClass("is-invalid");
+            modal.find(".invalid-feedback").remove();
+
+            $.each(request.responseJSON.errors, function(key, value) {
+
+                const input = $(`.modal #${key}`);
+
+                const errorHTML = `
+                    <span class="invalid-feedback" role="alert">
+                        <strong>${value}</strong>
+                    </span>
+                `;
+
+                input.addClass("is-invalid");
+
+                input.parent().append(errorHTML);
+            });
         });
     });
 
-    var idAtual = 0;
-
     $(document).on("focusin" ,".form-control[id*='_id']", function() {
-        idAtual = Number($(this).val());
+        idBusca = Number($(this).val());
     });
 
     // Atualiza o campo ao mudar valor
     $(document).on("focusout", ".form-control[id*='_id'], .form-control[id*='_id[]']", function() {
         const id = Number($(this).val());
 
-        if (id === idAtual || id === 0)
+        if (id === idBusca || id === 0)
             return;
 
         const route = $(this).data("route");
@@ -408,12 +387,15 @@ $(document).ready(function() {
 
     $(document).on("click", ".btn-search", function(e) {
         e.preventDefault();
+
         let route = null;
 
         if ($("#table").length)
             route = $("#table").data("route");
         else if (!$(".modal").hasClass("show"))
             route = $(this).data("route");
+        else
+            route = $(".modal.show").attr("id").replace("modal-", "");
 
         if (route === "formas-pagamento")
             fieldIndex = $(this).parents("tr").index();
@@ -425,12 +407,12 @@ $(document).ready(function() {
         if (route == 'produtos')
             action = compra ? 'compra' : 'venda';
 
-        const routeURL = action ? `/${route}/all/${action}` : `/${route}/all`;
-
         if (!val) {
+            const routeURL = action ? `/${route}/all/${action}` : `/${route}/all`;
+
             $.get(routeURL, function(data) {
 
-             })
+            })
 
             .done(function(data) {
                 fillDataTable(data, route);
@@ -439,8 +421,11 @@ $(document).ready(function() {
             .fail(function() {
                 alert("Erro na busca!");
             });
-        } else {
-            $.get(`/${route}/${val}/findById`, function(data) {
+        }
+        else {
+            const routeURL = action ? `/${route}/${val}/findById/${action}` : `/${route}/${val}/findById`;
+
+            $.get(routeURL, function(data) {
 
             })
 
