@@ -39,6 +39,7 @@ class FornecedorRequest extends FormRequest
             'email'                 => 'nullable|email|max:50',
             'website'               => 'nullable|url|max:50',
             'contato'               => 'nullable|max:20',
+            'valor_credito'         => 'nullable|gt:0',
             'observacoes'           => 'nullable|min:5|max:255',
 
             'cpf_cnpj' => [

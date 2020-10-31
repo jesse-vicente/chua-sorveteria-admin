@@ -33,15 +33,18 @@ class DaoContaPagar implements Dao {
     }
 
     public function all(bool $model = false) {
-        if (!$model)
-            return DB::table('contas_pagar')->get();
+        $itens = DB::table('contas_pagar')
+                   ->orderBy('data_cadastro', 'desc')
+                   ->orderBy('parcela')
+                   ->get();
 
-        $dados = DB::table('contas_pagar')->get();
+        if (!$model)
+            return $itens;
 
         $contas = array();
 
-        foreach ($dados as $dado) {
-            $conta = $this->create(get_object_vars($dado));
+        foreach ($itens as $item) {
+            $conta = $this->create(get_object_vars($item));
             array_push($contas, $conta);
         }
 
@@ -51,34 +54,53 @@ class DaoContaPagar implements Dao {
     public function create(array $dados) {
         $conta = new ContaPagar();
 
-        if (isset($dados["num_nota"])) {
-            $conta->setDataCadastro($dados["data_cadastro"] ?? null);
-            $conta->setDataAlteracao($dados["data_alteracao"] ?? null);
+        if (isset($dados['num_nota'])) {
+            $conta->setDataCadastro($dados['data_cadastro'] ?? null);
+            $conta->setDataAlteracao($dados['data_alteracao'] ?? null);
         }
 
-        if (isset($dados["status"]))
-            $conta->setStatus($dados["status"]);
+        if (isset($dados['status']))
+            $conta->setStatus($dados['status']);
 
         // Dados nota
-        $key = $dados["num_nota"] . "-" . $dados["serie"] . "-" . $dados["modelo"] . "-" . $dados["fornecedor_id"];
+        $key = $dados['num_nota'] . '-' . $dados['serie'] . '-' . $dados['modelo'] . '-' . $dados['fornecedor_id'];
 
         $compra = $this->daoCompra->findByPrimaryKey($key, true);
 
         $conta->setCompra($compra);
 
-        $conta->setParcela($dados["parcela"]);
-        $conta->setValorParcela(floatval($dados["valor_parcela"]));
+        $juros        = floatval($dados['juros']) ?? null;
+        $multa        = floatval($dados['multa']) ?? null;
+        $desconto     = floatval($dados['desconto']) ?? null;
+        $valorParcela = floatval($dados['valor_parcela']);
 
-        $conta->setDataVencimento($dados["data_vencimento"]);
-        $conta->setDataPagamento($dados["data_pagamento"]);
+        $valorPago = $valorParcela;
 
-        $conta->setJuros(floatval($dados["juros"]) ?? null);
-        $conta->setMulta(floatval($dados["multa"]) ?? null);
-        $conta->setDesconto(floatval($dados["desconto"]) ?? null);
+        if ($juros) {
+            $totalJuros = ($valorPago / 100) * $juros;
+            $valorPago += $totalJuros;
+        }
 
-        $fornecedor = $this->daoFornecedor->findById($dados["fornecedor_id"], true);
-        // $funcionario = $this->daoFornecedor->findById($dados["funcionario_id"], true);
-        $formaPagamento = $this->daoFormaPagamento->findById($dados["forma_pagamento_id"], true);
+        if ($multa)
+            $valorPago += $multa;
+
+        if ($desconto)
+            $valorPago -= $desconto;
+
+        $conta->setParcela($dados['parcela']);
+        $conta->setValorParcela($valorParcela);
+
+        $conta->setDataVencimento($dados['data_vencimento']);
+        $conta->setDataPagamento($dados['data_pagamento']);
+
+        $conta->setJuros($juros);
+        $conta->setMulta($multa);
+        $conta->setDesconto($desconto);
+        $conta->setValorPago($valorPago);
+
+        $fornecedor = $this->daoFornecedor->findById($dados['fornecedor_id'], true);
+        // $funcionario = $this->daoFornecedor->findById($dados['funcionario_id'], true);
+        $formaPagamento = $this->daoFormaPagamento->findById($dados['forma_pagamento_id'], true);
 
         $conta->setFornecedor($fornecedor);
         // $conta->setFuncionario($funcionario);
@@ -87,51 +109,18 @@ class DaoContaPagar implements Dao {
         return $conta;
     }
 
-    public function store($compra) {
+    public function store($contaPagar) {
         DB::beginTransaction();
 
         try {
-            $dadosCompra   = $this->getData($compra);
-            $dadosProdutos = $this->getProductsData($compra);
-            $dadosContasPagar = $this->getDuplicatesData($compra);
+            $dadosContasPagar = $this->getData($contaPagar);
 
-            // dd($dadosProdutos);
-
-            DB::table('compras')->insert($dadosCompra);
-            DB::table('produtos_compra')->insert($dadosProdutos);
             DB::table('contas_pagar')->insert($dadosContasPagar);
-
-            // Atualizar produtos em estoque
-            foreach ($compra->getProdutos() as $produtoCompra) {
-
-                $id = $produtoCompra->getProduto()->getId();
-
-                $produtoEstoque = $this->daoProduto->findById($id, true);
-
-                $estoque    = $produtoEstoque->getEstoque();
-                $precoCusto = $produtoCompra->getProduto()->getPrecoCusto();
-
-                ($estoque != 0)
-                    ? $estoque += $produtoCompra->getQuantidade()
-                    : $estoque  = $produtoCompra->getQuantidade();
-
-                $produtoEstoque->setEstoque($estoque);
-                $produtoEstoque->setPrecoCusto($precoCusto);
-
-                $produtoEstoque->setCustoUltimaCompra($precoCusto);
-                $produtoEstoque->setDataUltimaCompra(date('Y-m-d'));
-
-                $dadosProduto = $this->daoProduto->getData($produtoEstoque);
-
-                DB::table('produtos')->where('id', $id)->update($dadosProduto);
-            }
 
             DB::commit();
             return true;
-
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
             return false;
         }
     }
@@ -140,35 +129,37 @@ class DaoContaPagar implements Dao {
         DB::beginTransaction();
 
         try {
-            $contaPagar = $this->findByPrimaryKey($key, true);
+            $contaPagar = $this->create($request->all());
+            // $contaPagar = $this->findByPrimaryKey($key, true);
+
             $compra = $contaPagar->getCompra();
 
-            $numero = $compra->getNumeroNota();
-            $serie  = $compra->getSerie();
-            $modelo = $compra->getModelo();
-            $idFornecedor = $compra->getFornecedor()->getId();
+            $compraPk = $compra->getPrimaryKey();
 
             DB::table('compras')
-                ->where('num_nota', $numero)
-                ->where('serie', $serie)
-                ->where('modelo', $modelo)
-                ->where('fornecedor_id', $idFornecedor)
-                ->update(['status' => 'Ativo']);
+              ->where('num_nota',      $compraPk->numero)
+              ->where('serie',         $compraPk->serie)
+              ->where('modelo',        $compraPk->modelo)
+              ->where('fornecedor_id', $compraPk->idFornecedor)
+              ->update(['status' => $request->status == 'Pago' ? 'Ativo' : 'Emitido']);
+
+            $dadosContaPagar = $this->getData($contaPagar);
+
+            if ($contaPagar->getStatus() == 'Em aberto')
+                $dadosContaPagar['valor_pago'] = null;
 
             DB::table('contas_pagar')
-                ->where('num_nota', $numero)
-                ->where('serie', $serie)
-                ->where('modelo', $modelo)
-                ->where('parcela', $contaPagar->getParcela())
-                ->where('fornecedor_id', $idFornecedor)
-                ->update(['status' => 'Liquidado']);
+              ->where('num_nota',      $compraPk->numero)
+              ->where('serie',         $compraPk->serie)
+              ->where('modelo',        $compraPk->modelo)
+              ->where('fornecedor_id', $compraPk->idFornecedor)
+              ->where('parcela',       $contaPagar->getParcela())
+              ->update($dadosContaPagar);
 
             DB::commit();
-
             return true;
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
             return false;
         }
     }
@@ -188,6 +179,9 @@ class DaoContaPagar implements Dao {
 
     public function findByPrimaryKey(string $pk, bool $model = false) {
         $key = explode('-', $pk);
+
+        if (count($key) != 5)
+            return [];
 
         $numero     = $key[0];
         $serie      = $key[1];
@@ -229,21 +223,23 @@ class DaoContaPagar implements Dao {
         //
     }
 
-    public function getData(Compra $compra) {
+    public function getData(ContaPagar $contaPagar) {
         $dados = array(
-            'modelo'                => $compra->getModelo(),
-            'serie'                 => $compra->getSerie(),
-            'num_nota'              => $compra->getNumeroNota(),
-            'data_emissao'          => $compra->getDataEmissao(),
-            'data_chegada'          => $compra->getDataChegada(),
-            'fornecedor_id'         => $compra->getFornecedor()->getId(),
-            'frete'                 => $compra->getFrete(),
-            'seguro'                => $compra->getSeguro(),
-            'despesas'              => $compra->getDespesas(),
-            'descontos'             => $compra->getDescontos(),
-            'condicao_pagamento_id' => $compra->getCondicaoPagamento()->getId(),
-            'total_produtos'        => $compra->getTotalProdutos(),
-            'total_compra'          => $compra->getTotalCompra(),
+            'modelo'             => $contaPagar->getCompra()->getModelo(),
+            'serie'              => $contaPagar->getCompra()->getSerie(),
+            'num_nota'           => $contaPagar->getCompra()->getNumeroNota(),
+            'status'             => $contaPagar->getStatus(),
+            'fornecedor_id'      => $contaPagar->getFornecedor()->getId(),
+            //'funcionario_id'     => $contaPagar->getFuncionario()->getId(),
+            'forma_pagamento_id' => $contaPagar->getFormaPagamento()->getId(),
+            'parcela'            => $contaPagar->getParcela(),
+            'valor_parcela'      => $contaPagar->getValorParcela(),
+            'data_vencimento'    => $contaPagar->getDataVencimento(),
+            'data_pagamento'     => $contaPagar->getDataPagamento(),
+            'juros'              => $contaPagar->getJuros(),
+            'multa'              => $contaPagar->getMulta(),
+            'desconto'           => $contaPagar->getDesconto(),
+            'valor_pago'         => $contaPagar->getValorPago(),
         );
 
         return $dados;
@@ -271,8 +267,6 @@ class DaoContaPagar implements Dao {
     public function getDuplicatesData(Compra $compra) {
         $duplicatas = array();
 
-        // dd($compra);
-
         foreach ($compra->getContasPagar() as $i => $duplicata) {
             $dadosDuplicata = array(
                 'num_nota'           => $compra->getNumeroNota(),
@@ -289,6 +283,7 @@ class DaoContaPagar implements Dao {
                 'multa'              => $duplicata->getMulta(),
                 'desconto'           => $duplicata->getDesconto(),
                 'valor_pago'         => $duplicata->getValorPago(),
+                'status'             => $duplicata->getStatus(),
             );
 
             array_push($duplicatas, $dadosDuplicata);

@@ -37,7 +37,8 @@
             id="num_nota"
             name="num_nota"
             class="form-control @error('num_nota') is-invalid @enderror"
-            value="{{ old('num_nota', isset($venda) ? $venda->getNumeroNota() : null) }}"
+            value="{{ old('num_nota', isset($venda) ? $venda->getNumeroNota() : 0) }}"
+            disabled
         >
 
         <span class="invalid-feedback" role="alert" ref="num_nota"></span>
@@ -58,7 +59,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group required col-xl-2">
+    <div class="form-group col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -67,20 +68,24 @@
             id="cliente_id"
             data-input="#cliente"
             data-route="clientes"
-            value="{{ old('cliente_id', isset($venda) ? $venda->getCliente()->getId() : null) }}"
+            @isset($venda)
+                value="{{ old('cliente_id', $venda->getCliente() ? $venda->getCliente()->getId() : null) }}"
+            @endisset
         >
 
         <span class="invalid-feedback" role="alert" ref="cliente_id"></span>
     </div>
 
-    <div class="form-group required col-xl-10">
+    <div class="form-group col-xl-10">
         <label>Cliente</label>
         <div class="input-group">
             <input
                 class="form-control"
                 name="cliente"
                 id="cliente"
-                value="{{ old('cliente', isset($venda) ? $venda->getCliente()->getNome() : null) }}"
+                @isset($venda)
+                    value="{{ old('cliente', $venda->getCliente() ? $venda->getCliente()->getNome() : null) }}"
+                @endisset
                 readonly
             >
 
@@ -138,7 +143,6 @@
             id="produto_id"
             data-input="#produto"
             data-route="produtos"
-            readonly
         >
     </div>
 
@@ -160,7 +164,6 @@
                     data-route="produtos"
                     data-toggle="modal"
                     data-target="#modal-produtos"
-                    disabled
                 >
                     <i class="fa fa-search"></i>
                 </button>
@@ -206,6 +209,7 @@
                 value="{{ old('descontos', isset($venda) ? number_format($venda->getDescontos(), 2) : null) }}"
                 step=".01"
                 oninput="validity.valid || (value = '');"
+                readonly
             >
 
             @error('descontos')

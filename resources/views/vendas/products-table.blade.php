@@ -1,60 +1,68 @@
-<table class="table table-sm table-striped table-responsive-xl table-bordered rounded" id="produtos-table">
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-sm table-striped table-responsive-xl table-borderless w-100" id="produtos-table">
+            @isset($venda)
+                <thead>
+                    <tr>
+                        <th>Cód.</th>
+                        <th>Produto</th>
+                        <th class="text-center">Und.</th>
+                        <th>Categoria</th>
+                        <th class="text-center">Qtd.</th>
+                        <th class="text-right">Preço</th>
+                        <th class="text-right">Subtotal</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                @forelse ($venda->getProdutos() as $produtoVenda)
+                    <tr>
+                        <td>{{ $produtoVenda->getProduto()->getId() }}</td>
+                        <td>{{ $produtoVenda->getProduto()->getProduto() }}</td>
+                        <td class="text-center">{{ $produtoVenda->getProduto()->getUnidade() }}</td>
+                        <td>{{ $produtoVenda->getProduto()->getCategoria()->getCategoria() }}</td>
+                        <td class="text-center">{{ $produtoVenda->getQuantidade() }}</td>
+                        <td class="text-right">{{ 'R$ ' . number_format($produtoVenda->getProduto()->getPrecoCusto(), 2, ',', '.') }}</td>
+                        <td class="text-right">{{ 'R$ ' . number_format($produtoVenda->getQuantidade() * $produtoVenda->getProduto()->getPrecoCusto(), 2, ',', '.') }}</td>
+                    </tr>
+                @empty
+
+                @endforelse
+                </tbody>
+
+                <!-- <tfoot>
+                    <tr>
+                        <th>Cód.</th>
+                        <th>Produto</th>
+                        <th class="text-center">Und.</th>
+                        <th>Categoria</th>
+                        <th class="text-center">Qtd.</th>
+                        <th class="text-right">Preço</th>
+                        <th class="text-right">Subtotal</th>
+                    </tr>
+                </tfoot> -->
+            @endisset
+        </table>
+    </div>
+
     @isset($venda)
-        <thead>
-            <tr>
-                <th>Cód.</th>
-                <th>Produto</th>
-                <th class="text-center">Und.</th>
-                <th>Categoria</th>
-                <th class="text-center">Qtd.</th>
-                <th class="text-right">Preço</th>
-                <th class="text-right">Subtotal</th>
-            </tr>
-        </thead>
+    <div class="card-footer d-flex align-items-center justify-content-end">
+        <strong class="text-success text-lg">
+            <span class="mr-2 text-gray">Total da Venda:</span>R$ {{ number_format($venda->getTotalVenda(), 2, ',', '.') }}
+        </strong>
+    </div>
+    @else
+    <div class="card-footer d-flex align-items-center justify-content-between">
+        <button id="remove-items" class="btn btn-danger" disabled>
+            <i class="fa fa-trash-alt mr-2"></i>Remover Itens
+        </button>
 
-        <tbody>
-        @forelse ($venda->getProdutos() as $produtoVenda)
-            <tr>
-                <td>{{ $produtoVenda->getProduto()->getId() }}</td>
-                <td>{{ $produtoVenda->getProduto()->getProduto() }}</td>
-                <td class="text-center">{{ $produtoVenda->getProduto()->getUnidade() }}</td>
-                <td>{{ $produtoVenda->getProduto()->getCategoria()->getCategoria() }}</td>
-                <td class="text-center">{{ $produtoVenda->getQuantidade() }}</td>
-                <td class="text-right">{{ 'R$ ' . number_format($produtoVenda->getProduto()->getPrecoCusto(), 2) }}</td>
-                <td class="text-right">{{ 'R$ ' . number_format($produtoVenda->getQuantidade() * $produtoVenda->getProduto()->getPrecoCusto(), 2) }}</td>
-            </tr>
-        @empty
-
-        @endforelse
-        </tbody>
-
-        <tfoot>
-            <tr>
-                <th>Cód.</th>
-                <th>Produto</th>
-                <th class="text-center">Und.</th>
-                <th>Categoria</th>
-                <th class="text-center">Qtd.</th>
-                <th class="text-right">Preço</th>
-                <th class="text-right">Subtotal</th>
-            </tr>
-        </tfoot>
+        <strong class="text-success text-lg">
+            <span class="mr-2 text-gray">Total da Venda:</span>R$ 0,00
+        </strong>
+    </div>
     @endisset
-</table>
-
-<!-- <div class="card-footer bg-white">
-    <strong class="d-flex justify-content-end text-success text-lg">
-        <span class="mr-2 text-gray">Total à Pagar: </span>
-        @isset($venda)
-            {{ 'R$' . number_format($venda->getTotalVenda(), 2) }}
-        @else
-            {{ 'R$ 0,00' }}
-        @endif
-    </strong>
-    <button id='remove-item' class="pull-right btn btn-danger" disabled>
-        <i class="fa fa-trash-alt mr-2"></i>Remover Item
-    </button>
-</div> -->
+</div>
 
 <div id="modal-detalhes-produto" class="modal fade" data-field="fornecedor" role="dialog">
     <div class="modal-dialog  modal-dialog-centered modal-lg">
@@ -168,8 +176,7 @@
                             id="quantidade"
                             name="quantidade"
                             class="form-control"
-                            min="1"
-                            step="1"
+                            step=".0001"
                             oninput="validity.valid || (value = '');"
                         >
 

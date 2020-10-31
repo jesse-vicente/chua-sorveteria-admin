@@ -26,10 +26,11 @@ class ContaPagarRequest extends FormRequest
         return [
             'fornecedor_id'      => 'required|exists:fornecedores,id',
             'forma_pagamento_id' => 'required|exists:formas_pagamento,id',
-            'juros' => 'gte:0',
-            'multa' => 'gte:0',
-            'desconto' => 'gte:0',
-            'valor_pago' => 'gt:0',
+            'juros'              => 'nullable|gte:0',
+            'multa'              => 'nullable|gte:0',
+            'desconto'           => 'nullable|gte:0|lt:valor_pago',
+            'data_pagamento'     => 'required|date|date_format:Y-m-d|after_or_equal:data_emissao',
+            'valor_pago'         => 'nullable|gt:0',
         ];
     }
 
@@ -45,6 +46,7 @@ class ContaPagarRequest extends FormRequest
             'juros.gte'     => 'O valor dos juros não pode ser inferior a 0.',
             'multa.gte'     => 'O valor da multa não pode ser inferior a 0.',
             'desconto.gte'  => 'O valor do desconto não pode ser inferior a 0.',
+            'desconto.lt'   => 'O valor do desconto deve ser inferior ao valor pago.',
         ];
     }
 }

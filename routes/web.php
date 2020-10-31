@@ -19,11 +19,26 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::resource('/users', 'UserController');
+
 Route::get('/home', function() {
     return view('home');
 })->name('home')->middleware('auth');
 
+// Salvar pela modal
 Route::post('/paises/save', 'PaisController@save')->name('paises.save');
+Route::post('/estados/save', 'EstadoController@save')->name('estados.save');
+Route::post('/cidades/save', 'CidadeController@save')->name('cidades.save');
+
+Route::post('/condicoes-pagamento/save', 'CondicaoPagamentoController@save')->name('condicoes-pagamento.save');
+
+Route::post('/categorias/save', 'CategoriaController@save')->name('categorias.save');
+Route::post('/produtos/save', 'ProdutoController@save')->name('produtos.save');
+
+Route::post('/fornecedores/save', 'FornecedorController@save')->name('fornecedores.save');
+Route::post('/clientes/save', 'ClienteController@save')->name('clientes.save');
+Route::post('/funcionarios/save', 'FuncionarioController@save')->name('funcionarios.save');
+
 Route::get('/paises/all', 'PaisController@all')->name('paises.all');
 Route::get('/estados/all', 'EstadoController@all')->name('estados.all');
 Route::get('/cidades/all', 'CidadeController@all')->name('cidades.all');
@@ -64,16 +79,18 @@ Route::resource('/produtos', 'ProdutoController');
 Route::get('/compras', 'CompraController@index')->name('compras.index');
 Route::get('/compras/create', 'CompraController@create')->name('compras.create');
 Route::get('/compras/{compra}/cancel', 'CompraController@cancel')->name('compras.cancel');
-Route::post('/compras/save', 'CompraController@save')->name('compras.save');
+Route::get('/compras/{compra}', 'CompraController@show')->name('compras.show');
 
+Route::post('/compras/save', 'CompraController@save')->name('compras.save');
 Route::put('/compras/{compra}/update', 'CompraController@update')->name('compras.update');
 Route::get('/compras/{compra}/findByPrimaryKey', 'CompraController@findByPrimaryKey')->name('compras.findByPrimaryKey');
 
 Route::get('/vendas', 'VendaController@index')->name('vendas.index');
 Route::get('/vendas/create', 'VendaController@create')->name('vendas.create');
 Route::get('/vendas/{venda}/cancel', 'VendaController@cancel')->name('vendas.cancel');
-Route::post('/vendas/save', 'VendaController@save')->name('vendas.save');
+Route::get('/vendas/{venda}', 'VendaController@show')->name('vendas.show');
 
+Route::post('/vendas/save', 'VendaController@save')->name('vendas.save');
 Route::put('/vendas/{venda}/update', 'VendaController@update')->name('vendas.update');
 Route::get('/vendas/{venda}/findByPrimaryKey', 'VendaController@findByPrimaryKey')->name('vendas.findByPrimaryKey');
 

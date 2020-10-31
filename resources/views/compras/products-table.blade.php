@@ -1,63 +1,72 @@
-<table class="table table-sm table-striped table-responsive-xl table-bordered rounded" id="produtos-table">
-    @isset($compra)
-        <thead>
-            <tr>
-                <th>Cód.</th>
-                <th>Produto</th>
-                <th class="text-center">Und.</th>
-                <th>Categoria</th>
-                <th class="text-center">Qtd.</th>
-                <th class="text-right">Valor</th>
-                <th class="text-right">Valor Total</th>
-            </tr>
-        </thead>
-
-        <tbody>
-        @forelse ($compra->getProdutos() as $produtoCompra)
-            <tr>
-                <td>{{ $produtoCompra->getProduto()->getId() }}</td>
-                <td>{{ $produtoCompra->getProduto()->getProduto() }}</td>
-                <td class="text-center">{{ $produtoCompra->getProduto()->getUnidade() }}</td>
-                <td>{{ $produtoCompra->getProduto()->getCategoria()->getCategoria() }}</td>
-                <td class="text-center">{{ $produtoCompra->getQuantidade() }}</td>
-                <td class="text-right">{{ 'R$ ' . number_format($produtoCompra->getProduto()->getPrecoCusto(), 2) }}</td>
-                <td class="text-right">{{ 'R$ ' . number_format($produtoCompra->getQuantidade() * $produtoCompra->getProduto()->getPrecoCusto(), 2) }}</td>
-            </tr>
-        @empty
-
-        @endforelse
-        </tbody>
-
-        <tfoot>
-            <tr>
-                <th>Cód.</th>
-                <th>Produto</th>
-                <th class="text-center">Und.</th>
-                <th>Categoria</th>
-                <th class="text-center">Qtd.</th>
-                <th class="text-right">Valor</th>
-                <th class="text-right">Valor Total</th>
-            </tr>
-        </tfoot>
-    @endisset
-</table>
-
-<!-- <div class="card-footer bg-white">
-    <strong class="d-flex justify-content-end text-success text-lg">
-        <span class="mr-2 text-gray">Total à Pagar: </span>
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-sm table-striped table-responsive-xl table-borderless w-100" id="produtos-table">
         @isset($compra)
-            {{ 'R$' . number_format($compra->getTotalCompra(), 2) }}
-        @else
-            {{ 'R$ 0,00' }}
-        @endif
-    </strong>
-    <button id='remove-item' class="pull-right btn btn-danger" disabled>
-        <i class="fa fa-trash-alt mr-2"></i>Remover Item
-    </button>
-</div> -->
+            <thead>
+                <tr>
+                    <th>Cód.</th>
+                    <th>Produto</th>
+                    <th class="text-center">Und.</th>
+                    <th>Categoria</th>
+                    <th class="text-center">Qtd.</th>
+                    <th class="text-right">Valor</th>
+                    <th class="text-right">Valor Total</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            @forelse ($compra->getProdutos() as $produtoCompra)
+                <tr>
+                    <td>{{ $produtoCompra->getProduto()->getId() }}</td>
+                    <td>{{ $produtoCompra->getProduto()->getProduto() }}</td>
+                    <td class="text-center">{{ $produtoCompra->getProduto()->getUnidade() }}</td>
+                    <td>{{ $produtoCompra->getProduto()->getCategoria()->getCategoria() }}</td>
+                    <td class="text-center">{{ $produtoCompra->getQuantidade() }}</td>
+                    <td class="text-right">{{ 'R$ ' . number_format($produtoCompra->getProduto()->getPrecoCusto(), 2, ',', '.') }}</td>
+                    <td class="text-right">{{ 'R$ ' . number_format($produtoCompra->getQuantidade() * $produtoCompra->getProduto()->getPrecoCusto(), 2, ',', '.') }}</td>
+                </tr>
+            @empty
+
+            @endforelse
+            </tbody>
+
+            <!-- <tfoot>
+                <tr>
+                    <th>Cód.</th>
+                    <th>Produto</th>
+                    <th class="text-center">Und.</th>
+                    <th>Categoria</th>
+                    <th class="text-center">Qtd.</th>
+                    <th class="text-right">Valor</th>
+                    <th class="text-right">Valor Total</th>
+                </tr>
+            </tfoot> -->
+        @endisset
+        </table>
+    </div>
+
+    @isset($compra)
+    <div class="card-footer d-flex align-items-center justify-content-end">
+        <strong class="text-success text-lg">
+            <span class="mr-2 text-gray">Total à Pagar:</span>R$ {{ number_format($compra->getTotalCompra(), 2, ',', '.') }}
+        </strong>
+    </div>
+    @else
+    <div class="card-footer d-flex align-items-center justify-content-between">
+        <button id="remove-items" class="btn btn-danger" disabled>
+            <i class="fa fa-trash-alt mr-2"></i>Remover Itens
+        </button>
+
+        <strong class="text-success text-lg">
+            <span class="mr-2 text-gray">Total à Pagar:</span>R$ 0,00
+        </strong>
+    </div>
+    @endisset
+
+</div>
 
 <div id="modal-detalhes-produto" class="modal fade" data-field="fornecedor" role="dialog">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
             <div class="modal-header align-items-center py-2 bg-dark bg-primary">
                 <h3 class="modal-title">Detalhes do Produto</h3>
@@ -186,11 +195,10 @@
 
             <div class="modal-footer d-flex justify-content-between" id="total">
                 <strong class="text-success text-lg">
-                    <span class="text-gray">Total: </span>
-                    R$ 0,00
+                    <span class="mr-2 text-gray">Total:</span>R$ 0,00
                 </strong>
 
-                <button id="add-item" class="pull-right btn btn-success" data-dismiss="modal" disabled>
+                <button id="add-item" class="btn btn-success" data-dismiss="modal" disabled>
                     <i class="fa fa-plus mr-2"></i>Adicionar Item
                 </button>
             </div>

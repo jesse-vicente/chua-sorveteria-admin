@@ -30,9 +30,7 @@ class VendaRequest extends FormRequest
             'serie'    => 'required|numeric|gt:0',
 
             'num_nota' => [
-                'required',
                 'numeric',
-                'gt:0',
                 'lt:999999',
                 Rule::unique('vendas')
                     ->where('serie',  $this->request->get('serie'))
@@ -40,7 +38,7 @@ class VendaRequest extends FormRequest
                     ->where('cliente_id', $this->request->get('cliente_id'))
             ],
 
-            'cliente_id' => 'required|exists:clientes,id',
+            'cliente_id' => 'nullable|exists:clientes,id',
 
             'condicao_pagamento_id' => 'required|exists:condicoes_pagamento,id',
 

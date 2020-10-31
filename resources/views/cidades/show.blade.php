@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="card col-xl-5 p-0 mx-auto">
-    <div class="card-header bg-danger">
+    <div class="card-header">
         <div class="d-flex align-items-center">
             <i class="fa fa-trash-alt"></i>
             <h3 class="ml-3 mb-0">Excluir Cidade</h3>
@@ -11,7 +11,7 @@
 
     <div class="card-body">
         @isset($cidade)
-        <form method="POST" action="{{ route('cidades.destroy', $cidade->getId()) }}" id="form-delete">
+        <form method="POST" action="{{ route('cidades.destroy', $cidade->getId()) }}" id="form-show">
             @csrf
             @method('DELETE')
 

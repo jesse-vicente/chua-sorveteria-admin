@@ -25,6 +25,7 @@
             name="categoria"
             class="form-control @error('categoria') is-invalid @enderror"
             value="{{ old('categoria', isset($categoria) ? $categoria->getCategoria() : null) }}"
+            required
         >
 
         @error('categoria')

@@ -34,15 +34,15 @@ class DaoCompra implements Dao {
     }
 
     public function all(bool $model = false) {
-        if (!$model)
-            return DB::table('compras')->get();
+        $itens = DB::table('compras')->orderBy('data_cadastro', 'desc')->get();
 
-        $dados = DB::table('compras')->orderBy('data_emissao', 'desc')->get();
+        if (!$model)
+            return $itens;
 
         $compras = array();
 
-        foreach ($dados as $dado) {
-            $compra = $this->create(get_object_vars($dado));
+        foreach ($itens as $item) {
+            $compra = $this->create(get_object_vars($item));
             array_push($compras, $compra);
         }
 
@@ -158,37 +158,57 @@ class DaoCompra implements Dao {
         DB::beginTransaction();
 
         try {
-            $dadosCompra   = $this->getData($compra);
-            $dadosProdutos = $this->getProductsData($compra);
+            $dadosCompra      = $this->getData($compra);
+            $dadosProdutos    = $this->getProductsData($compra);
             $dadosContasPagar = $this->getDuplicatesData($compra);
 
             DB::table('compras')->insert($dadosCompra);
-            DB::table('produtos_compra')->insert($dadosProdutos);
-            DB::table('contas_pagar')->insert($dadosContasPagar);
 
-            // Atualizar produtos em estoque
-            foreach ($compra->getProdutos() as $produtoCompra) {
+            try {
+                DB::table('produtos_compra')->insert($dadosProdutos);
+            } catch (\Throwable $th) {
+                DB::rollBack();
 
-                $id = $produtoCompra->getProduto()->getId();
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Os produtos informados já estão vinculados a uma compra com este número de nota!'
+                ], 422);
+            }
 
-                $produtoEstoque = $this->daoProduto->findById($id, true);
+            try {
+                DB::table('contas_pagar')->insert($dadosContasPagar);
 
-                $estoque    = $produtoEstoque->getEstoque();
-                $precoCusto = $produtoCompra->getProduto()->getPrecoCusto();
+                // Atualizar produtos em estoque
+                foreach ($compra->getProdutos() as $produtoCompra) {
 
-                ($estoque != 0)
-                    ? $estoque += $produtoCompra->getQuantidade()
-                    : $estoque  = $produtoCompra->getQuantidade();
+                    $id = $produtoCompra->getProduto()->getId();
 
-                $produtoEstoque->setEstoque($estoque);
-                $produtoEstoque->setPrecoCusto($precoCusto);
+                    $produtoEstoque = $this->daoProduto->findById($id, true);
 
-                $produtoEstoque->setCustoUltimaCompra($precoCusto);
-                $produtoEstoque->setDataUltimaCompra(date('Y-m-d'));
+                    $estoque    = $produtoEstoque->getEstoque();
+                    $precoCusto = $produtoCompra->getProduto()->getPrecoCusto();
 
-                $dadosProduto = $this->daoProduto->getData($produtoEstoque);
+                    ($estoque != 0)
+                        ? $estoque += $produtoCompra->getQuantidade()
+                        : $estoque  = $produtoCompra->getQuantidade();
 
-                DB::table('produtos')->where('id', $id)->update($dadosProduto);
+                    $produtoEstoque->setEstoque($estoque);
+                    $produtoEstoque->setPrecoCusto($precoCusto);
+
+                    $produtoEstoque->setCustoUltimaCompra($precoCusto);
+                    $produtoEstoque->setDataUltimaCompra(date('Y-m-d'));
+
+                    $dadosProduto = $this->daoProduto->getData($produtoEstoque);
+
+                    DB::table('produtos')->where('id', $id)->update($dadosProduto);
+                }
+            } catch (\Throwable $th) {
+                DB::rollBack();
+
+                return response()->json([
+                    'error' => true,
+                    'message' => 'Erro ao inserir registro. Tente novamente.'
+                ], 422);
             }
 
             DB::commit();
@@ -200,8 +220,11 @@ class DaoCompra implements Dao {
 
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
-            return false;
+
+            return response()->json([
+                'error' => true,
+                'message' => 'Erro ao inserir registro. Tente novamente.'
+            ], 422);
         }
     }
 
@@ -211,24 +234,21 @@ class DaoCompra implements Dao {
         try {
             $compra = $this->findByPrimaryKey($key, true);
 
-            if ($compra->getStatus() != "Cancelado") {
-                $numero = $compra->getNumeroNota();
-                $serie  = $compra->getSerie();
-                $modelo = $compra->getModelo();
-                $idFornecedor = $compra->getFornecedor()->getId();
+            if ($compra->getStatus() == "Emitido") {
+                $pk = $compra->getPrimaryKey();
 
                 DB::table('compras')
-                    ->where('num_nota', $numero)
-                    ->where('serie', $serie)
-                    ->where('modelo', $modelo)
-                    ->where('fornecedor_id', $idFornecedor)
-                    ->update(['status' => 'Cancelado']);
+                    ->where('num_nota', $pk->numero)
+                    ->where('serie', $pk->serie)
+                    ->where('modelo', $pk->modelo)
+                    ->where('fornecedor_id', $pk->idFornecedor)
+                    ->update(['status' => 'Cancelado', 'data_cancelamento' => date('Y-m-d H:i:s')]);
 
                 DB::table('contas_pagar')
-                    ->where('num_nota', $numero)
-                    ->where('serie', $serie)
-                    ->where('modelo', $modelo)
-                    ->where('fornecedor_id', $idFornecedor)
+                    ->where('num_nota', $pk->numero)
+                    ->where('serie', $pk->serie)
+                    ->where('modelo', $pk->modelo)
+                    ->where('fornecedor_id', $pk->idFornecedor)
                     ->update(['status' => 'Cancelado']);
 
                 $produtosCompra = $compra->getProdutos();

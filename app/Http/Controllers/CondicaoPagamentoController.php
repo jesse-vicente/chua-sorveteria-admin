@@ -75,6 +75,25 @@ class CondicaoPagamentoController extends Controller
         return redirect('condicoes-pagamento')->with('error', 'Erro ao inserir registro.');
     }
 
+    public function save(CondicaoPagamentoRequest $request)
+    {
+        $condicaoPagamento = $this->daoCidade->create($request->all());
+
+        $store = $this->daoCidade->store($condicaoPagamento);
+
+        if ($store) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro inserido com sucesso!'
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+            'message' => 'Erro ao inserir registro!'
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *

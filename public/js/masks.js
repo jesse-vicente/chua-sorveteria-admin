@@ -27,7 +27,7 @@ $(document).ready(function() {
 
     // $("#rg").mask('00.000.000-0');
 
-    // $("#salario").mask('#.##0,00');
+    // $("#valor_credito, #salario").mask('##.##0,00');
 
     $("#cpf_cnpj").mask('00.000.000/0000-00');
 

@@ -26,6 +26,7 @@
             name="cidade"
             class="form-control @error('cidade') is-invalid @enderror"
             value="{{ old('cidade', isset($cidade) ? $cidade->getCidade() : null) }}"
+            required
         >
 
         @error('cidade')
@@ -43,6 +44,7 @@
             name="ddd"
             class="form-control @error('ddd') is-invalid @enderror"
             value="{{ old('ddd', isset($cidade) ? $cidade->getDDD() : null) }}"
+            required
         >
 
         @error('ddd')
@@ -54,20 +56,21 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-2">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
-            type="text"
+            type="number"
             class="form-control"
             name="estado_id"
             id="estado_id"
             data-input="#estado"
             data-route="estados"
             value="{{ old('estado_id', isset($cidade) ? $cidade->getEstado()->getId() : null) }}"
+            required
         >
     </div>
 
-    <div class="form-group required col-xl-10">
+    <div class="form-group required col-xl-10" id="ipt-pais">
         <label>Estado</label>
         <div class="input-group">
 
@@ -77,6 +80,7 @@
                 name="estado"
                 id="estado"
                 value="{{ old('estado', isset($cidade) ? $cidade->getEstado()->getEstado() : null) }}"
+                data-error="#ipt-pais"
                 readonly
                 required
             >

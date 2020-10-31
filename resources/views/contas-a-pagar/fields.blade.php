@@ -203,7 +203,7 @@
                 name="valor_parcela"
                 placeholder="0,00"
                 class="form-control @error('valor_parcela') is-invalid @enderror"
-                value="{{ old('valor_parcela', isset($contaPagar) ? number_format($contaPagar->getValorParcela(), 2) : null) }}"
+                value="{{ old('valor_parcela', isset($contaPagar) ? $contaPagar->getValorParcela() : null) }}"
             >
 
             @error('valor_parcela')
@@ -261,7 +261,7 @@
                 placeholder="0"
                 class="form-control @error('juros') is-invalid @enderror"
                 @isset($contaPagar)
-                    value="{{ old('juros', $contaPagar->getJuros() ? number_format($contaPagar->getJuros(), 2) : null) }}"
+                    value="{{ old('juros', $contaPagar->getJuros() ? $contaPagar->getJuros() : null) }}"
                 @endisset
             >
 
@@ -292,7 +292,7 @@
                 placeholder="0,00"
                 class="form-control @error('multa') is-invalid @enderror"
                 @isset($contaPagar)
-                    value="{{ old('multa', $contaPagar->getMulta() ? number_format($contaPagar->getMulta(), 2) : null) }}"
+                    value="{{ old('multa', $contaPagar->getMulta() ? $contaPagar->getMulta() : null) }}"
                 @endisset
             >
 
@@ -318,9 +318,13 @@
                 name="desconto"
                 placeholder="0,00"
                 class="form-control @error('desconto') is-invalid @enderror"
+
                 @isset($contaPagar)
-                    value="{{ old('desconto', $contaPagar->getDesconto() ? number_format($contaPagar->getDesconto(), 2) : null) }}"
+                    value="{{ old('desconto', $contaPagar->getDesconto() ? $contaPagar->getDesconto() : null) }}"
                 @endisset
+
+                step=".01"
+                oninput="validity.valid || (value = '');"
             >
 
             @error('desconto')
@@ -345,12 +349,14 @@
                 name="valor_pago"
                 placeholder="0,00"
                 class="form-control @error('valor_pago') is-invalid @enderror"
+                step=".01"
+
                 readonly
                 @isset($contaPagar)
-                    @if ($contaPagar->getStatus() == 'Pendente')
-                        value="{{ number_format($contaPagar->getValorParcela(), 2) }}"
-                    @elseif ($contaPagar->getStatus() == 'Liquidado')
-                        value="{{ old('valor_pago', number_format($contaPagar->getValorPago(), 2)) }}"
+                    @if ($contaPagar->getStatus() == 'Em aberto')
+                        value="{{ $contaPagar->getValorParcela() }}"
+                    @else
+                        value="{{ old('valor_pago', $contaPagar->getValorPago() ? $contaPagar->getValorPago() : null) }}"
                     @endif
                 @endisset
             >

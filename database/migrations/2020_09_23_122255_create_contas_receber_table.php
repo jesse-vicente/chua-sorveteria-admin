@@ -23,7 +23,7 @@ class CreateContasReceberTable extends Migration
             $table->integer('modelo')->unsigned()->index();
             $table->foreign('modelo')->references('modelo')->on('vendas')->onDelete('restrict');
 
-            $table->string('status', 10)->default('Pendente');
+            $table->string('status', 10)->default('Em aberto');
 
             $table->integer('cliente_id')->unsigned()->index();
             $table->foreign('cliente_id')->references('id')->on('clientes')->onDelete('restrict');
@@ -35,12 +35,12 @@ class CreateContasReceberTable extends Migration
             $table->foreign('forma_pagamento_id')->references('id')->on('formas_pagamento')->onDelete('restrict');
 
             $table->unsignedInteger('parcela');
-            $table->double('valor_parcela');
+            $table->decimal('valor_parcela');
 
             $table->date("data_vencimento");
             $table->date("data_pagamento")->nullable();
 
-            $table->double('valor_pago')->nullable();
+            $table->decimal('valor_pago')->nullable();
 
             $table->timestamps();
 
@@ -48,6 +48,7 @@ class CreateContasReceberTable extends Migration
                 'num_nota',
                 'serie',
                 'modelo',
+                'parcela',
             ]);
         });
     }

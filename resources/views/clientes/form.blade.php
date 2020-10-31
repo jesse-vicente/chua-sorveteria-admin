@@ -35,3 +35,6 @@
         </div>
     </div>
 </div>
+
+@include('cidades.create-modal')
+@include('condicoes-pagamento.create-modal')

@@ -59,6 +59,25 @@ class CategoriaController extends Controller
         return redirect('categorias')->with('error', 'Erro ao inserir registro.');
     }
 
+    public function save(CategoriaRequest $request)
+    {
+        $categoria = $this->daoCategoria->create($request->all());
+
+        $store = $this->daoCategoria->store($categoria);
+
+        if ($store) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro inserido com sucesso!'
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+            'message' => 'Erro ao inserir registro!'
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *

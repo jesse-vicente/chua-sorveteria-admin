@@ -17,12 +17,12 @@
                 <td>{{ $estado->getUf() }}</td>
                 <td>{{ $estado->getPais()->getPais() }}</td>
                 <td class="text-center">
-                    <div class="row flex-nowrap justify-content-center">
-                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('estados.edit', $estado->getId()) }}">
+                    <div class="btn-group-xs">
+                        <a class="btn btn-primary" href="{{ route('estados.edit', $estado->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <a class="btn btn-sm btn-danger" href="{{ route('estados.show', $estado->getId()) }}">
+                        <a class="btn btn-danger" href="{{ route('estados.show', $estado->getId()) }}">
                             <i class="fa fa-trash-alt"></i>
                         </a>
                     </div>
@@ -32,5 +32,15 @@
 
             @endforelse
         </tbody>
+
+        <tfoot>
+            <tr>
+                <th>Cód.</th>
+                <th>Estado</th>
+                <th>UF</th>
+                <th>País</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </tfoot>
     </table>
 </div>

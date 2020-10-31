@@ -96,10 +96,10 @@
         <thead>
             <tr>
                 <th class="d-none">Cód. Parcela</th>
-                <th class="col-form-label-sm">Parcela</th>
+                <th class="col-form-label-sm" style="width: 7%;">Parcela</th>
                 <th class="col-form-label-sm">Forma de Pagamento <span class="required">*</span></th>
-                <th class="col-form-label-sm">Prazo (dias) <span class="required">*</span></th>
-                <th class="col-form-label-sm">Percentual (%) <span class="required">*</span></th>
+                <th class="col-form-label-sm" style="width: 14%;">Prazo (dias) <span class="required">*</span></th>
+                <th class="col-form-label-sm" style="width: 16%;">Percentual (%) <span class="required">*</span></th>
                 <th class="col-form-label-sm text-center">Ações</th>
             </tr>
         </thead>
@@ -188,7 +188,7 @@
                                 required
                             >
                         </td>
-                        <td class="pt-2 actions d-flex justify-content-center">
+                        <td class="pt-2 actions text-center">
                             <button
                                 type="button"
                                 class="btn btn-xs mx-1 btn-success add"

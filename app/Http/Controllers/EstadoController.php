@@ -60,6 +60,25 @@ class EstadoController extends Controller
         return redirect('estados')->with('error', 'Erro ao inserir registro.');
     }
 
+    public function save(EstadoRequest $request)
+    {
+        $estado = $this->daoEstado->create($request->all());
+
+        $store = $this->daoEstado->store($estado);
+
+        if ($store) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro inserido com sucesso!'
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+            'message' => 'Erro ao inserir registro!'
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *

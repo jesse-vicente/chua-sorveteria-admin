@@ -51,32 +51,40 @@ class DaoContaReceber implements Dao {
     public function create(array $dados) {
         $conta = new ContaReceber();
 
-        if (isset($dados["num_nota"])) {
-            $conta->setDataCadastro($dados["data_cadastro"] ?? null);
-            $conta->setDataAlteracao($dados["data_alteracao"] ?? null);
+        if (isset($dados['num_nota'])) {
+            $conta->setDataCadastro($dados['data_cadastro'] ?? null);
+            $conta->setDataAlteracao($dados['data_alteracao'] ?? null);
         }
 
-        if (isset($dados["status"]))
-            $conta->setStatus($dados["status"]);
+        if (isset($dados['status']))
+            $conta->setStatus($dados['status']);
 
         // Dados nota
-        $key = $dados["num_nota"] . "-" . $dados["serie"] . "-" . $dados["modelo"] . "-" . $dados["cliente_id"];
+        $cliente_id = $dados['cliente_id'] ?? null;
+
+        $key = $dados['num_nota'] . '-' . $dados['serie'] . '-' . $dados['modelo'];
+
+        if ($cliente_id)
+            $key .= '-' . $cliente_id;
 
         $venda = $this->daoVenda->findByPrimaryKey($key, true);
 
         $conta->setVenda($venda);
 
-        $conta->setParcela($dados["parcela"]);
-        $conta->setValorParcela(floatval($dados["valor_parcela"]));
+        $conta->setParcela($dados['parcela']);
+        $conta->setValorParcela(floatval($dados['valor_parcela']));
 
-        $conta->setDataVencimento($dados["data_vencimento"]);
-        $conta->setDataPagamento($dados["data_pagamento"]);
+        $conta->setDataVencimento($dados['data_vencimento']);
+        $conta->setDataPagamento($dados['data_pagamento']);
 
-        $cliente = $this->daoCliente->findById($dados["cliente_id"], true);
-        // $funcionario = $this->daoCliente->findById($dados["funcionario_id"], true);
-        $formaPagamento = $this->daoFormaPagamento->findById($dados["forma_pagamento_id"], true);
+        if ($cliente_id) {
+            $cliente = $this->daoCliente->findById($cliente_id, true);
+            $conta->setCliente($cliente);
+        }
 
-        $conta->setCliente($cliente);
+        // $funcionario = $this->daoCliente->findById($dados['funcionario_id'], true);
+        $formaPagamento = $this->daoFormaPagamento->findById($dados['forma_pagamento_id'], true);
+
         // $conta->setFuncionario($funcionario);
         $conta->setFormaPagamento($formaPagamento);
 
@@ -136,31 +144,32 @@ class DaoContaReceber implements Dao {
         DB::beginTransaction();
 
         try {
-            $contaReceber = $this->findByPrimaryKey($key, true);
+            $contaReceber = $this->create($request->all());
             $venda = $contaReceber->getVenda();
 
-            $numero = $venda->getNumeroNota();
-            $serie  = $venda->getSerie();
-            $modelo = $venda->getModelo();
-            $idCliente = $venda->getCliente()->getId();
+            $pk = $venda->getPrimaryKey();
 
             DB::table('vendas')
-                ->where('num_nota', $numero)
-                ->where('serie', $serie)
-                ->where('modelo', $modelo)
-                ->where('cliente_id', $idCliente)
-                ->update(['status' => 'Ativo']);
+              ->where('num_nota',   $pk->numero)
+              ->where('serie',      $pk->serie)
+              ->where('modelo',     $pk->modelo)
+              ->where('cliente_id', $pk->cliente_id)
+              ->update(['status' => $request->status == 'Recebido' ? 'Ativo' : 'Emitido']);
+
+            $dadosContaReceber = $this->getData($contaReceber);
+
+            if ($contaReceber->getStatus() == 'Em aberto')
+                $dadosContaReceber['valor_pago'] = null;
 
             DB::table('contas_receber')
-                ->where('num_nota', $numero)
-                ->where('serie', $serie)
-                ->where('modelo', $modelo)
-                ->where('parcela', $contaReceber->getParcela())
-                ->where('cliente_id', $idCliente)
-                ->update(['status' => 'Liquidado']);
+              ->where('num_nota',   $pk->numero)
+              ->where('serie',      $pk->serie)
+              ->where('modelo',     $pk->modelo)
+              ->where('cliente_id', $pk->cliente_id)
+              ->where('parcela',    $contaReceber->getParcela())
+              ->update($dadosContaReceber);
 
             DB::commit();
-
             return true;
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -185,33 +194,35 @@ class DaoContaReceber implements Dao {
     public function findByPrimaryKey(string $pk, bool $model = false) {
         $key = explode('-', $pk);
 
-        $numero     = $key[0];
-        $serie      = $key[1];
-        $modelo     = $key[2];
-        $cliente    = $key[3];
+        $dadosPk = count($key);
 
-        if (!$model) {
+        if ($dadosPk > 5)
+            return array();
+
+        if ($dadosPk == 4) {
             $dados = DB::table('contas_receber')
-                       ->where('num_nota', $numero)
-                       ->where('serie', $serie)
-                       ->where('modelo', $modelo)
-                       ->where('cliente_id', $cliente)
+                       ->where('num_nota', $key[0])
+                       ->where('serie', $key[1])
+                       ->where('modelo', $key[2])
+                       ->where('parcela', $key[3])
                        ->first();
-
-            return $dados;
+        } else {
+            $dados = DB::table('contas_receber')
+                       ->where('num_nota', $key[0])
+                       ->where('serie', $key[1])
+                       ->where('modelo', $key[2])
+                       ->where('cliente_id', $key[3])
+                       ->where('parcela', $key[4])
+                       ->first();
         }
 
-        $dados = DB::table('contas_receber')
-                         ->where('num_nota', $numero)
-                         ->where('serie', $serie)
-                         ->where('modelo', $modelo)
-                         ->where('modelo', $modelo)
-                         ->where('cliente_id', $cliente)
-                         ->first();
-
         if ($dados) {
-            $conta = $this->create(get_object_vars($dados));
-            return $conta;
+            if ($model) {
+                $conta = $this->create(get_object_vars($dados));
+                return $conta;
+            }
+
+            return $dados;
         }
 
         return [];
@@ -222,18 +233,23 @@ class DaoContaReceber implements Dao {
         //
     }
 
-    public function getData(Venda $venda) {
+    public function getData(ContaReceber $contaReceber) {
         $dados = array(
-            'modelo'                => $venda->getModelo(),
-            'serie'                 => $venda->getSerie(),
-            'num_nota'              => $venda->getNumeroNota(),
-            'data_venda'            => $venda->getDataVenda(),
-            'cliente_id'            => $venda->getCliente()->getId(),
-            'descontos'             => $venda->getDescontos(),
-            'condicao_pagamento_id' => $venda->getCondicaoPagamento()->getId(),
-            'total_produtos'        => $venda->getTotalProdutos(),
-            'total_venda'           => $venda->getTotalVenda(),
+            'modelo'             => $contaReceber->getVenda()->getModelo(),
+            'serie'              => $contaReceber->getVenda()->getSerie(),
+            'num_nota'           => $contaReceber->getVenda()->getNumeroNota(),
+            'status'             => $contaReceber->getStatus(),
+            //'funcionario_id'   => $contaReceber->getFuncionario()->getId(),
+            'forma_pagamento_id' => $contaReceber->getFormaPagamento()->getId(),
+            'parcela'            => $contaReceber->getParcela(),
+            'valor_parcela'      => $contaReceber->getValorParcela(),
+            'data_vencimento'    => $contaReceber->getDataVencimento(),
+            'data_pagamento'     => $contaReceber->getDataPagamento(),
+            'valor_pago'         => $contaReceber->getValorPago(),
         );
+
+        if ($contaReceber->getCliente())
+            $dados['cliente_id'] = $contaReceber->getCliente()->getId();
 
         return $dados;
     }
@@ -259,8 +275,6 @@ class DaoContaReceber implements Dao {
 
     public function getDuplicatesData(Venda $venda) {
         $duplicatas = array();
-
-        // dd($venda);
 
         foreach ($venda->getContasReceber() as $i => $duplicata) {
             $dadosDuplicata = array(

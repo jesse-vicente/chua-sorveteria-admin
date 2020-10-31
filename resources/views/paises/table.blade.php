@@ -18,12 +18,12 @@
                 <td>{{ $pais->getSigla() }}</td>
                 <td>+{{ $pais->getDDI() }}</td>
                 <td class="text-center">
-                    <div class="row flex-nowrap justify-content-center">
-                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('paises.edit',$pais->getId()) }}">
+                    <div class="btn-group-xs">
+                        <a class="btn btn-primary" href="{{ route('paises.edit',$pais->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <a class="btn btn-sm btn-danger" href="{{ route('paises.show', $pais->getId()) }}">
+                        <a class="btn btn-danger" href="{{ route('paises.show', $pais->getId()) }}">
                             <i class="fa fa-trash-alt"></i>
                         </a>
                     </div>
@@ -32,5 +32,15 @@
             @endforeach
         @endif
         </tbody>
+
+        <tfoot>
+            <tr>
+                <th>Cód.</th>
+                <th>País</th>
+                <th>Sigla</th>
+                <th>DDI</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </tfoot>
     </table>
 </div>

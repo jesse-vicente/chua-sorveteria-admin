@@ -6,10 +6,10 @@ use App\Http\Models\Fornecedor;
 use App\Http\Models\ProdutoCompra;
 use App\Http\Models\ContasPagar;
 use App\Http\Models\CondicaoPagamento;
-
 use App\Http\Models\Funcionario;
 
 use Illuminate\Support\Carbon;
+use stdClass;
 
 class Compra extends TObject
 {
@@ -260,9 +260,20 @@ class Compra extends TObject
      *
      * @return  string
      */
-    public function getPrimaryKey()
+    public function getPrimaryKeyStr()
     {
         return $this->numeroNota . '-' . $this->serie . '-' . $this->modelo . '-' . $this->getFornecedor()->getId();
+    }
+
+    public function getPrimaryKey() {
+        $pk = new stdClass();
+
+        $pk->numero       = $this->numeroNota;
+        $pk->serie        = $this->serie;
+        $pk->modelo       = $this->modelo;
+        $pk->idFornecedor = $this->getFornecedor()->getId();
+
+        return $pk;
     }
 
     /**

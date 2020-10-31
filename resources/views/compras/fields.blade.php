@@ -11,6 +11,7 @@
             name="modelo"
             class="form-control @error('modelo') is-invalid @enderror"
             value="{{ old('modelo', isset($compra) ? $compra->getModelo() : 55) }}"
+            required
         >
 
         <span class="invalid-feedback" role="alert" ref="modelo"></span>
@@ -24,6 +25,7 @@
             name="serie"
             class="form-control @error('serie') is-invalid @enderror"
             value="{{ old('serie', isset($compra) ? $compra->getSerie() : 1) }}"
+            required
         >
 
         <span class="invalid-feedback" role="alert" ref="serie"></span>
@@ -37,6 +39,8 @@
             name="num_nota"
             class="form-control @error('num_nota') is-invalid @enderror"
             value="{{ old('num_nota', isset($compra) ? $compra->getNumeroNota() : null) }}"
+            autofocus
+            required
         >
 
         <span class="invalid-feedback" role="alert" ref="num_nota"></span>
@@ -50,6 +54,7 @@
             name="data_emissao"
             class="form-control @error('data_emissao') is-invalid @enderror"
             value="{{ old('data_emissao', isset($compra) ? $compra->getDataEmissao() : date('Y-m-d')) }}"
+            required
         >
 
         <span class="invalid-feedback" role="alert" ref="data_emissao"></span>
@@ -63,6 +68,7 @@
             name="data_chegada"
             class="form-control @error('data_chegada') is-invalid @enderror"
             value="{{ old('data_chegada', isset($compra) ? $compra->getDataChegada() : date('Y-m-d')) }}"
+            required
         >
 
         <span class="invalid-feedback" role="alert" ref="data_chegada"></span>
@@ -70,7 +76,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-2">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -80,12 +86,13 @@
             data-input="#fornecedor"
             data-route="fornecedores"
             value="{{ old('fornecedor_id', isset($compra) ? $compra->getFornecedor()->getId() : null) }}"
+            required
         >
 
         <span class="invalid-feedback" role="alert" ref="fornecedor_id"></span>
     </div>
 
-    <div class="form-group required col-xl-10">
+    <div class="form-group required col-xl-10" id="ipt-fornecedor">
         <label>Fornecedor</label>
         <div class="input-group">
             <input
@@ -94,6 +101,8 @@
                 id="fornecedor"
                 value="{{ old('fornecedor', isset($compra) ? $compra->getFornecedor()->getRazaoSocial() : null) }}"
                 readonly
+                required
+                data-error="#ipt-fornecedor"
             >
 
             <div class="input-group-append">
@@ -128,6 +137,7 @@
     </div>
 </div>
 
+@empty($compra)
 <div class="d-flex mt-4">
     <hr class="flex-grow-1">
     <div class="px-4">
@@ -139,7 +149,6 @@
     <hr class="flex-grow-1">
 </div>
 
-@empty($compra)
 <div class="form-row">
     <div class="form-group col-xl-2">
         <label>Código</label>
@@ -183,7 +192,7 @@
     </div>
 
     <div id="modal-produtos" class="modal fade" data-field="produto" role="dialog">
-        <div class="modal-dialog modal-xl">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar Produto</h3>
@@ -201,7 +210,7 @@
 @include('compras.products-table')
 
 <div class="form-row mt-2">
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-3">
         <label>Frete</label>
 
         <div class="input-group">
@@ -229,7 +238,7 @@
         </div>
     </div>
 
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-3">
         <label>Seguro</label>
 
         <div class="input-group">
@@ -257,7 +266,7 @@
         </div>
     </div>
 
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-3">
         <label>Despesas</label>
 
         <div class="input-group">
@@ -284,7 +293,7 @@
         </div>
     </div>
 
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-3">
         <label>Total Produtos</label>
 
         <div class="input-group">
@@ -306,7 +315,7 @@
         </div>
     </div>
 
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-2 d-none">
         <label>Total à Pagar</label>
 
         <div class="input-group">
@@ -333,8 +342,19 @@
     </div>
 </div>
 
-<div class="form-row mt-4">
-    <div class="form-group col-xl-2">
+<div class="d-flex mt-4">
+    <hr class="flex-grow-1">
+    <div class="px-4">
+        <h4 class="text-gray">
+            <i class="fa fa-handshake mr-1"></i>
+            Contas à Pagar
+        </h4>
+    </div>
+    <hr class="flex-grow-1">
+</div>
+
+<div class="form-row">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -345,12 +365,13 @@
             data-route="condicoes-pagamento"
             value="{{ old('condicao_pagamento_id', isset($compra) ? $compra->getCondicaoPagamento()->getId() : null) }}"
             readonly
+            required
         >
 
         <span class="invalid-feedback" role="alert" ref="condicao_pagamento_id"></span>
     </div>
 
-    <div class="form-group required col-xl-10">
+    <div class="form-group required col-xl-10" id="ipt-condicao-pagamento">
         <label>Condição de Pagamento</label>
         <div class="input-group">
             <input
@@ -360,6 +381,8 @@
                 id="condicao_pagamento"
                 value="{{ old('condicao_pagamento', isset($compra) ? $compra->getCondicaoPagamento()->getCondicaoPagamento() : null) }}"
                 readonly
+                required
+                data-error="#ipt-condicao-pagamento"
             >
 
             <div class="input-group-append">

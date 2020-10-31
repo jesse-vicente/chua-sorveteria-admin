@@ -17,31 +17,29 @@
                 <td>{{ $cidade->getDDD() }}</td>
                 <td>{{ $cidade->getEstado()->getEstado() }}</td>
                 <td class="text-center">
-                    <div class="row flex-nowrap justify-content-center">
-                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('cidades.edit', $cidade->getId()) }}">
+                    <div class="btn-group-xs">
+                        <a class="btn btn-primary" href="{{ route('cidades.edit', $cidade->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <a class="btn btn-sm btn-danger" href="{{ route('cidades.show', $cidade->getId()) }}">
+                        <a class="btn btn-danger" href="{{ route('cidades.show', $cidade->getId()) }}">
                             <i class="fa fa-trash-alt"></i>
                         </a>
                     </div>
                 </td>
             </tr>
             @empty
-            <!-- <tr>
-                <td colspan="8">
-                    <div class="alert alert-danger text-center">
-                        <i class="fa fa-exclamation-triangle"></i>
-                        Nenhum registro encontrado!
-                    </div>
-                </td>
-                <td class="d-none"></td>
-                <td class="d-none"></td>
-                <td class="d-none"></td>
-                <td class="d-none"></td>
-            </tr> -->
             @endforelse
         </tbody>
+
+        <tfoot>
+            <tr>
+                <th>Cód.</th>
+                <th>Cidade</th>
+                <th>DDD</th>
+                <th>Estado</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </tfoot>
     </table>
 </div>

@@ -13,7 +13,7 @@
 
     <div class="card-body">
         @isset($compra)
-            <form method="POST" key="{{ $compra->getPrimaryKey() }}" action="{{ route('compras.update', $compra->getPrimaryKey()) }}" id="form-cancel">
+            <form method="POST" key="{{ $compra->getPrimaryKeyStr() }}" action="{{ route('compras.update', $compra->getPrimaryKeyStr()) }}" id="form-cancel">
                 @method('PUT')
         @else
             <form method="POST" id="form-compra">

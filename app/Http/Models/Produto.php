@@ -25,7 +25,7 @@ class Produto extends TObject
     protected $categoria;
 
     /**
-     * @var int
+     * @var float
      */
     protected $estoque;
 
@@ -155,7 +155,7 @@ class Produto extends TObject
     /**
      * Get the value of estoque
      *
-     * @return  int
+     * @return  float
      */
     public function getEstoque()
     {
@@ -165,10 +165,10 @@ class Produto extends TObject
     /**
      * Set the value of estoque
      *
-     * @param  int  $estoque
+     * @param  float  $estoque
      *
      */
-    public function setEstoque(int $estoque = null)
+    public function setEstoque(float $estoque = null)
     {
         $this->estoque = $estoque;
     }

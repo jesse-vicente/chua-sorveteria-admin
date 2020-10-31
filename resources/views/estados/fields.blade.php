@@ -25,6 +25,7 @@
             name="estado"
             class="form-control @error('estado') is-invalid @enderror"
             value="{{ old('estado', isset($estado) ? $estado->getEstado() : null) }}"
+            required
         >
 
         @error('estado')
@@ -42,6 +43,7 @@
             name="uf"
             class="form-control @error('uf') is-invalid @enderror"
             value="{{ old('uf', isset($estado) ? $estado->getUF() : null) }}"
+            required
         >
 
         @error('uf')
@@ -64,6 +66,7 @@
             data-input="#pais"
             data-route="paises"
             value="{{ old('pais_id', isset($estado) ? $estado->getPais()->getId() : null) }}"
+            required
         >
 
         @error('pais_id')
@@ -73,7 +76,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-10">
+    <div class="form-group required col-xl-10" id="ipt-pais">
         <label>País</label>
         <div class="input-group">
             <input
@@ -83,6 +86,8 @@
                 name="pais"
                 value="{{ old('pais', isset($estado) ? $estado->getPais()->getPais() : null) }}"
                 readonly
+                required
+                data-error="#ipt-pais"
             >
 
             <div class="input-group-append">
@@ -103,6 +108,9 @@
     <div id="modal-paises" data-field="pais" class="modal fade" role="dialog">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
+                <div class="overlay">
+                    <i class="fas fa-2x fa-sync fa-spin"></i>
+                </div>
                 <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar País</h3>
                     <button type="button" class="close text-white" data-dismiss="modal">&times;</button>

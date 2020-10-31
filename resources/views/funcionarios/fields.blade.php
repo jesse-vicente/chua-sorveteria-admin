@@ -54,18 +54,14 @@
     <div class="form-group required col-xl-2">
         <label>Sexo</label>
         <select class="form-control @error('sexo') is-invalid @enderror" name="sexo">
-            @if (!isset($funcionario))
+            @empty($funcionario))
                 <option value="" selected class="d-none">Selecione</option>
+                <option value="Masculino" {{ old('sexo') == 'Masculino' ? 'selected' : '' }}>Masculino</option>
+                <option value="Feminino" {{ old('sexo') == 'Feminino' ? 'selected' : '' }}>Feminino</option>
+            @else
+                <option value="Masculino" {{ $funcionario->getSexo() == 'Masculino' ? 'selected' : '' }}>Masculino</option>
+                <option value="Feminino" {{ $funcionario->getSexo() == 'Feminino' ? 'selected' : '' }}>Feminino</option>
             @endif
-            <option value="Masculino"
-                @if (old('sexo') == "Masculino") {{ 'selected' }} @endif
-            >Masculino
-            </option>
-
-            <option value="Feminino"
-                @if (old('sexo') == "Feminino") {{ 'selected' }} @endif
-            >Feminino
-            </option>
         </select>
 
         @error('sexo')
@@ -165,7 +161,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-2">
+    <div class="form-group required col-xl-1">
         <label>Código</label>
         <input
             type="number"
@@ -184,7 +180,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-8">
+    <div class="form-group required col-xl-9">
         <label>Cidade</label>
         <div class="input-group">
 
@@ -284,7 +280,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-3">
         <label>CPF</label>
         <input
             type="text"
@@ -302,7 +298,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-3">
         <label>RG</label>
         <input
             type="text"
@@ -318,7 +314,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-3">
         <label>Data de Nascimento</label>
         <input
             type="date"
@@ -337,7 +333,7 @@
 </div>
 
 <div class="form-row mt-4">
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-2">
         <label>Salário</label>
 
         <div class="input-group">
@@ -351,6 +347,7 @@
                 name="salario"
                 class="form-control @error('salario') is-invalid @enderror"
                 value="{{ old('salario', isset($funcionario) ? $funcionario->getSalario() : null) }}"
+                placeholder="0,00"
             >
 
             @error('salario')
@@ -361,7 +358,7 @@
         </div>
     </div>
 
-    <div class="form-group required col-xl-4">
+    <div class="form-group required col-xl-3">
         <label>Data de Admissão</label>
         <input
             type="date"
@@ -378,7 +375,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-4">
+    <div class="form-group col-xl-3">
         <label>Data de Demissão</label>
         <input
             type="date"

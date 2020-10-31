@@ -1,4 +1,4 @@
-<div class="col-xl-5">
+<div class="col-xl-5 mx-auto">
     <div class="card">
         <div class="card-header">
             <div class="d-flex align-items-center">
@@ -37,3 +37,6 @@
         </div>
     </div>
 </div>
+
+@include('categorias.create-modal')
+@include('fornecedores.create-modal')

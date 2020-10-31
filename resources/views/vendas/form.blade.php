@@ -13,7 +13,7 @@
 
     <div class="card-body">
         @isset($venda)
-            <form method="POST" key="{{ $venda->getPrimaryKey() }}" action="{{ route('vendas.update', $venda->getPrimaryKey()) }}" id="form-cancel">
+            <form method="POST" key="{{ $venda->getPrimaryKeyStr() }}" action="{{ route('vendas.update', $venda->getPrimaryKeyStr()) }}" id="form-cancel">
                 @method('PUT')
         @else
             <form method="POST" id="form-venda">
@@ -46,3 +46,5 @@
         </div>
     </div>
 </div>
+
+@include('clientes.create-modal')

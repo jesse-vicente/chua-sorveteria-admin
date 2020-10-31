@@ -12,7 +12,7 @@ class ProdutoCompra
     protected $produto;
 
     /**
-     * @var int
+     * @var float
      */
     protected $quantidade;
 
@@ -40,7 +40,7 @@ class ProdutoCompra
     /**
      * Get the value of quantidade
      *
-     * @return  int
+     * @return  float
      */
     public function getQuantidade()
     {
@@ -50,10 +50,10 @@ class ProdutoCompra
     /**
      * Set the value of quantidade
      *
-     * @param  int  $quantidade
+     * @param  float  $quantidade
      *
      */
-    public function setQuantidade(int $quantidade)
+    public function setQuantidade(float $quantidade)
     {
         $this->quantidade = $quantidade;
     }

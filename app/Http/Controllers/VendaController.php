@@ -60,14 +60,10 @@ class VendaController extends Controller
 
         $response = $this->daoVenda->store($venda);
 
-        if ($response->getStatusCode() == 200) {
+        if ($response->getStatusCode() == 200)
             $request->session()->flash('success', 'Registro inserido com sucesso!');
-            return $response;
-        }
-        else {
-            $request->session()->flash('error', $response->getData()->message);
-            return $response;
-        }
+
+        return $response;
     }
 
     /**
@@ -78,12 +74,12 @@ class VendaController extends Controller
      */
     public function show($key)
     {
-        // $venda = $this->daoVenda->findByPrimaryKey($key, true);
+        $venda = $this->daoVenda->findByPrimaryKey($key, true);
 
-        // if ($venda)
-        //     return view('vendas.show', compact('venda'));
+        if ($venda)
+            return view('vendas.show', compact('venda'));
 
-        // return redirect('vendas')->with('error', 'Registro não encontrado.');
+        return redirect('vendas')->with('error', 'Registro não encontrado.');
     }
 
     /**

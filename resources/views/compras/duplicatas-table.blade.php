@@ -1,14 +1,3 @@
-<div class="d-flex mt-4 mb-2">
-    <hr class="flex-grow-1">
-    <div class="px-4">
-        <h4 class="text-gray">
-            <i class="fa fa-shopping-cart mr-1"></i>
-            Contas à Pagar
-        </h4>
-    </div>
-    <hr class="flex-grow-1">
-</div>
-
 <!-- <div class="card" id="card-duplicatas">
     <div class="card-header bg-gray-dark">
         <h3 class="card-title">
@@ -39,7 +28,7 @@
                         <td>{{ $duplicata->getCompra()->getNumeroNota() . '/' . $duplicata->getParcela() }}</td>
                         <td>{{ $duplicata->getFormaPagamento()->getFormaPagamento() }}</td>
                         <td class="text-center">{{ date('d/m/Y', strtotime($duplicata->getDataVencimento())) }}</td>
-                        <td class="text-right">{{ 'R$ ' . number_format($duplicata->getValorParcela(), 2) }}</td>
+                        <td class="text-right">{{ 'R$ ' . number_format($duplicata->getValorParcela(), 2, ',', '.') }}</td>
                     </tr>
                 @empty
 

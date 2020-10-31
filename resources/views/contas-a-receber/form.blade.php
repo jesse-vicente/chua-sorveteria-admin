@@ -1,10 +1,15 @@
-<div class="col-xl-6">
+<div class="col-xl-6 mx-auto">
     <div class="card">
         <div class="card-header">
             <div class="d-flex align-items-center">
                 @isset($contaReceber)
-                    <i class="fa fa-money-check"></i>
-                    <h3 class="ml-3 mb-0">Pagamento</h3>
+                    @if ($contaReceber->getStatus() == 'Recebido')
+                        <i class="fa fa-ban"></i>
+                        <h3 class="ml-3 mb-0">Cancelar Recebimento</h3>
+                    @else
+                        <i class="fa fa-check"></i>
+                        <h3 class="ml-3 mb-0">Confirmar Recebimento</h3>
+                    @endif
                 @else
                     <i class="fa fa-plus"></i>
                     <h3 class="ml-3 mb-0">Cadastrar Conta à Receber</h3>
@@ -14,12 +19,18 @@
 
         <div class="card-body">
             @isset($contaReceber)
-                <form method="POST" id="form-conta" action="{{ route('contas-a-receber.update', $contaReceber->getPrimaryKey()) }}">
+                @php
+                    $novoStatus = $contaReceber->getStatus() == 'Recebido' ? 'Em aberto' : 'Recebido';
+                    $idForm     = $novoStatus == 'Recebido' ? 'form-conta' : 'form-cancel';
+                @endphp
+
+                <form method="POST" id="{{ $idForm }}" action="{{ route('contas-a-receber.update', $contaReceber->getPrimaryKeyStr()) }}">
                 @method('PUT')
+
+                <input type="hidden" name="status" value="{{ $novoStatus }}">
             @else
                 <form method="POST" action="{{ route('contas-a-receber.store') }}">
-            @endif
-
+            @endisset
                 @csrf
                 @include('contas-a-receber.fields')
                 </form>
@@ -32,18 +43,24 @@
                     <small><b>Alterado em: </b>{{ isset($contaReceber) ? $contaReceber->getDataAlteracao() : "__/__/____" }}</small>
                 </div>
 
-                @empty($contaReceber)
-                    @include('contas-a-receber.actions')
+                @isset($contaReceber)
+                    <div class="btn-group-lg">
+                    @if ($contaReceber->getStatus() == 'Recebido')
+                        <button class="btn btn-danger mr-2" id="btn-cancel">
+                            <span class="text-bold">Cancelar</span>
+                        </button>
+                    @else
+                        <button class="btn btn-success mr-2" id="btn-pagar">
+                            <span class="text-bold">Confirmar</span>
+                        </button>
+                    @endif
+                        <a class="btn btn-outline-secondary" href="{{ route('contas-a-receber.index') }}">
+                            <span class="text-bold">Cancelar</span>
+                        </a>
+                    </div>
                 @else
-                <div class="btn-group-lg">
-                    <button class="btn btn-success mr-2" id="btn-pagar">
-                        <span class="text-bold">Finalizar</span>
-                    </button>
-                    <a class="btn btn-outline-secondary" href="{{ route('contas-a-receber.index') }}">
-                        <span class="text-bold">Cancelar</span>
-                    </a>
-                </div>
-                @endempty
+                    @include('contas-a-receber.actions')
+                @endisset
             </div>
         </div>
     </div>

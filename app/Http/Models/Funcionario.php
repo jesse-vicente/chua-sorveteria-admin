@@ -20,6 +20,11 @@ class Funcionario extends Pessoa
     protected $dataNascimento;
 
     /**
+     * @var string
+     */
+    protected $cargo;
+
+    /**
      * @var float
      */
     protected $salario;
@@ -38,7 +43,8 @@ class Funcionario extends Pessoa
     {
         $this->apelido        = '';
         $this->sexo           = '';
-        $this->salario        = 0;
+        $this->cargo          = '';
+        $this->salario        = 0.00;
         $this->dataNascimento = '';
         $this->dataAdmissao   = null;
         $this->dataDemissao   = null;
@@ -105,6 +111,27 @@ class Funcionario extends Pessoa
     public function setDataNascimento(string $dataNascimento)
     {
         $this->dataNascimento = $dataNascimento;
+    }
+
+    /**
+     * Get the value of cargo
+     *
+     * @return  string
+     */
+    public function getCargo()
+    {
+        return $this->cargo;
+    }
+
+    /**
+     * Set the value of cargo
+     *
+     * @param  string  $cargo
+     *
+     */
+    public function setCargo(string $cargo)
+    {
+        $this->cargo = $cargo;
     }
 
     /**

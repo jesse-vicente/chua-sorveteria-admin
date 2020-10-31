@@ -30,14 +30,15 @@ class PaisRequest extends FormRequest
                 'required',
                 'min:3',
                 'max:50',
+                'alpha',
                 Rule::unique('paises')->ignore($this->request->get('id'))
             ],
 
             'sigla' => [
                 'required',
-                'alpha',
                 'min:2',
                 'max:3',
+                'alpha',
                 Rule::unique('paises')->ignore($this->request->get('id'))
             ],
 
@@ -45,7 +46,6 @@ class PaisRequest extends FormRequest
                 'required',
                 'numeric',
                 'gt:0',
-                'lt:1000',
                 Rule::unique('paises')->ignore($this->request->get('id'))
             ],
         ];

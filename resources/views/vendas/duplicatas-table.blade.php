@@ -26,7 +26,7 @@
             @isset($venda)
                 <thead>
                     <tr>
-                        <th>Duplicata</th>
+                        <th class="text-right">Parcela</th>
                         <th>Forma de Pagamento</th>
                         <th class="text-center">Vencimento</th>
                         <th class="text-right">Valor da Parcela</th>
@@ -34,16 +34,16 @@
                 </thead>
 
                 <tbody>
-                @forelse ($venda->getContasReceber() as $duplicata)
-                    <tr>
-                        <td>{{ $duplicata->getVenda()->getNumeroNota() . '/' . $duplicata->getParcela() }}</td>
-                        <td>{{ $duplicata->getFormaPagamento()->getFormaPagamento() }}</td>
-                        <td class="text-center">{{ date('d/m/Y', strtotime($duplicata->getDataVencimento())) }}</td>
-                        <td class="text-right">{{ 'R$ ' . number_format($duplicata->getValorParcela(), 2) }}</td>
-                    </tr>
-                @empty
+                    @forelse ($venda->getContasReceber() as $duplicata)
+                        <tr>
+                            <td class="text-right">{{ $duplicata->getVenda()->getNumeroNota() . '/' . $duplicata->getParcela() }}</td>
+                            <td>{{ $duplicata->getFormaPagamento()->getFormaPagamento() }}</td>
+                            <td class="text-center">{{ date('d/m/Y', strtotime($duplicata->getDataVencimento())) }}</td>
+                            <td class="text-right">{{ 'R$ ' . number_format($duplicata->getValorParcela(), 2, ',', '.') }}</td>
+                        </tr>
+                    @empty
 
-                @endforelse
+                    @endforelse
                 </tbody>
             @endisset
         </table>

@@ -25,6 +25,7 @@
             name="pais"
             class="form-control @error('pais') is-invalid @enderror"
             value="{{ old('pais', isset($pais) ? $pais->getPais() : null) }}"
+            required
         >
 
         @error('pais')
@@ -42,6 +43,7 @@
             name="sigla"
             class="form-control @error('sigla') is-invalid @enderror"
             value="{{ old('sigla', isset($pais) ? $pais->getSigla() : null) }}"
+            required
         >
 
         @error('sigla')
@@ -65,6 +67,7 @@
                 name="ddi"
                 class="form-control @error('ddi') is-invalid @enderror"
                 value="{{ old('ddi', isset($pais) ? $pais->getDDI() : null) }}"
+                required
             >
 
             @error('ddi')

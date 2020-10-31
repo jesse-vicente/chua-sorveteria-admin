@@ -40,10 +40,10 @@
         <label>Data da Venda</label>
         <input
             type="date"
-            id="data_emissao"
-            name="data_emissao"
-            class="form-control @error('data_emissao') is-invalid @enderror"
-            value="{{ old('data_emissao', isset($contaReceber) ? $contaReceber->getVenda()->getDataVenda() : date('Y-m-d')) }}"
+            id="data_venda"
+            name="data_venda"
+            class="form-control @error('data_venda') is-invalid @enderror"
+            value="{{ old('data_venda', isset($contaReceber) ? $contaReceber->getVenda()->getDataVenda() : date('Y-m-d')) }}"
         >
 
     </div>
@@ -60,7 +60,9 @@
             id="cliente_id"
             data-input="#cliente"
             data-route="clientes"
-            value="{{ old('cliente_id', isset($contaReceber) ? $contaReceber->getCliente()->getId() : null) }}"
+            @isset($contaReceber)
+                value="{{ old('cliente_id', $contaReceber->getCliente() ? $contaReceber->getCliente()->getId() : null) }}"
+            @endisset
         >
 
         @error('cliente_id')
@@ -77,7 +79,9 @@
                 class="form-control"
                 name="cliente"
                 id="cliente"
-                value="{{ old('cliente', isset($contaReceber) ? $contaReceber->getCliente()->getNome() : null) }}"
+                @isset($contaReceber)
+                    value="{{ old('cliente', $contaReceber->getCliente() ? $contaReceber->getCliente()->getNome() : null) }}"
+                @endisset
                 readonly
             >
 
@@ -250,9 +254,8 @@
 </div>
 
 <div class="form-row">
-
-    <div class="form-group required col-xl-3">
-        <label>Valor Pago</label>
+    <div class="form-group required col-xl-3 float-right">
+        <label>Total</label>
 
         <div class="input-group">
             <div class="input-group-prepend">
@@ -266,13 +269,7 @@
                 placeholder="0,00"
                 class="form-control @error('valor_pago') is-invalid @enderror"
                 readonly
-                @isset($contaReceber)
-                    @if ($contaReceber->getStatus() == 'Pendente')
-                        value="{{ number_format($contaReceber->getValorParcela(), 2) }}"
-                    @elseif ($contaReceber->getStatus() == 'Liquidado')
-                        value="{{ old('valor_pago', number_format($contaReceber->getValorPago(), 2)) }}"
-                    @endif
-                @endisset
+                value="{{ number_format($contaReceber->getValorParcela(), 2) }}"
             >
 
             @error('valor_pago')
@@ -282,5 +279,4 @@
             @enderror
         </div>
     </div>
-
 </div>

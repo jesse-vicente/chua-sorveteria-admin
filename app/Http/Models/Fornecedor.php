@@ -158,7 +158,7 @@ class Fornecedor extends Pessoa
      */
     public function getValorCredito()
     {
-        return $this->valorCredito;
+        return $this->valorCredito ?? null;
     }
 
     /**
@@ -167,7 +167,7 @@ class Fornecedor extends Pessoa
      * @param  float  $valorCredito
      *
      */
-    public function setValorCredito(float $valorCredito = 0)
+    public function setValorCredito(float $valorCredito = null)
     {
         $this->valorCredito = $valorCredito;
     }

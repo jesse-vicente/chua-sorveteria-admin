@@ -63,7 +63,7 @@ class CompraController extends Controller
             return $response;
         }
         else {
-            $request->session()->flash('error', $response->getData()->message);
+            // $request->session()->flash('error', $response->getData()->message);
             return $response;
         }
     }
@@ -76,12 +76,12 @@ class CompraController extends Controller
      */
     public function show($key)
     {
-        // $compra = $this->daoCompra->findByPrimaryKey($key, true);
+        $compra = $this->daoCompra->findByPrimaryKey($key, true);
 
-        // if ($compra)
-        //     return view('compras.show', compact('compra'));
+        if ($compra)
+            return view('compras.show', compact('compra'));
 
-        // return redirect('compras')->with('error', 'Registro não encontrado.');
+        return redirect('compras')->with('error', 'Registro não encontrado.');
     }
 
     /**

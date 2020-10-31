@@ -6,10 +6,10 @@ use App\Http\Models\Cliente;
 use App\Http\Models\ProdutoVenda;
 use App\Http\Models\ContasReceber;
 use App\Http\Models\CondicaoPagamento;
-
 use App\Http\Models\Funcionario;
 
 use Illuminate\Support\Carbon;
+use stdClass;
 
 class Venda extends TObject
 {
@@ -219,9 +219,25 @@ class Venda extends TObject
      *
      * @return  string
      */
-    public function getPrimaryKey()
+    public function getPrimaryKeyStr()
     {
-        return $this->numeroNota . '-' . $this->serie . '-' . $this->modelo . '-' . $this->getCliente()->getId();
+        $pkStr = $this->numeroNota . '-' . $this->serie . '-' . $this->modelo ;
+
+        if ($this->getCliente())
+            $pkStr .= '-' . $this->getCliente()->getId();
+
+        return $pkStr;
+    }
+
+    public function getPrimaryKey() {
+        $pk = new stdClass();
+
+        $pk->numero     = $this->numeroNota;
+        $pk->serie      = $this->serie;
+        $pk->modelo     = $this->modelo;
+        $pk->cliente_id = $this->getCliente() ? $this->getCliente()->getId() : null;
+
+        return $pk;
     }
 
     /**

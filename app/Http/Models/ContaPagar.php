@@ -353,8 +353,8 @@ class ContaPagar extends TObject
      *
      * @return  string
      */
-    public function getPrimaryKey()
+    public function getPrimaryKeyStr()
     {
-        return $this->compra->getPrimaryKey() . '-' . $this->getParcela();
+        return $this->compra->getPrimaryKeyStr() . '-' . $this->getParcela();
     }
 }

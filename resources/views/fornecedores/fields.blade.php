@@ -19,18 +19,16 @@
     <div class="form-group col-xl-1">
         <label>Código</label>
         <input
-            type="text"
+            type="number"
             id="id"
             name="id"
             class="form-control @error('id') is-invalid @enderror"
-            value="{{ old('id', isset($fornecedor) ? $fornecedor->getId() : null) }}"
+            value="{{ old('id', isset($fornecedor) ? $fornecedor->getId() : 0) }}"
             readonly
         >
 
         @error('id')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
@@ -42,12 +40,13 @@
             name="fornecedor"
             class="form-control @error('fornecedor') is-invalid @enderror"
             value="{{ old('fornecedor', isset($fornecedor) ? $fornecedor->getRazaoSocial() : null) }}"
+            required
         >
 
+        <strong class="invalid-feedback">Please enter a name</strong>
+
         @error('fornecedor')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
@@ -62,9 +61,7 @@
         >
 
         @error('nomeFantasia')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
@@ -79,12 +76,11 @@
             name="endereco"
             class="form-control @error('endereco') is-invalid @enderror"
             value="{{ old('endereco', isset($fornecedor) ? $fornecedor->getEndereco() : null) }}"
+            required
         >
 
         @error('endereco')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
@@ -96,12 +92,11 @@
             name="numero"
             class="form-control @error('numero') is-invalid @enderror"
             value="{{ old('numero', isset($fornecedor) ? $fornecedor->getNumero() : null) }}"
+            required
         >
 
         @error('numero')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
@@ -116,9 +111,7 @@
         >
 
         @error('complemento')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
@@ -130,12 +123,11 @@
             name="bairro"
             class="form-control @error('bairro') is-invalid @enderror"
             value="{{ old('bairro', isset($fornecedor) ? $fornecedor->getBairro() : null) }}"
+            required
         >
 
         @error('bairro')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 </div>
@@ -150,16 +142,15 @@
             class="form-control @error('cep') is-invalid @enderror"
             value="{{ old('cep', isset($fornecedor) ? $fornecedor->getCEP() : null) }}"
             placeholder="_____-___"
+            required
         >
 
         @error('cep')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
-    <div class="form-group col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
 
         <input
@@ -170,16 +161,15 @@
             data-input="#cidade"
             data-route="cidades"
             value="{{ old('cidade_id', isset($fornecedor) ? $fornecedor->getCidade()->getId() : null) }}"
+            required
         >
 
         @error('cidade_id')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
-    <div class="form-group required col-xl-9">
+    <div class="form-group required col-xl-8">
         <label>Cidade</label>
         <div class="input-group">
             <input
@@ -188,6 +178,7 @@
                 id="cidade"
                 value="{{ old('cidade', isset($fornecedor) ? $fornecedor->getCidade()->getCidade() : null) }}"
                 readonly
+                required
             >
 
             <div class="input-group-append">
@@ -206,11 +197,11 @@
     </div>
 
     <div id="modal-cidades" class="modal fade" data-field="cidade" role="dialog">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="modal-header align-items-center py-2">
+                <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar Cidade</h3>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     @include('cidades.search')
@@ -231,12 +222,11 @@
             class="form-control @error('whatsapp') is-invalid @enderror"
             value="{{ old('whatsapp', isset($fornecedor) ? $fornecedor->getWhatsapp() : null) }}"
             placeholder="(__) _____-____"
+            required
         >
 
         @error('whatsapp')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
@@ -252,9 +242,7 @@
         >
 
         @error('telefone')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
@@ -269,9 +257,7 @@
         >
 
         @error('email')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 </div>
@@ -288,9 +274,7 @@
         >
 
         @error('website')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
@@ -305,9 +289,7 @@
         >
 
         @error('contato')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 </div>
@@ -322,12 +304,11 @@
             class="form-control @error('cpf_cnpj') is-invalid @enderror"
             value="{{ old('cpf_cnpj', isset($fornecedor) ? $fornecedor->getCpfCnpj() : null) }}"
             placeholder="__.___.___/____-__"
+            required
         >
 
         @error('cpf_cnpj')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
@@ -342,9 +323,7 @@
         >
 
         @error('rg_inscricao_estadual')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
@@ -362,19 +341,20 @@
                 name="valor_credito"
                 class="form-control @error('valor_credito') is-invalid @enderror"
                 value="{{ old('valor_credito', isset($fornecedor) ? $fornecedor->getValorCredito() : null) }}"
+                placeholder="0,00"
             >
+
+            @error('valor_credito')
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
+        @enderror
         </div>
 
-        @error('valor_credito')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
+
     </div>
 </div>
 
 <div class="form-row mt-4">
-    <div class="form-group col-xl-1">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -384,16 +364,15 @@
             data-input="#condicao_pagamento"
             data-route="condicoes-pagamento"
             value="{{ old('condicao_pagamento_id', isset($fornecedor) ? $fornecedor->getCondicaoPagamento()->getId() : null) }}"
+            required
         >
 
         @error('condicao_pagamento_id')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
 
-    <div class="form-group required col-xl-11">
+    <div class="form-group required col-xl-10">
         <label>Condição de Pagamento</label>
         <div class="input-group">
 
@@ -404,6 +383,7 @@
                 id="condicao_pagamento"
                 value="{{ old('condicao_pagamento', isset($fornecedor) ? $fornecedor->getCondicaoPagamento()->getCondicaoPagamento() : null) }}"
                 readonly
+                required
             >
 
             <div class="input-group-append">
@@ -422,11 +402,11 @@
     </div>
 
     <div id="modal-condicoes-pagamento" class="modal fade" data-field="condicao_pagamento" role="dialog">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="modal-header align-items-center py-2">
+                <div class="modal-header align-items-center py-2 bg-dark">
                     <h3 class="modal-title">Buscar Condição de Pagamento</h3>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     @include('condicoes-pagamento.search')

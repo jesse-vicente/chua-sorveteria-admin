@@ -108,7 +108,7 @@ return [
     'classes_content_header' => '',
     'classes_content' => '',
     'classes_sidebar' => 'sidebar-dark-primary elevation-2',
-    'classes_sidebar_nav' => '',
+    'classes_sidebar_nav' => 'nav-compact',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand-md',
     'classes_topnav_container' => 'container',
@@ -228,33 +228,41 @@ return [
         //     'label_color' => 'success',
         // ],
 
+        ['header' => 'ESTOQUE'],
         [
-            'text'    => 'Financeiro',
-            'icon'    => 'fas fa-fw fa-dollar-sign',
-            'submenu' => [
-                [
-                    'text'        => 'Compras',
-                    'url'         => 'compras',
-                    'icon'        => 'fas fa-fw fa-shopping-cart',
-                ],
-                [
-                    'text'        => 'Vendas',
-                    'url'         => 'vendas',
-                    'icon'        => 'fas fa-fw fa-tags',
-                ],
-                [
-                    'text'        => 'Formas de Pagamento',
-                    'url'         => 'formas-pagamento',
-                    'icon'        => 'fas fa-fw fa-credit-card',
-                ],
-                [
-                    'text'        => 'Condições de Pagamento',
-                    'url'         => 'condicoes-pagamento',
-                    'icon'        => 'fas fa-comments-dollar',
-                ],
-            ],
+            'text'        => 'Compras',
+            'url'         => 'compras',
+            'icon'        => 'fas fa-fw fa-shopping-cart',
+        ],
+        [
+            'text'        => 'Vendas',
+            'url'         => 'vendas',
+            'icon'        => 'fas fa-fw fa-dollar-sign',
         ],
 
+        ['header' => 'FINANCEIRO'],
+        [
+            'text'        => 'Contas à Pagar',
+            'url'         => 'contas-a-pagar',
+            'icon'        => 'fas fa-fw fa-file-invoice-dollar',
+        ],
+        [
+            'text'        => 'Contas à Receber',
+            'url'         => 'contas-a-receber',
+            'icon'        => 'fas fa-fw fa-cash-register',
+        ],
+        [
+            'text'        => 'Formas de Pagamento',
+            'url'         => 'formas-pagamento',
+            'icon'        => 'fas fa-fw fa-credit-card',
+        ],
+        [
+            'text'        => 'Condições de Pagamento',
+            'url'         => 'condicoes-pagamento',
+            'icon'        => 'fas fa-comments-dollar',
+        ],
+
+        ['header' => 'PESSOAS'],
         [
             'text'        => 'Clientes',
             'url'         => 'clientes',
@@ -271,43 +279,33 @@ return [
             'icon'        => 'fas fa-fw fa-address-card',
         ],
 
+        ['header' => 'CATEGORIAS & PRODUTOS'],
         [
-            'text'    => 'Categorias & Produtos',
-            'icon'    => 'fas fa-fw fa-store',
-            'submenu' => [
-                [
-                    'text'        => 'Categorias',
-                    'url'         => 'categorias',
-                    'icon'        => 'fas fa-fw fa-layer-group',
-                ],
-                [
-                    'text'        => 'Produtos',
-                    'url'         => 'produtos',
-                    'icon'        => 'fas fa-fw fa-box',
-                ],
-            ],
+            'text'        => 'Categorias',
+            'url'         => 'categorias',
+            'icon'        => 'fas fa-fw fa-layer-group',
+        ],
+        [
+            'text'        => 'Produtos',
+            'url'         => 'produtos',
+            'icon'        => 'fas fa-fw fa-box',
         ],
 
+        ['header' => 'PAÍSES, ESTADOS & CIDADES'],
         [
-            'text'    => 'Países, Estados & Cidades',
-            'icon'    => 'fas fa-fw fa-map-marker-alt',
-            'submenu' => [
-                [
-                    'text' => 'Países',
-                    'url'  => 'paises',
-                    'icon' => 'fas fa-fw fa-location-arrow',
-                ],
-                [
-                    'text' => 'Estados',
-                    'url'  => 'estados',
-                    'icon' => 'fas fa-fw fa-location-arrow',
-                ],
-                [
-                    'text' => 'Cidades',
-                    'url'  => 'cidades',
-                    'icon' => 'fas fa-fw fa-location-arrow',
-                ],
-            ],
+            'text' => 'Países',
+            'url'  => 'paises',
+            'icon' => 'fas fa-fw fa-map-marker-alt',
+        ],
+        [
+            'text' => 'Estados',
+            'url'  => 'estados',
+            'icon' => 'fas fa-fw fa-map-marker-alt',
+        ],
+        [
+            'text' => 'Cidades',
+            'url'  => 'cidades',
+            'icon' => 'fas fa-fw fa-map-marker-alt',
         ],
 
         // ['header' => 'account_settings'],
@@ -509,6 +507,28 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '//cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js',
+                ],
+            ],
+        ],
+        [
+            'name' => 'Jquery Validator',
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js',
+                ],
+            ],
+        ],
+        [
+            'name' => 'Validations',
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'js',
+                    'asset' => true,
+                    'location' => '/js/validations.js',
                 ],
             ],
         ],

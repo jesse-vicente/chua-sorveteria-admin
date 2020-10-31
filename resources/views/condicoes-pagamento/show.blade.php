@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header bg-danger">
+    <div class="card-header">
         <div class="d-flex align-items-center">
             <i class="fa fa-trash-alt"></i>
             <h3 class="ml-3 mb-0">Excluir Condição de Pagamento</h3>
@@ -11,7 +11,7 @@
 
     <div class="card-body">
         @isset($condicaoPagamento)
-        <form method="POST" action="{{ route('condicoes-pagamento.destroy', $condicaoPagamento->getId()) }}" id="form-delete">
+        <form method="POST" action="{{ route('condicoes-pagamento.destroy', $condicaoPagamento->getId()) }}" id="form-show">
             @method('DELETE')
 
             @csrf

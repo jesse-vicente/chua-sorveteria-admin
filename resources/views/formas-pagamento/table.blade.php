@@ -13,12 +13,12 @@
             <td>{{ $formaPagamento->getId() }}</td>
             <td>{{ $formaPagamento->getFormaPagamento() }}</td>
             <td class="text-center">
-                <div class="row flex-nowrap justify-content-center">
-                    <a class="btn btn-sm btn-primary mr-2" href="{{ route('formas-pagamento.edit', $formaPagamento->getId()) }}">
+                <div class="btn-group-xs">
+                    <a class="btn btn-primary" href="{{ route('formas-pagamento.edit', $formaPagamento->getId()) }}">
                         <i class="fa fa-edit"></i>
                     </a>
 
-                    <a class="btn btn-sm btn-danger" href="{{ route('formas-pagamento.show', $formaPagamento->getId()) }}">
+                    <a class="btn btn-danger" href="{{ route('formas-pagamento.show', $formaPagamento->getId()) }}">
                         <i class="fa fa-trash-alt"></i>
                     </a>
                 </div>
@@ -28,5 +28,13 @@
 
         @endforelse
         </tbody>
+
+        <tfoot>
+            <tr>
+                <th>Cód.</th>
+                <th>Forma de Pagamento</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </tfoot>
     </table>
 </div>

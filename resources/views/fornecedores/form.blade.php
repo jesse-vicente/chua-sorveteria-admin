@@ -13,10 +13,10 @@
 
     <div class="card-body">
         @isset($fornecedor)
-            <form method="POST" action="{{ route('fornecedores.update', $fornecedor->getId()) }}">
+            <form method="POST" action="{{ route('fornecedores.update', $fornecedor->getId()) }}" class="needs-validation" novalidate>
             @method('PUT')
         @else
-            <form method="POST" action="{{ route('fornecedores.store') }}">
+            <form method="POST" action="{{ route('fornecedores.store') }}" class="needs-validation" novalidate>
         @endif
 
             @csrf
@@ -35,3 +35,6 @@
         </div>
     </div>
 </div>
+
+@include('cidades.create-modal')
+@include('condicoes-pagamento.create-modal')

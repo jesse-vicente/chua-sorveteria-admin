@@ -233,9 +233,9 @@ class ContaReceber extends TObject
      *
      * @return  string
      */
-    public function getPrimaryKey()
+    public function getPrimaryKeyStr()
     {
-        return $this->venda->getPrimaryKey();
+        return $this->venda->getPrimaryKeyStr() . '-' . $this->getParcela();
     }
 
     /**

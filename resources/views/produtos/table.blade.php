@@ -4,10 +4,11 @@
             <tr>
                 <th>Cód.</th>
                 <th>Produto</th>
+                <th class="text-center">Und.</th>
                 <th>Categoria</th>
                 <th>Fornecedor</th>
-                <th>Em Estoque</th>
-                <th>Preço Venda</th>
+                <th class="text-center">Estoque</th>
+                <th class="text-right">Preço Venda</th>
                 <th class="text-center">Ações</th>
             </tr>
         </thead>
@@ -16,17 +17,18 @@
             <tr>
                 <td>{{ $produto->getId() }}</td>
                 <td>{{ $produto->getProduto() }}</td>
+                <td class="text-center">{{ $produto->getUnidade() }}</td>
                 <td>{{ $produto->getCategoria()->getCategoria() }}</td>
                 <td>{{ $produto->getFornecedor()->getRazaoSocial() }}</td>
-                <td>{{ $produto->getEstoque() ?? '-' }}</td>
-                <td>R$ {{ $produto->getPrecoVenda() }}</td>
+                <td class="text-center">{{ $produto->getEstoque() ?? 0 }}</td>
+                <td class="text-right">R$ {{ number_format($produto->getPrecoVenda(), 2, ',', '.') }}</td>
                 <td class="text-center">
-                    <div class="row flex-nowrap justify-content-center">
-                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('produtos.edit', $produto->getId()) }}">
+                    <div class="btn-group-xs">
+                        <a class="btn btn-primary" href="{{ route('produtos.edit', $produto->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <a class="btn btn-sm btn-danger" href="{{ route('produtos.show', $produto->getId()) }}">
+                        <a class="btn btn-danger" href="{{ route('produtos.show', $produto->getId()) }}">
                             <i class="fa fa-trash-alt"></i>
                         </a>
                     </div>
@@ -39,10 +41,11 @@
             <tr>
                 <th>Cód.</th>
                 <th>Produto</th>
+                <th class="text-center">Und.</th>
                 <th>Categoria</th>
                 <th>Fornecedor</th>
-                <th>Em Estoque</th>
-                <th>Preço Venda</th>
+                <th class="text-center">Estoque</th>
+                <th class="text-right">Preço Venda</th>
                 <th class="text-center">Ações</th>
             </tr>
         </tfoot>

@@ -25,6 +25,7 @@
             name="cliente"
             class="form-control @error('cliente') is-invalid @enderror"
             value="{{ old('cliente', isset($cliente) ? $cliente->getNome() : null) }}"
+            required
         >
 
         @error('cliente')
@@ -61,6 +62,7 @@
             name="endereco"
             class="form-control @error('endereco') is-invalid @enderror"
             value="{{ old('endereco', isset($cliente) ? $cliente->getEndereco() : null) }}"
+            required
         >
 
         @error('endereco')
@@ -78,6 +80,7 @@
             name="numero"
             class="form-control @error('numero') is-invalid @enderror"
             value="{{ old('numero', isset($cliente) ? $cliente->getNumero() : null) }}"
+            required
         >
 
         @error('numero')
@@ -112,6 +115,7 @@
             name="bairro"
             class="form-control @error('bairro') is-invalid @enderror"
             value="{{ old('bairro', isset($cliente) ? $cliente->getBairro() : null) }}"
+            required
         >
 
         @error('bairro')
@@ -132,6 +136,7 @@
             class="form-control @error('cep') is-invalid @enderror"
             value="{{ old('cep', isset($cliente) ? $cliente->getCEP() : null) }}"
             placeholder="_____-___"
+            required
         >
 
         @error('cep')
@@ -151,6 +156,7 @@
             data-input="#cidade"
             data-route="cidades"
             value="{{ old('cidade_id', isset($cliente) ? $cliente->getCidade()->getId() : null) }}"
+            required
         >
 
         @error('cidade_id')
@@ -160,7 +166,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-8">
+    <div class="form-group required col-xl-8" id="ipt-cidade">
         <label>Cidade</label>
         <div class="input-group">
             <input
@@ -169,6 +175,8 @@
                 id="cidade"
                 value="{{ old('cidade', isset($cliente) ? $cliente->getCidade()->getCidade() : null) }}"
                 readonly
+                required
+                data-error="#ipt-cidade"
             >
 
             <div class="input-group-append">
@@ -211,6 +219,7 @@
             class="form-control @error('whatsapp') is-invalid @enderror"
             value="{{ old('whatsapp', isset($cliente) ? $cliente->getWhatsapp() : null) }}"
             placeholder="(__) _____-____"
+            required
         >
 
         @error('whatsapp')
@@ -266,6 +275,7 @@
             class="form-control @error('cpf') is-invalid @enderror"
             value="{{ old('cpf', isset($cliente) ? $cliente->getCpfCnpj() : null) }}"
             placeholder="___.___.___-__"
+            required
         >
 
         @error('cpf')
@@ -300,6 +310,7 @@
             name="data_nascimento"
             class="form-control @error('data_nascimento') is-invalid @enderror"
             value="{{ old('data_nascimento', isset($cliente) ? $cliente->getDataNascimento() : null) }}"
+            required
         >
 
         @error('data_nascimento')
@@ -321,6 +332,7 @@
             data-input="#condicao_pagamento"
             data-route="condicoes-pagamento"
             value="{{ old('condicao_pagamento_id', isset($cliente) ? $cliente->getCondicaoPagamento()->getId() : null) }}"
+            required
         >
 
         @error('condicao_pagamento_id')
@@ -330,7 +342,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-10">
+    <div class="form-group required col-xl-10" id="#ipt-condicao-pagamento">
         <label>Condição de Pagamento</label>
         <div class="input-group">
             <input
@@ -340,6 +352,8 @@
                 id="condicao_pagamento"
                 value="{{ old('condicao_pagamento', isset($cliente) ? $cliente->getCondicaoPagamento()->getCondicaoPagamento() : null) }}"
                 readonly
+                required
+                data-error="#ipt-condicao-pagamento"
             >
 
             <div class="input-group-append">

@@ -60,6 +60,25 @@ class CidadeController extends Controller
         return redirect('cidades')->with('error', 'Erro ao inserir registro.');
     }
 
+    public function save(CidadeRequest $request)
+    {
+        $cidade = $this->daoCidade->create($request->all());
+
+        $store = $this->daoCidade->store($cidade);
+
+        if ($store) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro inserido com sucesso!'
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+            'message' => 'Erro ao inserir registro!'
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *

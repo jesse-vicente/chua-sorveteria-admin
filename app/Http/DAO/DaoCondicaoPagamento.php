@@ -115,7 +115,8 @@ class DaoCondicaoPagamento implements Dao {
             DB::table('condicoes_pagamento')->insert($dados);
 
             if ($condicaoPagamento->getTotalParcelas() > 0) {
-                $this->salvarParcelas($condicaoPagamento->getParcelas(), DB::getPdo()->lastInsertId());
+                $idCondicaoPagamento = DB::getPdo()->lastInsertId();
+                $this->salvarParcelas($condicaoPagamento->getParcelas(), $idCondicaoPagamento);
             }
 
             DB::commit();

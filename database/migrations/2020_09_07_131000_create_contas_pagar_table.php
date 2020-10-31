@@ -23,7 +23,7 @@ class CreateContasPagarTable extends Migration
             $table->integer('modelo')->unsigned()->index();
             $table->foreign('modelo')->references('modelo')->on('compras')->onDelete('restrict');
 
-            $table->string('status', 10)->default('Pendente');
+            $table->string('status', 10)->default('Em aberto');
 
             $table->integer('fornecedor_id')->unsigned()->index();
             $table->foreign('fornecedor_id')->references('id')->on('fornecedores')->onDelete('restrict');
@@ -35,16 +35,16 @@ class CreateContasPagarTable extends Migration
             $table->foreign('forma_pagamento_id')->references('id')->on('formas_pagamento')->onDelete('restrict');
 
             $table->unsignedInteger('parcela');
-            $table->double('valor_parcela');
+            $table->decimal('valor_parcela');
 
             $table->date("data_vencimento");
             $table->date("data_pagamento")->nullable();
 
-            $table->double('juros')->nullable();
-            $table->double('multa')->nullable();
-            $table->double('desconto')->nullable();
+            $table->decimal('juros')->nullable();
+            $table->decimal('multa')->nullable();
+            $table->decimal('desconto')->nullable();
 
-            $table->double('valor_pago')->nullable();
+            $table->decimal('valor_pago')->nullable();
 
             $table->timestamps();
 

@@ -60,6 +60,25 @@ class FornecedorController extends Controller
         return redirect('fornecedores')->with('error', 'Erro ao inserir registro.');
     }
 
+    public function save(FornecedorRequest $request)
+    {
+        $fornecedor = $this->daoFornecedor->create($request->all());
+
+        $store = $this->daoFornecedor->store($fornecedor);
+
+        if ($store) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro inserido com sucesso!'
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+            'message' => 'Erro ao inserir registro!'
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *

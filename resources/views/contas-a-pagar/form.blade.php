@@ -1,10 +1,15 @@
-<div class="col-xl-6">
+<div class="col-xl-6 mx-auto">
     <div class="card">
         <div class="card-header">
             <div class="d-flex align-items-center">
                 @isset($contaPagar)
-                    <i class="fa fa-money-check"></i>
-                    <h3 class="ml-3 mb-0">Pagamento</h3>
+                    @if ($contaPagar->getStatus() == 'Pago')
+                        <i class="fa fa-ban"></i>
+                        <h3 class="ml-3 mb-0">Cancelar Pagamento</h3>
+                    @else
+                        <i class="fa fa-check"></i>
+                        <h3 class="ml-3 mb-0">Confirmar Pagamento</h3>
+                    @endif
                 @else
                     <i class="fa fa-plus"></i>
                     <h3 class="ml-3 mb-0">Cadastrar Conta à Pagar</h3>
@@ -14,12 +19,18 @@
 
         <div class="card-body">
             @isset($contaPagar)
-                <form method="POST" id="form-conta" action="{{ route('contas-a-pagar.update', $contaPagar->getPrimaryKey()) }}">
+                @php
+                    $novoStatus = $contaPagar->getStatus() == 'Pago' ? 'Em aberto' : 'Pago';
+                    $idForm     = $novoStatus == 'Pago' ? 'form-conta' : 'form-cancel';
+                @endphp
+
+                <form method="POST" id="{{ $idForm }}" action="{{ route('contas-a-pagar.update', $contaPagar->getPrimaryKeyStr()) }}">
                 @method('PUT')
+
+                <input type="hidden" name="status" value="{{ $novoStatus }}">
             @else
                 <form method="POST" action="{{ route('contas-a-pagar.store') }}">
-            @endif
-
+            @endisset
                 @csrf
                 @include('contas-a-pagar.fields')
                 </form>
@@ -32,18 +43,24 @@
                     <small><b>Alterado em: </b>{{ isset($contaPagar) ? $contaPagar->getDataAlteracao() : "__/__/____" }}</small>
                 </div>
 
-                @empty($contaPagar)
-                    @include('contas-a-pagar.actions')
+                @isset($contaPagar)
+                    <div class="btn-group-lg">
+                    @if ($contaPagar->getStatus() == 'Pago')
+                        <button class="btn btn-danger mr-2" id="btn-cancel">
+                            <span class="text-bold">Cancelar</span>
+                        </button>
+                    @else
+                        <button class="btn btn-success mr-2" id="btn-pagar">
+                            <span class="text-bold">Confirmar</span>
+                        </button>
+                    @endif
+                        <a class="btn btn-outline-secondary" href="{{ route('contas-a-pagar.index') }}">
+                            <span class="text-bold">Cancelar</span>
+                        </a>
+                    </div>
                 @else
-                <div class="btn-group-lg">
-                    <button class="btn btn-success mr-2" id="btn-pagar">
-                        <span class="text-bold">Pagar</span>
-                    </button>
-                    <a class="btn btn-outline-secondary" href="{{ route('contas-a-pagar.index') }}">
-                        <span class="text-bold">Cancelar</span>
-                    </a>
-                </div>
-                @endempty
+                    @include('contas-a-pagar.actions')
+                @endisset
             </div>
         </div>
     </div>

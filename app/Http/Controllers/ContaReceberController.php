@@ -33,7 +33,7 @@ class ContaReceberController extends Controller
      */
     public function create()
     {
-        return view('contas-a-receber.create');
+        abort(404);
     }
 
     /**
@@ -44,7 +44,7 @@ class ContaReceberController extends Controller
      */
     public function store(ContaReceberRequest $request)
     {
-        //
+        abort(404);
     }
 
     /**

@@ -1,6 +1,13 @@
-var table, listaProdutos, listaDuplicatas = null;
+var listaProdutos, listaDuplicatas = null;
 var fieldIndex, idBusca = 0;
 var sofreuAlteracao = false;
+var produtosInseridos = Array();
+
+var dt = {
+    paises: null,
+    estados: null,
+    cidades: null,
+};
 
 var adicionais = {
     "frete"    : Number($("#frete").val()),
@@ -12,6 +19,28 @@ var descontos = Number($("#descontos").val());
 
 const compra = $("#form-compra").length;
 const venda  = $("#form-venda").length;
+
+const alertDanger = Swal.mixin({
+    customClass: {
+        confirmButton: 'btn btn-danger mr-2',
+        cancelButton:  'btn btn-outline-secondary'
+    },
+    buttonsStyling: false
+});
+
+const alertCancelDanger = Swal.mixin({
+    customClass: {
+        confirmButton: 'btn btn-outline-danger',
+    },
+    buttonsStyling: false
+});
+
+const alertWarning = Swal.mixin({
+    customClass: {
+        confirmButton: 'btn btn-primary',
+    },
+    buttonsStyling: false
+});
 
 $(document).ready(function() {
     tableList = $("#table").DataTable({
@@ -51,60 +80,23 @@ $(document).ready(function() {
         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
     });
 
-    var url = window.location.href;
+    const url = window.location.pathname;
+    const origin = window.location.origin;
+    const indexURL = url.indexOf('/', 1);
+    const urlPath = url.substr(0, indexURL);
 
-    url = url.replace('/create', '');
-
-    $('ul.nav-sidebar a').filter(function() {
-        return this.href == url;
-    }).addClass('active');
-
-    $('ul.nav-treeview a').filter(function() {
-        return this.href == url;
-    }).parentsUntil(".sidebar-menu > .nav-treeview").addClass('menu-open');
-
-    // $('ul.nav-treeview a').filter(function() {
-    //     return this.href == url;
-    // }).addClass('active');
-
-    // $('li.has-treeview a').filter(function() {
-    //     return this.href == url;
-    // }).addClass('active');
-
-    $('ul.nav-treeview a').filter(function() {
-        return this.href == url;
-    }).parentsUntil(".sidebar-menu > .nav-treeview").children(0).addClass('active');
-
-    const confirmDelete = Swal.mixin({
-        customClass: {
-            confirmButton: 'btn btn-danger mr-2',
-            cancelButton:  'btn btn-outline-secondary'
-        },
-        buttonsStyling: false
-    });
-
-    const confirmCancel = Swal.mixin({
-        customClass: {
-            confirmButton: 'btn btn-outline-danger',
-        },
-        buttonsStyling: false
-    });
-
-    const confirmCancelForm = Swal.mixin({
-        customClass: {
-            confirmButton: 'btn btn-primary',
-        },
-        buttonsStyling: false
-    });
+    $("ul.nav-sidebar a").filter(function() {
+        return this.href == origin + urlPath;
+    }).addClass("active");
 
     // Botão Cancelar (compra/venda)
     $("#btn-cancel").click(function() {
-        confirmCancel.fire({
+        alertCancelDanger.fire({
             title: "Atenção!",
             text: "Os dados referente a este registro serão descartados. Deseja mesmo prosseguir?",
             icon: "warning",
             showCloseButton: true,
-            confirmButtonText: "Sim, prosseguir com o cancelamento.",
+            confirmButtonText: "Sim, efetuar cancelamento.",
         }).then((result) => {
             if (result.value) {
                 $("#form-cancel").submit();
@@ -119,7 +111,7 @@ $(document).ready(function() {
 
             href = $(this).attr('href');
 
-            confirmCancelForm.fire({
+            alertWarning.fire({
                 title: "Atenção!",
                 text: "Os dados informados serão perdidos.",
                 icon: "warning",
@@ -134,7 +126,7 @@ $(document).ready(function() {
 
     // Botão Excluir
     $("#btn-delete").not(".delete").click(function() {
-        confirmDelete.fire({
+        alertDanger.fire({
             title: "Você tem certeza?",
             text: "Deseja realmente excluir este registro? Esta operação não poderá ser desfeita.",
             icon: "error",
@@ -143,23 +135,48 @@ $(document).ready(function() {
             cancelButtonText: "Cancelar",
         }).then((result) => {
             if (result.value) {
-                $("#form-delete").submit();
+                $("#form-show").submit();
             }
-        })
+        });
     });
 
     // Submit
-    $("button[type='submit']").click(function() {
-        $("form").eq(0).submit();
+    $("button[type=submit]").click(function(e) {
+        const form = $("form").eq(0);
+
+        // if (!form.valid()) {
+            e.preventDefault();
+        //     console.log('ops');
+        //     return;
+        // }
+
+        form.submit();
     });
+
+    // $("button[type=submit]").on("click", function (e) {
+    //     var form = $("form")[0];
+    //     var isValid = form.checkValidity();
+    //     if (!isValid) {
+    //         e.preventDefault();
+    //         e.stopPropagation();
+    //     }
+    //     form.classList.add('was-validated');
+    //     return false; // For testing only to stay on this page
+    // });
 
     $("#form-compra, #form-venda").submit(function(e) {
         e.preventDefault();
 
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "preventDuplicates": true,
+        }
+
         $("#form-errors").hide();
         $('#form-errors .list-unstyled li').remove();
 
-        const routeList = ($(this).attr("id") == "form_compra") ? '/compras' : '/vendas';
+        const routeList = ($(this).attr("id") == "form-compra") ? '/compras' : '/vendas';
 
         $.post("save", $(this).serialize(), function(data) { })
 
@@ -169,12 +186,6 @@ $(document).ready(function() {
         })
 
         .fail(function (request, status, error) {
-            toastr.options = {
-                "closeButton": true,
-                "progressBar": true,
-                "preventDuplicates": true,
-            }
-
             $.each(request.responseJSON.errors, function(key, value) {
                 toastr["error"](value)
             });
@@ -203,6 +214,9 @@ $(document).ready(function() {
                 toastr["success"](data.message);
 
                 modal.find(".close").click();
+
+                // Atualiza listagem para exibir item cadastrado
+                $(".modal.show").last().find(".btn-search").click();
             }
         })
 
@@ -235,16 +249,25 @@ $(document).ready(function() {
     $(document).on("focusout", ".form-control[id*='_id'], .form-control[id*='_id[]']", function() {
         const id = Number($(this).val());
 
-        if (id === idBusca || id === 0)
+        if (id === idBusca)
             return;
+
+        if (id === 0) {
+            $(".btn-search[data-route='produtos']").attr("disabled", false);
+            return;
+        }
 
         const route = $(this).data("route");
         const input = $($(this).data("input"));
 
         let action = '';
 
-        if (route == 'produtos')
+        if (route == 'produtos') {
             action = compra ? 'compra' : 'venda';
+
+            if (produtoInserido(id))
+                return;
+        }
 
         const routeURL = action ? `/${route}/${id}/findById/${action}` : `/${route}/${id}/findById`;
 
@@ -272,6 +295,8 @@ $(document).ready(function() {
                     detalhesProduto.estoque = dados['estoque'];
                 }
 
+                console.table(detalhesProduto)
+
                 mostrarDetalhesProduto(detalhesProduto)
             } else if (route === 'condicoes-pagamento') {
                 //
@@ -282,29 +307,33 @@ $(document).ready(function() {
     });
 
     // Seleciona item da modal e coloca os valores nos inputs
-    $(document).on('click', '.modal-body tbody tr', function() {
+    $(document).on("click", ".modal-body tbody tr", function() {
+        const source = $(this).parents(".modal").attr("id").replace("modal-", "");
 
-        const data = table.rows({ selected: true }).data()[0];
+        const data = dt[source].rows({ selected: true }).data()[0];
 
-        const modal = $(this).parents(".modal");
+        const modal = $(this).closest(".modal");
 
-        const field = modal.data('field');
+        const field = modal.data("field");
 
         const id = data[0];
         const descricao = data[1];
 
-        if (field === 'forma_pagamento[]') {
-            $('.forma_pagamento_id').eq(fieldIndex).val(id);
-            $('.forma_pagamento').eq(fieldIndex).val(descricao);
+        if (field === "forma_pagamento[]") {
+            $(".forma_pagamento_id").eq(fieldIndex).val(id);
+            $(".forma_pagamento").eq(fieldIndex).val(descricao);
         }
-        else if (field === 'produto') {
+        else if (field === "produto") {
+            if (produtoInserido(id))
+                return;
+
             let detalhesProduto = {
-                'id'        : id,
-                'descricao' : descricao,
-                'unidade'   : $(this).find("td").eq(2).text(),
-                'categoria' : $(this).find("td").eq(3).text(),
-                // 'custoUltimaCompra' : $(this).find("td").eq(5).text(),
-                // 'estoque' : $(this).find("td").eq(6).text(),
+                "id"        : id,
+                "descricao" : descricao,
+                "unidade"   : $(this).find("td").eq(2).text(),
+                "categoria" : $(this).find("td").eq(3).text(),
+                // "custoUltimaCompra" : $(this).find("td").eq(5).text(),
+                // "estoque" : $(this).find("td").eq(6).text(),
             };
 
             if (venda) {
@@ -321,8 +350,9 @@ $(document).ready(function() {
             const parcelas = data[6];
 
             let duplicatas = Array();
+            let valoresParcelas = Array();
 
-            parcelas.map(function(parcela) {
+            parcelas.map(function(parcela, index) {
                 const inputData = $("#form-compra").length ? $("#data_emissao") : $("#data_venda");
                 const dataEmissao = new Date(inputData.val());
 
@@ -333,8 +363,18 @@ $(document).ready(function() {
                 const numParcela  = `${$("#num_nota").val()}/${parcela.numero}`;
                 const formaPagamento = parcela.forma_pagamento;
                 const vencimento = prazo.toLocaleDateString();
-                const valParcela = getPercentual(totalPagar, parcela.porcentagem);
-                const valParcelaTexto = formatarValor(valParcela);
+
+                let valParcela = calcularParcela(totalPagar, parcela.porcentagem);
+
+                if (index === parcelas.length - 1) {
+                    const totalDuplicatas = valParcela + valoresParcelas.reduce((count, val) => count + val, 0);
+
+                    // Ajustar centavos
+                    if (totalPagar != totalDuplicatas)
+                        valParcela += totalPagar - totalDuplicatas;
+                }
+
+                const valParcelaTexto = formatarReais(valParcela);
 
                 const duplicata = {
                     numParcela,
@@ -344,19 +384,27 @@ $(document).ready(function() {
                     valParcelaTexto,
                 };
 
-                console.table(duplicata);
-
                 duplicatas.push(duplicata);
+                valoresParcelas.push(valParcela);
             });
 
+            // bloquearCampos();
             listarDuplicatas(duplicatas);
         }
-        // else {
-            $(`input[name='${field}_id']`).eq(0).val(id).change();
-            $(`input[name='${field}']`).eq(0).val(descricao).change();
-        // }
 
-        modal.modal('hide');
+        const inputId = $(`input[name='${field}_id']`).eq(0);
+        const inputDescricao = $(`input[name='${field}']`).eq(0);
+
+        inputId.val(id).change();
+        inputDescricao.val(descricao).change();
+
+        inputId.removeClass('is-invalid').addClass('is-valid');
+        inputDescricao.removeClass('is-invalid').addClass('is-valid');
+
+        inputId.parents('.form-group').find('.is-invalid').remove();
+        inputDescricao.parents('.form-group').find('.is-invalid').remove();
+
+        modal.modal("hide");
     });
 
     $(".custom-control-input").click(function() {
@@ -392,22 +440,27 @@ $(document).ready(function() {
 
         if ($("#table").length)
             route = $("#table").data("route");
-        else if (!$(".modal").hasClass("show"))
+        else if ($(this).data("route"))
             route = $(this).data("route");
-        else
-            route = $(".modal.show").attr("id").replace("modal-", "");
+        else {
+            route = $(".modal.show").last().not("[id*='create']").attr("id").replace("modal-", "");
+        }
+        // else if (!$(".modal").hasClass("show"))
+        //     route = $(this).data("route");
+        // else
+        //     route = $(".modal.show").not("[id*='create']").attr("id").replace("modal-", "");
 
         if (route === "formas-pagamento")
             fieldIndex = $(this).parents("tr").index();
 
-        const val = Number($($(this).data("input")).val());
+        const id = Number($($(this).data("input")).val());
 
         let action = '';
 
         if (route == 'produtos')
             action = compra ? 'compra' : 'venda';
 
-        if (!val) {
+        if (!id) {
             const routeURL = action ? `/${route}/all/${action}` : `/${route}/all`;
 
             $.get(routeURL, function(data) {
@@ -415,7 +468,7 @@ $(document).ready(function() {
             })
 
             .done(function(data) {
-                fillDataTable(data, route);
+                listarItensModal(data, route);
             })
 
             .fail(function() {
@@ -423,29 +476,29 @@ $(document).ready(function() {
             });
         }
         else {
-            const routeURL = action ? `/${route}/${val}/findById/${action}` : `/${route}/${val}/findById`;
+            const routeURL = action ? `/${route}/${id}/findById/${action}` : `/${route}/${id}/findById`;
 
             $.get(routeURL, function(data) {
 
             })
 
             .done(function(data) {
-                fillDataTable(data, route);
+                listarItensModal(data, route);
             })
 
             .fail(function() {
                 alert("Erro na busca!");
-            });;
+            });
         }
     });
 
-    $("#form-delete .form-control, #form-delete .btn-search").each(function() {
-        $(this).attr("readonly", true)
-        $(this).attr("disabled", true)
+    $("#form-show .form-control, #form-show .btn-search").each(function() {
+        $(this).attr("readonly", true);
+        $(this).attr("disabled", true);
     });
 });
 
-function fillDataTable(result, route) {
+function listarItensModal(result, route) {
     let dados = [];
 
     if (result && result[0] != null) {
@@ -455,7 +508,7 @@ function fillDataTable(result, route) {
     }
 
     if (!$.fn.DataTable.isDataTable(`#modal-${route} .table`)) {
-        table = $(`#modal-${route} .table`).DataTable({
+        dt[route] = $(`#modal-${route} .table`).DataTable({
             data: dados,
             dom: '<"row options-bar"<"col-md-6"f>B>rtip',
             select: true,
@@ -470,14 +523,25 @@ function fillDataTable(result, route) {
             ],
         });
     } else {
-        table.clear().draw();
-        table.rows.add(dados).draw();
+        dt[route].clear().draw();
+        dt[route].rows.add(dados).draw();
     }
+
+    $(`#modal-${route} .overlay`).fadeOut();
 }
 
-function getPercentual(num, per)
+function calcularParcela(num, per)
 {
-    return (num / 100) * per;
+    const totalParcela = (num / 100) * per;
+    return toFixed(totalParcela, 2);
+}
+
+function ajustarTotalProduto(total = 0) {
+    $("#total strong").html(`<span class="mr-2 text-gray">Total:</span>${formatarReais(total)}`);
+}
+
+function ajustarTotalGeral(total = 0) {
+    $(".card-footer strong").html(`<span class="mr-2 text-gray">Total à Pagar:</span>${formatarReais(total)}`);
 }
 
 // COMPRA E VENDA
@@ -490,19 +554,39 @@ function mostrarDetalhesProduto(detalhesProduto, alterar = false) {
     if (alterar) {
         $("#quantidade").val(detalhesProduto.quantidade);
         $("#valor").val(detalhesProduto.valor);
-        $("#total").val(detalhesProduto.total);
+        ajustarTotalProduto(detalhesProduto.total);
         $("#add-item").attr("disabled", false);
     } else {
         $("#add-item").attr("disabled", true);
-        $("#quantidade, #valor, #total").val('');
+        $("#quantidade, #valor").val('');
+        ajustarTotalProduto();
     }
 
     if (venda) {
-        $("#valor").val(detalhesProduto.preco.toFixed(2));
+        $("#valor").val(detalhesProduto.preco);
         $("#estoque").val(detalhesProduto.estoque);
     }
 
     $("#modal-detalhes-produto").modal("show");
+}
+
+function produtoInserido(id) {
+    if (produtosInseridos.includes(id)) {
+        alertDanger.fire({
+            title: "Erro!",
+            text: "Este produto já foi inserido na lista.",
+            icon: "error",
+            showCancelButton: false,
+            showConfirmButton: false,
+            showCloseButton: true,
+        });
+
+        $(".btn-search[data-route='produtos']").attr("disabled", true);
+        return true;
+    }
+
+    $(".btn-search[data-route='produtos']").attr("disabled", false);
+    return false;
 }
 
 function listarProdutos(dadosProduto) {
@@ -513,7 +597,7 @@ function listarProdutos(dadosProduto) {
     }
 
     listaProdutos.row.add([
-        `<input type='hidden' class='produto_id'  name='produto_id[]'  value='${dadosProduto.id}' /> ${dadosProduto.id}`,
+        `<input type='hidden' class='produto_id'  name='produto_id[]'  value='${dadosProduto.id}' data-estoque='${dadosProduto.estoque ?? ''}' /> ${dadosProduto.id}`,
         `<input type='hidden' class='produto'     name='produto[]'     value='${dadosProduto.descricao}' /> ${dadosProduto.descricao}`,
         `<input type='hidden' class='produto_und' name='produto_und[]' value='${dadosProduto.unidade}' /> ${dadosProduto.unidade}`,
         `<input type='hidden' class='produto_cat' name='produto_cat[]' value='${dadosProduto.categoria}' /> ${dadosProduto.categoria}`,
@@ -541,8 +625,8 @@ function gerarListaProdutos() {
                     title: 'Ações',
                     className: 'px-2 text-center',
                     render: data =>
-                        `<div class="btn-group btn-group-sm">
-                            <button class='btn btn-warning' onclick='alterarProduto(this)'>
+                        `<div class="btn-group btn-group-xs">
+                            <button class='btn btn-warning' onclick='alterarProduto(this, event)'>
                                 <i class="fa fa-edit text-white"></i>
                             </button>
                             <button class='btn btn-danger' onclick='removerProduto(this)'>
@@ -556,8 +640,12 @@ function gerarListaProdutos() {
                 footer: true,
             },
             bSort: false,
+            select: {
+                style:    'os',
+                selector: 'td'
+            },
             language: {
-              emptyTable: "Nenhum produto selecionado."
+                emptyTable: "Nenhum produto selecionado."
             }
         });
     }
@@ -598,6 +686,14 @@ function gerarListaDuplicatas() {
             }
         });
     }
+
+    // $("#descontos").keydown(function(e) {
+    //     console.log($(this).val());
+    //     if ($(this).val() > $("#total_pagar").val()) {
+    //         e.preventDefault();
+    //         return;
+    //     }
+    // });
 
     // listaDuplicatas.rows.add(duplicatas).draw();
 
@@ -644,19 +740,27 @@ function calcularTotal(total = 0) {
 
         if (compra)
             totalPagar += calcularAdicionais();
-        else
+        else {
             totalPagar -= calcularDescontos();
+            // $("#descontos").attr("max", totalPagar);
+        }
 
         $("#total_produtos").val(totalProdutos.toFixed(2));
         $("#total_pagar, #total_venda").val(totalPagar.toFixed(2));
-        $("#card-produtos strong").html(`<span class="mr-2 text-gray">Total à Pagar: </span>${formatarValor(totalPagar)}`);
+        ajustarTotalGeral(totalPagar);
     }
 }
 
-function formatarValor(valor) {
+function formatarReais(valor) {
     return valor.toLocaleString("pt-BR", {
         style: "currency",
         currency: "BRL",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 4,
     });
 }
 
+function toFixed(num, fixed) {
+    var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (fixed || -1) + '})?');
+    return Number(num.toString().match(re)[0]);
+}

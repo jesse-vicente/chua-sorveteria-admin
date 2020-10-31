@@ -9,11 +9,11 @@
                 <h4 class="ml-3 mb-0">Contas à Receber</h4>
             </div>
 
-            <div class="float-right">
+            <!-- <div class="float-right">
                 <a href="{{ route('contas-a-receber.create') }}" class="btn btn-primary">
                     <i class="fa fa-plus"></i> Adicionar
                 </a>
-            </div>
+            </div> -->
         </div>
     </div>
 

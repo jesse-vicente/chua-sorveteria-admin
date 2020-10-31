@@ -4,6 +4,8 @@ var adicionais = {
     "despesas" : Number($("#despesas").val()),
 }
 
+const valorPago = Number($("#valor_pago").val());
+
 $(document).ready(function() {
     $("#table-conta").DataTable({
         dom: "<'row options-bar'<'col-md-4'f>l>rtip",
@@ -34,13 +36,13 @@ $(document).ready(function() {
 
         if ($("#data_vencimento").val() !== '') {
             const vencimento = new Date($("#data_vencimento").val());
-            const hoje = new Date($("#data_pagamento").val());
+            const hoje = new Date();
 
             const dia = 24 * 60 * 60 * 1000;
 
             const prazo = Math.round(Math.abs((hoje.getTime() - vencimento.getTime()) / (dia)));
 
-            if (prazo > 0) {
+            if (prazo > 1) {
                 swalInfo.fire({
                     title: "Atenção!",
                     html: `Esta parcela vencerá daqui <b>${prazo}</b> dias. Deseja continuar?`,
@@ -60,8 +62,8 @@ $(document).ready(function() {
         }
     });
 
-    $("#modelo, #serie, #num_nota, #data_emissao, #data_chegada, #fornecedor_id, #cliente_id").change(function() {
-        let vazio = $("#modelo, #serie, #num_nota, #data_emissao, #data_chegada, #fornecedor_id, #cliente_id").filter(function(index, item) {
+    $("#modelo, #serie, #num_nota, #data_emissao, #data_chegada, #fornecedor_id").change(function() {
+        let vazio = $("#modelo, #serie, #num_nota, #data_emissao, #data_chegada, #fornecedor_id").filter(function(index, item) {
             return $(item).val() === "";
         });
 
@@ -79,8 +81,7 @@ $(document).ready(function() {
         const val = parseFloat(Number($("#valor").val()));
 
         if (qtd == 0 || val == 0) {
-            // $("#total").val('');
-            $("#total strong").html("<span class='text-gray'>Total: </span>R$ 0,00");
+            ajustarTotalProduto();
             $("#add-item").attr("disabled", true);
             return;
         }
@@ -97,10 +98,8 @@ $(document).ready(function() {
             $("#quantidade").removeClass("is-invalid");
         }
 
-        const total = Number(parseFloat(qtd * val));
-
-        // $("#total").val(total.toFixed(2));
-        $("#total strong").html(`<span class="text-gray">Total: </span>${formatarValor(total)}`);
+        const total = qtd * val;
+        ajustarTotalProduto(total)
 
         $("#add-item").removeAttr("disabled");
     });
@@ -130,6 +129,23 @@ $(document).ready(function() {
         calcularTotal();
     });
 
+    $("#desconto").keyup(function() {
+        const desconto = Number($(this).val());
+
+        const novoValor = valorPago - desconto;
+
+        if (desconto > valorPago || novoValor < 0) {
+            $(this).addClass("is-invalid");
+            $("#valor_pago").val(valorPago.toFixed(2));
+            $("#btn-pagar").attr("disabled", true);
+            return;
+        }
+
+        $(this).removeClass("is-invalid");
+        $("#btn-pagar").attr("disabled", false);
+        $("#valor_pago").val(novoValor.toFixed(2));
+    });
+
     // Adiciona item à lista de produtos (compra e venda)
     $("#add-item").click(function(e) {
         e.preventDefault();
@@ -144,8 +160,8 @@ $(document).ready(function() {
 
         const total = Number(parseFloat(qtd * val));
 
-        const valTexto   = formatarValor(val);
-        const totalTexto = formatarValor(total);
+        const valTexto   = formatarReais(val);
+        const totalTexto = formatarReais(total);
 
         const dadosProduto = {
             id,
@@ -158,6 +174,11 @@ $(document).ready(function() {
             total,
             totalTexto,
         };
+
+        if (venda)
+            dadosProduto.estoque = $("#estoque").val();
+
+        produtosInseridos.push(id);
 
         listarProdutos(dadosProduto);
 
@@ -172,14 +193,46 @@ $(document).ready(function() {
         $(".btn-search[data-input='#condicao_pagamento_id']").attr("disabled", false);
     });
 
+    $(document).on("click", "#produtos-table tbody tr", function() {
+        const selected = $("#produtos-table tbody .selected").length;
+
+        const btRemover = $("#remove-items");
+
+        console.log(btRemover.css("display"))
+
+        if (selected > 1) {
+            btRemover.attr("disabled", false);
+            return;
+        }
+
+        btRemover.attr("disabled", true);
+    });
+
     // Remove item da lista de produtos (compra e venda)
-    $("#remove-item").click(function(e) {
+    $("#remove-items").click(function(e) {
         e.preventDefault();
-        listaProdutos.rows(".selected").remove().draw(false);
+
+        alertDanger.fire({
+            title: "Atenção!",
+            text: "Deseja remover os itens selecionados?",
+            icon: "warning",
+            showCloseButton: true,
+            showCancelButton: true,
+            confirmButtonText: "Confirmar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.value) {
+                listaProdutos.rows(".selected").remove().draw(false);
+                calcularTotal();
+                $(this).attr("disabled", true);
+            }
+        });
     });
 });
 
-function alterarProduto(produto) {
+function alterarProduto(produto, event) {
+    event.preventDefault();
+
     const row = $(produto).parents("tr");
 
     const detalhesProduto = {
@@ -188,14 +241,30 @@ function alterarProduto(produto) {
         "unidade"    : row.find(".produto_und").val(),
         "categoria"  : row.find(".produto_cat").val(),
         "quantidade" : row.find(".produto_qtd").val(),
-        "valor"      : Number(row.find(".produto_val").val()).toFixed(2),
-        "total"      : Number(row.find(".produto_tot").val()).toFixed(2),
+        "total"      : Number(row.find(".produto_tot").val()),
     };
+
+    const valorProduto = Number(row.find(".produto_val").val());
+
+    if (compra)
+        detalhesProduto.valor = valorProduto;
+    else {
+        detalhesProduto.preco = valorProduto;
+        detalhesProduto.estoque = row.find(".produto_id").data("estoque");
+    }
+
+    console.table(detalhesProduto)
 
     mostrarDetalhesProduto(detalhesProduto, true);
 }
 
 function removerProduto(produto) {
+    const id = Number($(produto).parents("tr").find(".produto_id").val());
+    const index = produtosInseridos.indexOf(id);
+
+    if (index > -1)
+        produtosInseridos.splice(index, 1);
+
     listaProdutos.row($(produto).parents("tr")).remove().draw();
     calcularTotal();
 }

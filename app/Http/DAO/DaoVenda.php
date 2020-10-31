@@ -37,7 +37,7 @@ class DaoVenda implements Dao {
         if (!$model)
             return DB::table('vendas')->get();
 
-        $dados = DB::table('vendas')->orderBy('data_venda', 'desc')->get();
+        $dados = DB::table('vendas')->orderBy('data_cadastro', 'desc')->get();
 
         $vendas = array();
 
@@ -52,8 +52,9 @@ class DaoVenda implements Dao {
     public function create(array $dados) {
         $venda = new Venda();
 
-        if (isset($dados["data_cadastro"]) && isset($dados["data_alteracao"])) {
+        if (isset($dados["num_nota"]) && $dados["num_nota"] > 0) {
             $venda->setStatus($dados["status"]);
+            $venda->setNumeroNota($dados["num_nota"]);
             $venda->setDataCadastro($dados["data_cadastro"]);
             $venda->setDataAlteracao($dados["data_alteracao"]);
             $venda->setDataCancelamento($dados["data_cancelamento"]);
@@ -62,18 +63,19 @@ class DaoVenda implements Dao {
         // Dados nota
         $venda->setModelo($dados["modelo"]);
         $venda->setSerie($dados["serie"]);
-        $venda->setNumeroNota($dados["num_nota"]);
         $venda->setDataVenda($dados["data_venda"]);
 
         $descontos = floatval($dados["descontos"]);
 
         $venda->setDescontos($descontos);
 
-        $cliente = $this->daoCliente->findById($dados["cliente_id"], true);
+        if ($dados["cliente_id"]) {
+            $cliente = $this->daoCliente->findById($dados["cliente_id"], true);
+            $venda->setCliente($cliente);
+        }
+
         // $funcionario = $this->daoCliente->findById($dados["funcionario_id"], true);
         $condicaoPagamento = $this->daoCondicaoPagamento->findById($dados["condicao_pagamento_id"], true);
-
-        $venda->setCliente($cliente);
         // $venda->setFuncionario($funcionario);
         $venda->setCondicaoPagamento($condicaoPagamento);
 
@@ -120,7 +122,10 @@ class DaoVenda implements Dao {
                 $duplicata = new ContaReceber();
 
                 $duplicata->setVenda($venda);
-                $duplicata->setCliente($venda->getCliente());
+
+                if ($venda->getCliente())
+                    $duplicata->setCliente($venda->getCliente());
+
                 // $duplicata->setFuncionario($venda->getFuncionario());
                 $duplicata->setFormaPagamento($parcelas[$i]->getFormaPagamento());
 
@@ -145,11 +150,17 @@ class DaoVenda implements Dao {
         DB::beginTransaction();
 
         try {
-            $dadosVenda   = $this->getData($venda);
+            $dadosVenda = $this->getData($venda);
+
+            DB::table('vendas')->insert($dadosVenda);
+
+            $numNota = DB::getPdo()->lastInsertId();
+
+            $venda->setNumeroNota($numNota);
+
             $dadosProdutos = $this->getProductsData($venda);
             $dadosContasReceber = $this->getDuplicatesData($venda);
 
-            DB::table('vendas')->insert($dadosVenda);
             DB::table('produtos_venda')->insert($dadosProdutos);
             DB::table('contas_receber')->insert($dadosContasReceber);
 
@@ -160,18 +171,18 @@ class DaoVenda implements Dao {
 
                 $produtoEstoque = $this->daoProduto->findById($id, true);
 
-                $estoque    = intval($produtoEstoque->getEstoque());
+                $estoque = $produtoEstoque->getEstoque();
 
                 if ($estoque == 0) {
                     return response()->json([
-                        'error' => true,
-                        'message' => 'Produto indisponível no estoque!'
-                    ], 400);
+                        'errors' => ['Produto indisponível no estoque!']
+                    ], 422);
                 }
 
                 $estoque -= $produtoVenda->getQuantidade();
 
                 $produtoEstoque->setEstoque($estoque);
+                $produtoEstoque->setDataUltimaVenda(date('Y-m-d'));
 
                 $dadosProduto = $this->daoProduto->getData($produtoEstoque);
 
@@ -198,24 +209,21 @@ class DaoVenda implements Dao {
         try {
             $venda = $this->findByPrimaryKey($key, true);
 
-            if ($venda->getStatus() != "Cancelado") {
-                $numero = $venda->getNumeroNota();
-                $serie  = $venda->getSerie();
-                $modelo = $venda->getModelo();
-                $idCliente = $venda->getCliente()->getId();
+            if ($venda->getStatus() == "Emitido") {
+                $pk = $venda->getPrimaryKey();
 
                 DB::table('vendas')
-                    ->where('num_nota', $numero)
-                    ->where('serie', $serie)
-                    ->where('modelo', $modelo)
-                    ->where('cliente_id', $idCliente)
-                    ->update(['status' => 'Cancelado']);
+                    ->where('num_nota', $pk->numero)
+                    ->where('serie', $pk->serie)
+                    ->where('modelo', $pk->modelo)
+                    ->where('cliente_id', $pk->cliente_id)
+                    ->update(['status' => 'Cancelado', 'data_cancelamento' => date('Y-m-d H:i:s')]);
 
                 DB::table('contas_receber')
-                    ->where('num_nota', $numero)
-                    ->where('serie', $serie)
-                    ->where('modelo', $modelo)
-                    ->where('cliente_id', $idCliente)
+                    ->where('num_nota', $pk->numero)
+                    ->where('serie', $pk->serie)
+                    ->where('modelo', $pk->modelo)
+                    ->where('cliente_id', $pk->cliente_id)
                     ->update(['status' => 'Cancelado']);
 
                 $produtosVenda = $venda->getProdutos();
@@ -258,28 +266,26 @@ class DaoVenda implements Dao {
     public function findByPrimaryKey(string $pk, bool $model = false) {
         $key = explode('-', $pk);
 
-        $numero       = $key[0];
-        $serie        = $key[1];
-        $modelo       = $key[2];
-        $idCliente = $key[3];
+        $numero     = $key[0];
+        $serie      = $key[1];
+        $modelo     = $key[2];
+        $cliente_id = $key[3] ?? null;
 
         if (!$model) {
-            $dados = DB::table('vendas')
-                       ->where('num_nota', $numero)
-                       ->where('serie', $serie)
-                       ->where('modelo', $modelo)
-                       ->where('cliente_id', $idCliente)
-                       ->first();
-
-            return $dados;
+            return DB::table('vendas')
+                     ->where('num_nota', $numero)
+                     ->where('serie', $serie)
+                     ->where('modelo', $modelo)
+                     ->where('cliente_id', $cliente_id)
+                     ->first();
         }
 
         $dadosVenda = DB::table('vendas')
-                         ->where('num_nota', $numero)
-                         ->where('serie', $serie)
-                         ->where('modelo', $modelo)
-                         ->where('cliente_id', $idCliente)
-                         ->first();
+                        ->where('num_nota', $numero)
+                        ->where('serie', $serie)
+                        ->where('modelo', $modelo)
+                        ->where('cliente_id', $cliente_id)
+                        ->first();
 
         if ($dadosVenda) {
             $venda = $this->create(get_object_vars($dadosVenda));
@@ -310,8 +316,8 @@ class DaoVenda implements Dao {
                                 ->where('num_nota', $numero)
                                 ->where('serie', $serie)
                                 ->where('modelo', $modelo)
-                                ->where('cliente_id', $idCliente)
-                                ->get(['data_vencimento']);
+                                ->where('cliente_id', $cliente_id)
+                                ->get();
 
             $contasReceber = array();
             $condicaoPagamento = $venda->getCondicaoPagamento();
@@ -319,12 +325,17 @@ class DaoVenda implements Dao {
 
             foreach ($dadosParcelas as $i => $dadosParcela) {
                 $duplicata = new ContaReceber();
+
                 $duplicata->setVenda($venda);
-                $duplicata->setCliente($venda->getCliente());
+
+                if ($venda->getCliente())
+                    $duplicata->setCliente($venda->getCliente());
+
+                $duplicata->setParcela($dadosParcela->parcela);
+                $duplicata->setValorParcela($dadosParcela->valor_parcela);
+                $duplicata->setDataVencimento($dadosParcela->data_vencimento);
 
                 $duplicata->setFormaPagamento($parcelas[$i]->getFormaPagamento());
-
-                $duplicata->setDataVencimento($dadosParcela->data_vencimento);
 
                 array_push($contasReceber, $duplicata);
             }
@@ -347,14 +358,15 @@ class DaoVenda implements Dao {
         $dados = array(
             'modelo'                => $venda->getModelo(),
             'serie'                 => $venda->getSerie(),
-            'num_nota'              => $venda->getNumeroNota(),
             'data_venda'            => $venda->getDataVenda(),
-            'cliente_id'            => $venda->getCliente()->getId(),
             'descontos'             => $venda->getDescontos(),
             'condicao_pagamento_id' => $venda->getCondicaoPagamento()->getId(),
             'total_produtos'        => $venda->getTotalProdutos(),
             'total_venda'           => $venda->getTotalVenda(),
         );
+
+        if ($venda->getCliente())
+            $dados['cliente_id'] = $venda->getCliente()->getId();
 
         return $dados;
     }
@@ -386,7 +398,6 @@ class DaoVenda implements Dao {
                 'num_nota'           => $venda->getNumeroNota(),
                 'serie'              => $venda->getSerie(),
                 'modelo'             => $venda->getModelo(),
-                'cliente_id'      => $venda->getCliente()->getId(),
                 /*'funcionario_id'   => $venda->getFuncionario()->getId(),*/
                 'forma_pagamento_id' => $duplicata->getFormaPagamento()->getId(),
                 'parcela'            => $duplicata->getParcela(),
@@ -395,6 +406,9 @@ class DaoVenda implements Dao {
                 'data_pagamento'     => $duplicata->getDataPagamento(),
                 'valor_pago'         => $duplicata->getValorPago(),
             );
+
+            if ($venda->getCliente())
+                $dadosDuplicata['cliente_id'] = $venda->getCliente()->getId();
 
             array_push($duplicatas, $dadosDuplicata);
         }

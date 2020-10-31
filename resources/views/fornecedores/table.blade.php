@@ -4,7 +4,7 @@
             <tr>
                 <th>Cód.</th>
                 <th>Fornecedor</th>
-                <th>Telefone</th>
+                <th>Telefone / WhatsApp</th>
                 <th>Endereço</th>
                 <th class="text-center">Ações</th>
             </tr>
@@ -17,12 +17,12 @@
                 <td>{{ $fornecedor->getTelefonesContato() }}</td>
                 <td>{{ $fornecedor->getEndereco() . ', ' . $fornecedor->getNumero() }}</td>
                 <td class="text-center">
-                    <div class="row flex-nowrap justify-content-center">
-                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('fornecedores.edit', $fornecedor->getId()) }}">
+                    <div class="btn-group-xs">
+                        <a class="btn btn-primary" href="{{ route('fornecedores.edit', $fornecedor->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <a class="btn btn-sm btn-danger" href="{{ route('fornecedores.show', $fornecedor->getId()) }}">
+                        <a class="btn btn-danger" href="{{ route('fornecedores.show', $fornecedor->getId()) }}">
                             <i class="fa fa-trash-alt"></i>
                         </a>
                     </div>
@@ -32,5 +32,15 @@
 
         @endforelse
         </tbody>
+
+        <tfoot>
+            <tr>
+                <th>Cód.</th>
+                <th>Fornecedor</th>
+                <th>Telefone / WhatsApp</th>
+                <th>Endereço</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </tfoot>
     </table>
 </div>

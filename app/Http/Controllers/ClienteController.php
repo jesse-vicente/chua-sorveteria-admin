@@ -60,7 +60,26 @@ class ClienteController extends Controller
         return redirect('clientes')->with('error', 'Erro ao inserir registro.');
     }
 
-        /**
+    public function save(ClienteRequest $request)
+    {
+        $cliente = $this->daoCliente->create($request->all());
+
+        $store = $this->daoCliente->store($cliente);
+
+        if ($store) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro inserido com sucesso!'
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+            'message' => 'Erro ao inserir registro!'
+        ]);
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id

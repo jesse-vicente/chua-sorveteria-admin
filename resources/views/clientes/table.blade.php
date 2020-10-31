@@ -17,12 +17,12 @@
                 <td>{{ $cliente->getTelefonesContato() }}</td>
                 <td>{{ $cliente->getEndereco() . ', ' . $cliente->getNumero() }}</td>
                 <td class="text-center">
-                    <div class="row flex-nowrap justify-content-center">
-                        <a class="btn btn-sm btn-primary mr-2" href="{{ route('clientes.edit', $cliente->getId()) }}">
+                    <div class="btn-group-xs">
+                        <a class="btn btn-primary" href="{{ route('clientes.edit', $cliente->getId()) }}">
                             <i class="fa fa-edit"></i>
                         </a>
 
-                        <a class="btn btn-sm btn-danger" href="{{ route('clientes.show', $cliente->getId()) }}">
+                        <a class="btn btn-danger" href="{{ route('clientes.show', $cliente->getId()) }}">
                             <i class="fa fa-trash-alt"></i>
                         </a>
                     </div>
@@ -39,5 +39,13 @@
             </tr> -->
         @endforelse
         </tbody>
+
+        <tfoot>
+            <th>Cód.</th>
+            <th>Cliente</th>
+            <th>Telefone / WhatsApp</th>
+            <th>Endereço</th>
+            <th class="text-center">Ações</th>
+        </tfoot>
     </table>
 </div>
