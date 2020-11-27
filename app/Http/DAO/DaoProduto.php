@@ -25,17 +25,25 @@ class DaoProduto implements Dao {
 
     public function all(bool $model = false, string $action = '') {
         if (!$model) {
-            if ($action == 'compra') {
-                return DB::table('produtos', 'p')
-                         ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
-                         ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
-                         ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'f.fornecedor', 'p.preco_custo']);
-            } else {
-                return DB::table('produtos', 'p')
-                         ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
-                         ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
-                         ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'f.fornecedor', 'p.preco_venda', 'p.estoque']);
+            $itens = DB::table('produtos', 'p')
+                       ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
+                       ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
+                       ->get([
+                           'p.id',
+                           'p.produto',
+                           'p.unidade',
+                           'c.categoria',
+                           'f.fornecedor',
+                           $action == 'compra' ? 'p.preco_custo' : 'p.preco_venda',
+                           'p.estoque'
+                        ]);
+
+            foreach ($itens as $item) {
+                if ($item->estoque == round($item->estoque))
+                    $item->estoque = intval($item->estoque);
             }
+
+            return $itens;
         }
 
         $itens = DB::table('produtos')->get();
@@ -128,28 +136,33 @@ class DaoProduto implements Dao {
     public function findById(int $id, bool $model = false, string $action = '') {
         if (!$model) {
             if ($action == 'compra') {
-                return DB::table('produtos', 'p')
-                         ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
-                         ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
-                         ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'f.fornecedor', 'p.preco_custo'])
-                         ->where('id', $id)
-                         ->first();
+                $item = DB::table('produtos', 'p')
+                          ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
+                          ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
+                          ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'f.fornecedor', 'p.preco_custo'])
+                          ->where('id', $id)
+                          ->first();
             } else {
-                return DB::table('produtos', 'p')
-                         ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
-                         ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
-                         ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'f.fornecedor', 'p.preco_venda', 'estoque'])
-                         ->where('id', $id)
-                         ->first();
+                $item = DB::table('produtos', 'p')
+                          ->join('categorias as c', 'p.categoria_id', '=', 'c.id')
+                          ->join('fornecedores as f', 'p.fornecedor_id', '=', 'f.id')
+                          ->get(['p.id', 'p.produto', 'p.unidade', 'c.categoria', 'f.fornecedor', 'p.preco_venda', 'p.estoque'])
+                          ->where('id', $id)
+                          ->first();
+
+                if ($item->estoque == round($item->estoque))
+                    $item->estoque = intval($item->estoque);
             }
+
+            return $item;
         }
 
-        $dados = DB::table('produtos')->where('id', $id)->first();
+        $item = DB::table('produtos')->where('id', $id)->first();
 
-        if ($dados)
-            return $this->create(get_object_vars($dados));
+        if ($item)
+            return $this->create(get_object_vars($item));
 
-        return $dados;
+        return $item;
     }
 
     public function getData(Produto $produto) {

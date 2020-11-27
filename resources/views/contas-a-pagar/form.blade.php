@@ -25,43 +25,48 @@
                 @endphp
 
                 <form method="POST" id="{{ $idForm }}" action="{{ route('contas-a-pagar.update', $contaPagar->getPrimaryKeyStr()) }}">
-                @method('PUT')
+                    @method('PUT')
 
-                <input type="hidden" name="status" value="{{ $novoStatus }}">
+                    <input type="hidden" name="status" value="{{ $novoStatus }}">
             @else
                 <form method="POST" action="{{ route('contas-a-pagar.store') }}">
             @endisset
-                @csrf
-                @include('contas-a-pagar.fields')
-                </form>
-        </div>
+                    @csrf
+                    @include('contas-a-pagar.fields')
 
-        <div class="card-footer">
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex flex-column text-secondary">
-                    <small><b>Cadastrado em: </b>{{ isset($contaPagar) ? $contaPagar->getDataCadastro() : "__/__/____" }}</small>
-                    <small><b>Alterado em: </b>{{ isset($contaPagar) ? $contaPagar->getDataAlteracao() : "__/__/____" }}</small>
-                </div>
+                    <div class="d-flex align-items-center justify-content-between border-top mt-2" style="padding-top: 1.25rem !important">
+                        <div class="d-flex flex-column text-secondary">
+                            <small><b>Cadastrado em: </b>{{ isset($contaPagar) ? $contaPagar->getDataCadastro() : "__/__/____" }}</small>
+                            <small><b>Alterado em: </b>{{ isset($contaPagar) ? $contaPagar->getDataAlteracao() : "__/__/____" }}</small>
+                        </div>
 
-                @isset($contaPagar)
-                    <div class="btn-group-lg">
-                    @if ($contaPagar->getStatus() == 'Pago')
-                        <button class="btn btn-danger mr-2" id="btn-cancel">
-                            <span class="text-bold">Cancelar</span>
-                        </button>
-                    @else
-                        <button class="btn btn-success mr-2" id="btn-pagar">
-                            <span class="text-bold">Confirmar</span>
-                        </button>
-                    @endif
-                        <a class="btn btn-outline-secondary" href="{{ route('contas-a-pagar.index') }}">
-                            <span class="text-bold">Cancelar</span>
-                        </a>
+                        @isset($contaPagar)
+                        <div class="btn-group-lg">
+                            @if ($contaPagar->getStatus() == 'Pago')
+                            <button type="button" class="btn btn-danger mr-2" id="btn-cancel">
+                                <span class="text-bold">Cancelar</span>
+                            </button>
+                            @else
+                            <button type="button" class="btn btn-success mr-2" id="btn-pagar">
+                                <span class="text-bold">Confirmar</span>
+                            </button>
+                            @endif
+                            <a class="btn btn-outline-secondary" href="{{ route('contas-a-pagar.index') }}">
+                                <span class="text-bold">Cancelar</span>
+                            </a>
+                        </div>
+                        @else
+                        <div class="btn-group-lg">
+                            <button type="submit" class="btn btn-success mr-2">
+                                <span class="text-bold">Salvar</span>
+                            </button>
+                            <a class="btn btn-outline-secondary" href="{{ route('contas-a-pagar.index') }}">
+                                <span class="text-bold">Cancelar</span>
+                            </a>
+                        </div>
+                        @endisset
                     </div>
-                @else
-                    @include('contas-a-pagar.actions')
-                @endisset
-            </div>
+                </form>
         </div>
     </div>
 </div>

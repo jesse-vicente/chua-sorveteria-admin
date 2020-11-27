@@ -55,7 +55,19 @@
                             >
                                 <i class="fa fa-check"></i>
                             </a>
-                        @elseif ($conta->getStatus() == 'Pago')
+                        @endif
+
+                        <a
+                            href="{{ route('contas-a-pagar.show', $conta->getPrimaryKeyStr()) }}"
+                            class="btn btn-info"
+                            data-toggle="tooltip"
+                            data-placement="left"
+                            title="Visualizar"
+                        >
+                            <i class="fa fa-eye"></i>
+                        </a>
+
+                        @if ($conta->getStatus() == 'Pago')
                             <a
                                 href="{{ route('contas-a-pagar.edit', $conta->getPrimaryKeyStr()) }}"
                                 class="btn btn-danger"
@@ -66,15 +78,6 @@
                                 <i class="fa fa-ban"></i>
                             </a>
                         @endif
-                        <a
-                            href="{{ route('contas-a-pagar.show', $conta->getPrimaryKeyStr()) }}"
-                            class="btn btn-info"
-                            data-toggle="tooltip"
-                            data-placement="left"
-                            title="Visualizar"
-                        >
-                            <i class="fa fa-eye"></i>
-                        </a>
                     </div>
                 </td>
             </tr>

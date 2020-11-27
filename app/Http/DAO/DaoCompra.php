@@ -34,7 +34,9 @@ class DaoCompra implements Dao {
     }
 
     public function all(bool $model = false) {
-        $itens = DB::table('compras')->orderBy('data_cadastro', 'desc')->get();
+        $itens = DB::table('compras')
+                   ->orderBy('data_cadastro', 'desc')
+                   ->get();
 
         if (!$model)
             return $itens;
@@ -259,18 +261,19 @@ class DaoCompra implements Dao {
                     $qtdEstoque = $produto->getEstoque();
                     $qtdCompra  = $produtoCompra->getQuantidade();
 
+                    if ($qtdCompra > $qtdEstoque)
+                        return false;
+
                     DB::table('produtos')->where('id',  $produto->getId())->update(['estoque' => $qtdEstoque - $qtdCompra]);
                 }
 
                 DB::commit();
-
                 return true;
             }
 
             return false;
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
             return false;
         }
     }

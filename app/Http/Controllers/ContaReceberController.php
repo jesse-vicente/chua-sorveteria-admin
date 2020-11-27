@@ -6,6 +6,9 @@ use App\Http\Requests\ContaReceberRequest;
 
 use App\Http\Dao\DaoContaReceber;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 class ContaReceberController extends Controller
 {
     private DaoContaReceber $daoContaReceber;
@@ -88,6 +91,22 @@ class ContaReceberController extends Controller
      */
     public function update(ContaReceberRequest $request, $key)
     {
+        // Cancelamento
+        if ($request->senha) {
+            $user = Auth::user();
+
+            if (Hash::check($request->senha, $user->password)) {
+                $update = $this->daoContaPagar->update($request, $key);
+
+                if ($update)
+                    return redirect('contas-a-pagar') ->with('success', 'Registro cancelado com sucesso!');
+
+                return redirect('contas-a-pagar')->with('error', 'Erro ao cancelar registro.');
+            } else {
+                return redirect()->back()->with('error', 'Senha inválida.');
+            }
+        }
+
         $update = $this->daoContaReceber->update($request, $key);
 
         if ($update)

@@ -235,7 +235,7 @@ class Pessoa extends TObject
      * @param  string  $cep
      *
      */
-    public function setCep(string $cep)
+    public function setCep(string $cep = null)
     {
         $this->cep = $cep;
     }

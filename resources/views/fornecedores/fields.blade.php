@@ -40,6 +40,7 @@
             name="fornecedor"
             class="form-control @error('fornecedor') is-invalid @enderror"
             value="{{ old('fornecedor', isset($fornecedor) ? $fornecedor->getRazaoSocial() : null) }}"
+            maxlength="50"
             required
         >
 
@@ -58,6 +59,7 @@
             name="nome_fantasia"
             class="form-control @error('nomeFantasia') is-invalid @enderror"
             value="{{ old('nomeFantasia', isset($fornecedor) ? $fornecedor->getNomeFantasia() : null) }}"
+            maxlength="50"
         >
 
         @error('nomeFantasia')
@@ -76,6 +78,7 @@
             name="endereco"
             class="form-control @error('endereco') is-invalid @enderror"
             value="{{ old('endereco', isset($fornecedor) ? $fornecedor->getEndereco() : null) }}"
+            maxlength="50"
             required
         >
 

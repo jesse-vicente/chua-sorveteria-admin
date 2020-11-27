@@ -7,6 +7,8 @@ use App\Http\Dao\Dao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use Carbon\Carbon;
+
 use App\Http\Dao\DaoFornecedor;
 use App\Http\Dao\DaoCompra;
 use App\Http\Dao\DaoFuncionario;
@@ -14,8 +16,6 @@ use App\Http\Dao\DaoFormaPagamento;
 
 use App\Http\Models\Compra;
 use App\Http\Models\ContaPagar;
-
-use App\Http\Models\ProdutoCompra;
 
 class DaoContaPagar implements Dao {
 
@@ -32,7 +32,19 @@ class DaoContaPagar implements Dao {
         $this->daoFormaPagamento = new DaoFormaPagamento();
     }
 
-    public function all(bool $model = false) {
+    public function all(bool $model = false, $filtro = array()) {
+        if ($filtro) {
+            if ($filtro['valor'] == 'Em aberto') {
+                $total = DB::table('contas_pagar')
+                           ->where($filtro['chave'], $filtro['valor'])
+                           ->where('data_cadastro', '>=', Carbon::today()->toDateTimeString())
+                           ->get()
+                           ->count();
+
+                return $total;
+            }
+        }
+
         $itens = DB::table('contas_pagar')
                    ->orderBy('data_cadastro', 'desc')
                    ->orderBy('parcela')

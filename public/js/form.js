@@ -2,6 +2,7 @@ var listaProdutos, listaDuplicatas = null;
 var fieldIndex, idBusca = 0;
 var sofreuAlteracao = false;
 var produtosInseridos = Array();
+var produtosQuantidade = Array();
 
 var dt = {
     paises: null,
@@ -22,31 +23,36 @@ const venda  = $("#form-venda").length;
 
 const alertDanger = Swal.mixin({
     customClass: {
-        confirmButton: 'btn btn-danger mr-2',
-        cancelButton:  'btn btn-outline-secondary'
+        confirmButton: 'swal2-confirm swal2-styled bg-danger',
+        cancelButton:  'swal2-cancel swal2-styled bg-secondary'
     },
-    buttonsStyling: false
 });
 
 const alertCancelDanger = Swal.mixin({
     customClass: {
-        confirmButton: 'btn btn-outline-danger',
+        confirmButton: 'swal2-confirm swal2-styled bg-danger',
     },
-    buttonsStyling: false
 });
 
 const alertWarning = Swal.mixin({
     customClass: {
-        confirmButton: 'btn btn-primary',
+        confirmButton: 'swal2-confirm swal2-styled bg-primary',
     },
-    buttonsStyling: false
+});
+
+const typePassword = Swal.mixin({
+    customClass: {
+        confirmButton: 'swal2-confirm swal2-styled bg-primary',
+        cancelButton:  'swal2-cancel swal2-styled bg-secondary',
+    },
 });
 
 $(document).ready(function() {
     tableList = $("#table").DataTable({
         dom: "<'row options-bar'<'col-md-4'f>l>rtip",
         fixedHeader: true,
-        bSort: false,
+        // bSort: false,
+        order: [[ 0, "desc" ]]
     });
 
     $(".form-control").change(function() {
@@ -90,33 +96,52 @@ $(document).ready(function() {
     }).addClass("active");
 
     // Botão Cancelar (compra/venda)
-    $("#btn-cancel").click(function() {
+    $('#btn-cancel').click(function() {
         alertCancelDanger.fire({
-            title: "Atenção!",
-            text: "Os dados referente a este registro serão descartados. Deseja mesmo prosseguir?",
-            icon: "warning",
+            title: 'Atenção!',
+            text: 'Os dados referente a este registro serão descartados.',
+            icon: 'error',
             showCloseButton: true,
-            confirmButtonText: "Sim, efetuar cancelamento.",
+            confirmButtonText: 'Prosseguir com o cancelamento.',
         }).then((result) => {
             if (result.value) {
-                $("#form-cancel").submit();
+                typePassword.fire({
+                    input: 'password',
+                    title: 'Digite sua senha:',
+                    // inputPlaceholder: 'Digite sua senha',
+                    inputAttributes: {
+                        maxlength: 30,
+                        autocapitalize: 'off',
+                        autocorrect: 'off',
+                        autocomplete: 'off',
+                        className: 'form-control',
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Continuar',
+                    cancelButtonText: 'Cancelar',
+                }).then((result) => {
+                    if (result.value && result.isConfirmed) {
+                        $("#senha").val(result.value);
+                        $('#form-cancel').submit();
+                    }
+                });
             }
         })
     });
 
     // Botão Cancelar (voltar tela consulta)
-    $(".btn-outline-secondary").click(function(e) {
+    $('.btn-outline-secondary').click(function(e) {
         if (sofreuAlteracao) {
             e.preventDefault();
 
             href = $(this).attr('href');
 
             alertWarning.fire({
-                title: "Atenção!",
-                text: "Os dados informados serão perdidos.",
-                icon: "warning",
+                title: 'Atenção!',
+                text: 'Os dados informados serão perdidos.',
+                icon: 'warning',
                 showCloseButton: true,
-                confirmButtonText: "Confirmar",
+                confirmButtonText: 'Continuar mesmo assim.',
             }).then((result) => {
                 if (result.value)
                     window.location.href = href;
@@ -141,17 +166,23 @@ $(document).ready(function() {
     });
 
     // Submit
-    $("button[type=submit]").click(function(e) {
-        const form = $("form").eq(0);
+    // $("button[type=submit]").click(function(e) {
+    //     const form = $("form").eq(0);
 
-        // if (!form.valid()) {
-            e.preventDefault();
-        //     console.log('ops');
-        //     return;
-        // }
+    //     // const dados = form.serialize();
 
-        form.submit();
-    });
+    //     // console.table(dados);
+
+    //     // return false;
+
+    //     // if (!form.valid()) {
+    //         e.preventDefault();
+    //     //     console.log('ops');
+    //     //     return;
+    //     // }
+
+    //     form.submit();
+    // });
 
     // $("button[type=submit]").on("click", function (e) {
     //     var form = $("form")[0];
@@ -295,8 +326,6 @@ $(document).ready(function() {
                     detalhesProduto.estoque = dados['estoque'];
                 }
 
-                console.table(detalhesProduto)
-
                 mostrarDetalhesProduto(detalhesProduto)
             } else if (route === 'condicoes-pagamento') {
                 //
@@ -360,7 +389,7 @@ $(document).ready(function() {
 
                 prazo.setDate(dataEmissao.getDate() + parcela.prazo + 1);
 
-                const numParcela  = `${$("#num_nota").val()}/${parcela.numero}`;
+                const numParcela  = compra ? `${$("#num_nota").val()}/${parcela.numero}` : parcela.numero;
                 const formaPagamento = parcela.forma_pagamento;
                 const vencimento = prazo.toLocaleDateString();
 
@@ -388,7 +417,7 @@ $(document).ready(function() {
                 valoresParcelas.push(valParcela);
             });
 
-            // bloquearCampos();
+            bloquearCampos();
             listarDuplicatas(duplicatas);
         }
 
@@ -472,7 +501,7 @@ $(document).ready(function() {
             })
 
             .fail(function() {
-                alert("Erro na busca!");
+                // alert("Erro na busca!");
             });
         }
         else {
@@ -487,7 +516,7 @@ $(document).ready(function() {
             })
 
             .fail(function() {
-                alert("Erro na busca!");
+                // alert("Erro na busca!");
             });
         }
     });
@@ -541,7 +570,8 @@ function ajustarTotalProduto(total = 0) {
 }
 
 function ajustarTotalGeral(total = 0) {
-    $(".card-footer strong").html(`<span class="mr-2 text-gray">Total à Pagar:</span>${formatarReais(total)}`);
+    const totalTexto = compra ? 'Total da Compra' : 'Total da Venda';
+    $(".card-footer strong").html(`<span class="mr-2 text-gray">${totalTexto}:</span>${formatarReais(total)}`);
 }
 
 // COMPRA E VENDA
@@ -632,7 +662,7 @@ function gerarListaProdutos() {
                             <button class='btn btn-danger' onclick='removerProduto(this)'>
                                 <i class="fa fa-trash-alt text-white"></i>
                             </button>
-                         </div>`
+                        </div>`
                 }
             ],
             fixedHeader: {
@@ -645,7 +675,7 @@ function gerarListaProdutos() {
                 selector: 'td'
             },
             language: {
-                emptyTable: "Nenhum produto selecionado."
+                emptyTable: "Listagem de Produtos"
             }
         });
     }
@@ -669,7 +699,7 @@ function gerarListaDuplicatas() {
         listaDuplicatas = $('#duplicatas-table').DataTable({
             dom: '<"row"<"col-md-4">>rt',
             columns: [
-                { title: 'Duplicata' },
+                { title: 'Parcela' },
                 { title: 'Forma de Pagamento' },
                 {
                     title: 'Vencimento',
@@ -682,7 +712,7 @@ function gerarListaDuplicatas() {
             ],
             bSort: false,
             language: {
-                emptyTable: "Nenhuma condição de pagamento selecionada."
+                emptyTable: 'Listagem de Parcelas'
             }
         });
     }
@@ -702,16 +732,17 @@ function gerarListaDuplicatas() {
 }
 
 function bloquearCampos() {
-    $(".form-control").attr("readonly", true);
-    $(".btn-search").attr("disabled", true);
+    $(".form-control").not("#condicao_pagamento_id").attr("readonly", true);
+    $(".btn-danger, .btn-warning").not("#btn-cancel").prop("disabled", true);
+    $(".btn-search").not("#ipt-condicao-pagamento .btn-search").prop("disabled", true);
 }
 
 function desbloquearAdicionais() {
-    $("#frete, #seguro, #despesas").attr("readonly", true);
+    $("#frete, #seguro, #despesas").prop("readonly", true);
 }
 
 function desbloquearAdicionais() {
-    $("#frete, #seguro, #despesas").attr("readonly", false);
+    $("#frete, #seguro, #despesas").prop("readonly", false);
 }
 
 function calcularAdicionais() {
@@ -742,9 +773,9 @@ function calcularTotal(total = 0) {
             totalPagar += calcularAdicionais();
         else {
             totalPagar -= calcularDescontos();
-            // $("#descontos").attr("max", totalPagar);
         }
 
+        $("#descontos").attr("max", totalProdutos);
         $("#total_produtos").val(totalProdutos.toFixed(2));
         $("#total_pagar, #total_venda").val(totalPagar.toFixed(2));
         ajustarTotalGeral(totalPagar);
@@ -756,7 +787,7 @@ function formatarReais(valor) {
         style: "currency",
         currency: "BRL",
         minimumFractionDigits: 2,
-        maximumFractionDigits: 4,
+        maximumFractionDigits: 2,
     });
 }
 

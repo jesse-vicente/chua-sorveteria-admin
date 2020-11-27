@@ -26,6 +26,7 @@
             name="cidade"
             class="form-control @error('cidade') is-invalid @enderror"
             value="{{ old('cidade', isset($cidade) ? $cidade->getCidade() : null) }}"
+            maxlength="50"
             required
         >
 
@@ -44,6 +45,7 @@
             name="ddd"
             class="form-control @error('ddd') is-invalid @enderror"
             value="{{ old('ddd', isset($cidade) ? $cidade->getDDD() : null) }}"
+            max="999"
             required
         >
 

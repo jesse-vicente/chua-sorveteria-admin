@@ -22,7 +22,7 @@
     </div>
 
     <div class="card-body p-0"> -->
-        <table class="table table-sm table-striped table-responsive-xl table-bordered" id="duplicatas-table">
+        <table class="table table-sm table-striped table-responsive-xl table-bordered table-borderless border-right" id="duplicatas-table">
             @isset($venda)
                 <thead>
                     <tr>

@@ -6,8 +6,9 @@ use App\Http\Requests\VendaRequest;
 use Illuminate\Http\Request;
 
 use App\Http\Dao\DaoVenda;
-use Facade\FlareClient\Http\Response;
-use Illuminate\Http\Response as HttpResponse;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class VendaController extends Controller
 {
@@ -111,12 +112,19 @@ class VendaController extends Controller
             'num_nota' => "unique:vendas,num_nota,$request->num_nota,num_nota"
         ]);
 
-        $update = $this->daoVenda->update($request, $key);
+        // Cancelamento
+        if ($request->senha) {
+            if (Hash::check($request->senha, Auth::user()->password)) {
+                $update = $this->daoVenda->update($request, $key);
 
-        if ($update)
-            return redirect('vendas') ->with('success', 'Registro alterado com sucesso!');
+                if ($update)
+                    return redirect('vendas') ->with('success', 'Registro cancelado com sucesso!');
 
-        return redirect('vendas')->with('error', 'Erro ao alterar registro.');
+                return redirect('vendas')->with('error', 'Erro ao cancelar registro.');
+            }
+
+            return redirect()->back()->with('error', 'Senha inválida.');
+        }
     }
 
     /**

@@ -13,26 +13,32 @@
 
     <div class="card-body">
         @isset($fornecedor)
-            <form method="POST" action="{{ route('fornecedores.update', $fornecedor->getId()) }}" class="needs-validation" novalidate>
+            <form method="POST" action="{{ route('fornecedores.update', $fornecedor->getId()) }}">
             @method('PUT')
         @else
-            <form method="POST" action="{{ route('fornecedores.store') }}" class="needs-validation" novalidate>
+            <form method="POST" action="{{ route('fornecedores.store') }}">
         @endif
 
-            @csrf
-            @include('fornecedores.fields')
+                @csrf
+                @include('fornecedores.fields')
+
+                <div class="d-flex justify-content-between border-top mt-2" style="padding-top: 1.25rem !important">
+                    <div class="d-flex flex-column justify-content-center text-secondary">
+                        <small><b>Cadastrado em: </b>{{ isset($fornecedor) ? $fornecedor->getDataCadastro() : "__/__/____" }}</small>
+                        <small><b>Alterado em: </b>{{ isset($fornecedor) ? $fornecedor->getDataAlteracao() : "__/__/____" }}</small>
+                    </div>
+
+                    <div class="btn-group-lg">
+                        <button type="submit" class="btn btn-success mr-2">
+                            <span class="text-bold">Salvar</span>
+                        </button>
+
+                        <a class="btn btn-outline-secondary" href="{{ route('fornecedores.index') }}">
+                            <span class="text-bold">Cancelar</span>
+                        </a>
+                    </div>
+                </div>
             </form>
-    </div>
-
-    <div class="card-footer">
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex flex-column text-secondary">
-                <small><b>Cadastrado em: </b>{{ isset($fornecedor) ? $fornecedor->getDataCadastro() : "__/__/____" }}</small>
-                <small><b>Alterado em: </b>{{ isset($fornecedor) ? $fornecedor->getDataAlteracao() : "__/__/____" }}</small>
-            </div>
-
-            @include('fornecedores.actions')
-        </div>
     </div>
 </div>
 

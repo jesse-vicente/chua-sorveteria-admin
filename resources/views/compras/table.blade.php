@@ -1,7 +1,3 @@
-<div id="mask">
-
-</div>
-
 <div class="table-responsive">
     <table class="table table-hover table-striped shadow-xs rounded" id="table">
         <thead>

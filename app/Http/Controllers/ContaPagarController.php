@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\ContaPagarRequest;
 
 use App\Http\Dao\DaoContaPagar;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class ContaPagarController extends Controller
 {
@@ -89,6 +91,22 @@ class ContaPagarController extends Controller
      */
     public function update(ContaPagarRequest $request, $key)
     {
+        // Cancelamento
+        if ($request->senha) {
+            $user = Auth::user();
+
+            if (Hash::check($request->senha, $user->password)) {
+                $update = $this->daoContaPagar->update($request, $key);
+
+                if ($update)
+                    return redirect('contas-a-pagar') ->with('success', 'Registro cancelado com sucesso!');
+
+                return redirect('contas-a-pagar')->with('error', 'Erro ao cancelar registro.');
+            } else {
+                return redirect()->back()->with('error', 'Senha inválida.');
+            }
+        }
+
         $update = $this->daoContaPagar->update($request, $key);
 
         if ($update)

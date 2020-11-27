@@ -7,6 +7,8 @@ use App\Http\Dao\Dao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use Carbon\Carbon;
+
 use App\Http\Dao\DaoCliente;
 use App\Http\Dao\DaoProduto;
 use App\Http\Dao\DaoFuncionario;
@@ -16,7 +18,8 @@ use App\Http\Models\Venda;
 use App\Http\Models\ContaReceber;
 
 use App\Http\Models\ProdutoVenda;
-use Carbon\Carbon;
+
+use Ramsey\Uuid\Uuid;
 
 class DaoVenda implements Dao {
 
@@ -33,16 +36,28 @@ class DaoVenda implements Dao {
         $this->daoCondicaoPagamento = new DaoCondicaoPagamento();
     }
 
-    public function all(bool $model = false) {
-        if (!$model)
-            return DB::table('vendas')->get();
+    public function all(bool $model = false, $filtro = array()) {
+        if ($filtro) {
+            $itens = DB::table('vendas')
+                       ->where($filtro['chave'], $filtro['valor'])
+                       ->where('data_cadastro', '>=', Carbon::today()->toDateTimeString())
+                       ->get()
+                       ->sum('total_venda');
 
-        $dados = DB::table('vendas')->orderBy('data_cadastro', 'desc')->get();
+            return $itens;
+        }
+
+        $itens = DB::table('vendas')->orderBy('data_cadastro', 'desc')->get();
+
+        // dd($itens);
+
+        if (!$model)
+            return $itens;
 
         $vendas = array();
 
-        foreach ($dados as $dado) {
-            $venda = $this->create(get_object_vars($dado));
+        foreach ($itens as $item) {
+            $venda = $this->create(get_object_vars($item));
             array_push($vendas, $venda);
         }
 
@@ -382,6 +397,7 @@ class DaoVenda implements Dao {
                 'modelo'     => $venda->getModelo(),
                 'produto_id' => $produto->getProduto()->getId(),
                 'quantidade' => $produto->getQuantidade(),
+                'produto_acrescimo' => Uuid::uuid4()->toString(),
             );
 
             array_push($produtos, $dadosProduto);

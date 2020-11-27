@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 use App\Http\Dao\DaoCompra;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 class CompraController extends Controller
 {
     private DaoCompra $daoCompra;
@@ -113,12 +116,19 @@ class CompraController extends Controller
             'num_nota' => "unique:compras,num_nota,$request->num_nota,num_nota"
         ]);
 
-        $update = $this->daoCompra->update($request, $key);
+        // Cancelamento
+        if ($request->senha) {
+            if (Hash::check($request->senha, Auth::user()->password)) {
+                $update = $this->daoCompra->update($request, $key);
 
-        if ($update)
-            return redirect('compras') ->with('success', 'Registro alterado com sucesso!');
+                if ($update)
+                    return redirect('compras') ->with('success', 'Registro cancelado com sucesso!');
 
-        return redirect('compras')->with('error', 'Erro ao alterar registro.');
+                return redirect()->back()->with('error', 'Estoque insuficiente para efetuar cancelamento!');
+            }
+
+            return redirect()->back()->with('error', 'Senha inválida!');
+        }
     }
 
     /**

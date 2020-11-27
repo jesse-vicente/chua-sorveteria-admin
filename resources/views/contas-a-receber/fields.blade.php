@@ -1,3 +1,7 @@
+@isset($contaReceber)
+    <input type="hidden" name="senha" id="senha">
+@endisset
+
 <div class="form-row">
     <div class="form-group required col-xl-2">
         <label>Modelo</label>
@@ -5,6 +9,8 @@
             type="number"
             id="modelo"
             name="modelo"
+            max="99"
+            oninput="validity.valid || (value = '');"
             class="form-control @error('modelo') is-invalid @enderror"
             value="{{ old('modelo', isset($contaReceber) ? $contaReceber->getVenda()->getModelo() : 55) }}"
         >
@@ -18,6 +24,8 @@
             type="text"
             id="serie"
             name="serie"
+            max="999"
+            oninput="validity.valid || (value = '');"
             class="form-control @error('serie') is-invalid @enderror"
             value="{{ old('serie', isset($contaReceber) ? $contaReceber->getVenda()->getSerie() : 1) }}"
         >
@@ -30,6 +38,8 @@
             type="number"
             id="num_nota"
             name="num_nota"
+            max="999999"
+            oninput="validity.valid || (value = '');"
             class="form-control @error('num_nota') is-invalid @enderror"
             value="{{ old('num_nota', isset($contaReceber) ? $contaReceber->getVenda()->getNumeroNota() : null) }}"
         >

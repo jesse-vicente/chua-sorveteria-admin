@@ -25,6 +25,7 @@
             name="estado"
             class="form-control @error('estado') is-invalid @enderror"
             value="{{ old('estado', isset($estado) ? $estado->getEstado() : null) }}"
+            maxlength="50"
             required
         >
 

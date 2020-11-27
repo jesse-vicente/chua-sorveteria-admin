@@ -23,7 +23,7 @@ class DaoCondicaoPagamento implements Dao {
         if (!$model)
             return DB::table('condicoes_pagamento')->get(['id', 'condicao_pagamento', 'juros', 'multa', 'desconto']);
 
-        $itens = DB::table('condicoes_pagamento')->get();
+        $itens = DB::table('condicoes_pagamento')->orderBy('condicao_pagamento', 'desc')->get();
 
         $condicoesPagamento = array();
 
@@ -98,7 +98,6 @@ class DaoCondicaoPagamento implements Dao {
             ];
 
             $parcela = $this->daoParcela->create($dadosParcela);
-            $parcela->setCondicaoPagamento($condicaoPagamento);
 
             array_push($parcelas, $parcela);
         }
@@ -191,12 +190,12 @@ class DaoCondicaoPagamento implements Dao {
         DB::beginTransaction();
 
         try {
-            $condicaoPagamento = $this->findById($id);
+            $condicaoPagamento = $this->findById($id, true);
+
+            if ($condicaoPagamento->getTotalParcelas() != 0)
+                DB::table('parcelas')->where('condicao_pagamento_id', $id)->delete();
 
             DB::table('condicoes_pagamento')->delete($id);
-
-            if ($condicaoPagamento->getTotalParcelas() == 0)
-                DB::table('parcelas')->where('condicao_pagamento_id', $id)->delete();
 
             DB::commit();
             return true;
@@ -208,14 +207,14 @@ class DaoCondicaoPagamento implements Dao {
 
     public function findById(int $id, bool $model = false) {
         if (!$model) {
-            $queryResult = DB::table('condicoes_pagamento', 'cp')
-                             ->join('parcelas as p', 'cp.id', '=', 'p.condicao_pagamento_id')
-                             ->join('formas_pagamento as fp', 'p.forma_pagamento_id', '=', 'fp.id')
-                             ->get(['cp.id', 'cp.condicao_pagamento', 'cp.juros', 'cp.multa', 'cp.desconto', 'cp.total_parcelas', 'fp.forma_pagamento'])
-                             ->where('id', $id)
-                             ->first();
+            $query = DB::table('condicoes_pagamento', 'cp')
+                       ->join('parcelas as p', 'cp.id', '=', 'p.condicao_pagamento_id')
+                       ->join('formas_pagamento as fp', 'p.forma_pagamento_id', '=', 'fp.id')
+                       ->get(['cp.id', 'cp.condicao_pagamento', 'cp.juros', 'cp.multa', 'cp.desconto', 'cp.total_parcelas', 'fp.forma_pagamento'])
+                       ->where('id', $id)
+                       ->first();
 
-            return $queryResult;
+            return $query;
         }
 
         $dados = DB::table('condicoes_pagamento')->where('id', $id)->first();
@@ -235,8 +234,6 @@ class DaoCondicaoPagamento implements Dao {
             $parcela = $this->daoParcela->create(get_object_vars($dadosParcela));
             array_push($parcelas, $parcela);
         }
-
-        // dd($parcelas);
 
         return $parcelas;
     }

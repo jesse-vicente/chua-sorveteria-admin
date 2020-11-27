@@ -20,20 +20,26 @@
                 <form method="POST" action="{{ route('produtos.store') }}">
             @endif
 
-                @csrf
-                @include('produtos.fields')
+                    @csrf
+                    @include('produtos.fields')
+
+                    <div class="d-flex justify-content-between border-top mt-2" style="padding-top: 1.25rem !important">
+                        <div class="d-flex flex-column justify-content-center text-secondary">
+                            <small><b>Cadastrado em: </b>{{ isset($produto) ? $produto->getDataCadastro() : "__/__/____" }}</small>
+                            <small><b>Alterado em: </b>{{ isset($produto) ? $produto->getDataAlteracao() : "__/__/____" }}</small>
+                        </div>
+
+                        <div class="btn-group-lg">
+                            <button type="submit" class="btn btn-success mr-2">
+                                <span class="text-bold">Salvar</span>
+                            </button>
+
+                            <a class="btn btn-outline-secondary" href="{{ route('produtos.index') }}">
+                                <span class="text-bold">Cancelar</span>
+                            </a>
+                        </div>
+                    </div>
                 </form>
-        </div>
-
-        <div class="card-footer">
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex flex-column text-secondary">
-                    <small><b>Cadastrado em: </b>{{ isset($produto) ? $produto->getDataCadastro() : "__/__/____" }}</small>
-                    <small><b>Alterado em: </b>{{ isset($produto) ? $produto->getDataAlteracao() : "__/__/____" }}</small>
-                </div>
-
-                @include('produtos.actions')
-            </div>
         </div>
     </div>
 </div>

@@ -48,11 +48,9 @@ return [
     'logo' => '<b>Chuá </b>Sorveteria',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
-    // 'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-    // 'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'AdminLTE',
+    'logo_img_alt' => 'Chuá Sorveteria',
 
     /*
     |--------------------------------------------------------------------------
@@ -215,11 +213,11 @@ return [
         //     'search' => true,
         //     'topnav' => true,
         // ],
-        [
-            'text' => 'blog',
-            'url'  => 'admin/blog',
-            'can'  => 'manage-blog',
-        ],
+        // [
+        //     'text' => 'blog',
+        //     'url'  => 'admin/blog',
+        //     'can'  => 'manage-blog',
+        // ],
         // [
         //     'text'        => 'pages',
         //     'url'         => 'admin/pages',
@@ -227,6 +225,12 @@ return [
         //     'label'       => 4,
         //     'label_color' => 'success',
         // ],
+        // ['header' => 'VISÃO GERAL'],
+        [
+            'text'        => 'Visão Geral',
+            'url'         => 'home',
+            'icon'        => 'fas fa-chart-bar',
+        ],
 
         ['header' => 'ESTOQUE'],
         [
@@ -308,7 +312,7 @@ return [
             'icon' => 'fas fa-fw fa-map-marker-alt',
         ],
 
-        // ['header' => 'account_settings'],
+        // ['header' => 'CONFIGURAÇÕES DA CONTA'],
         // [
         //     'text' => 'profile',
         //     'url'  => 'admin/settings',

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Dao\DaoPais;
 
+use Illuminate\Support\Facades\Auth;
+
 class PaisController extends Controller
 {
     private DaoPais $daoPais;
@@ -51,6 +53,7 @@ class PaisController extends Controller
      */
     public function store(PaisRequest $request)
     {
+        // dd(Auth::user());
         $pais = $this->daoPais->create($request->all());
 
         $store = $this->daoPais->store($pais);

@@ -1,6 +1,6 @@
-<div class="alert alert-danger pb-0" id="form-errors" style="display: none;">
-    <ul class="list-unstyled"></ul>
-</div>
+@isset($venda)
+    <input type="hidden" name="senha" id="senha">
+@endisset
 
 <div class="form-row">
     <div class="form-group required col-xl-2">
@@ -9,6 +9,8 @@
             type="number"
             id="modelo"
             name="modelo"
+            max="99"
+            oninput="validity.valid || (value = '');"
             class="form-control @error('modelo') is-invalid @enderror"
             value="{{ old('modelo', isset($venda) ? $venda->getModelo() : 55) }}"
             required
@@ -23,6 +25,8 @@
             type="text"
             id="serie"
             name="serie"
+            max="999"
+            oninput="validity.valid || (value = '');"
             class="form-control @error('serie') is-invalid @enderror"
             value="{{ old('serie', isset($venda) ? $venda->getSerie() : 1) }}"
         >
@@ -36,6 +40,8 @@
             type="number"
             id="num_nota"
             name="num_nota"
+            max="999999"
+            oninput="validity.valid || (value = '');"
             class="form-control @error('num_nota') is-invalid @enderror"
             value="{{ old('num_nota', isset($venda) ? $venda->getNumeroNota() : 0) }}"
             disabled
@@ -52,6 +58,7 @@
             name="data_venda"
             class="form-control @error('data_venda') is-invalid @enderror"
             value="{{ old('data_venda', isset($venda) ? $venda->getDataVenda() : date('Y-m-d')) }}"
+            readonly
         >
 
         <span class="invalid-feedback" role="alert" ref="data_venda"></span>
@@ -207,9 +214,8 @@
                 placeholder="0,00"
                 class="form-control @error('descontos') is-invalid @enderror"
                 value="{{ old('descontos', isset($venda) ? number_format($venda->getDescontos(), 2) : null) }}"
-                step=".01"
                 oninput="validity.valid || (value = '');"
-                readonly
+                step=".01"
             >
 
             @error('descontos')
@@ -286,7 +292,7 @@
         <span class="invalid-feedback" role="alert" ref="condicao_pagamento_id"></span>
     </div>
 
-    <div class="form-group required col-xl-10">
+    <div class="form-group required col-xl-10" id="ipt-condicao-pagamento">
         <label>Condição de Pagamento</label>
         <div class="input-group">
             <input

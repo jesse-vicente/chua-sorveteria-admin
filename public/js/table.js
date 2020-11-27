@@ -5,7 +5,7 @@ $(document).ready(function() {
             <td>
                 <input
                     type="number"
-                    class="form-control form-control-sm numero-parcela"
+                    class="form-control numero-parcela"
                     name="parcelas[]"
                     value="1"
                     required
@@ -18,7 +18,7 @@ $(document).ready(function() {
                         <input
                             type="text"
                             placeholder="Cód."
-                            class="form-control form-control-sm forma-pagamento-id"
+                            class="form-control forma-pagamento-id"
                             name="forma_pagamento_id[]"
                             id="forma_pagamento_id[]"
                             data-input="#forma_pagamento[]"
@@ -28,11 +28,11 @@ $(document).ready(function() {
                     </div>
 
                     <div class="form-group col-md-10 mb-0">
-                        <div class="input-group input-group-sm">
+                        <div class="input-group">
 
                             <input
                                 type="text"
-                                class="form-control form-control-sm forma-pagamento"
+                                class="form-control forma-pagamento"
                                 name="forma_pagamento[]"
                                 id="forma_pagamento[]"
                                 readonly
@@ -58,7 +58,7 @@ $(document).ready(function() {
             <td>
                 <input
                     type="number"
-                    class="form-control form-control-sm prazo"
+                    class="form-control prazo"
                     name="prazo[]"
                     min="1"
                     max="180"
@@ -68,23 +68,25 @@ $(document).ready(function() {
             <td>
                 <input
                     type="number"
-                    class="form-control form-control-sm porcentagem"
+                    class="form-control porcentagem"
                     name="porcentagem[]"
                     min="0"
                     max="100"
                     required
                 >
             </td>
-            <td class="pt-2">
-                <button type="button" class="btn btn-xs mx-1 btn-success add" title="Adicionar">
-                    <i class="fa fa-check"></i>
-                </button>
-                <button type="button" class="btn btn-xs mx-1 btn-warning edit" title="Editar" style="display: none">
-                    <i class="fa fa-edit text-white"></i>
-                </button>
-                <button type="button" class="btn btn-xs mx-1 btn-danger delete" title="Remover">
-                    <i class="fa fa-trash-alt"></i>
-                </button>
+            <td class="text-center">
+                <div class="btn-group-sm">
+                    <button type="button" class="btn btn-success add" title="Adicionar">
+                        <i class="fa fa-check"></i>
+                    </button>
+                    <button type="button" class="btn btn-warning edit" title="Editar" style="display: none">
+                        <i class="fa fa-edit text-white"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger delete" title="Remover">
+                        <i class="fa fa-trash-alt"></i>
+                    </button>
+                </div>
             </td>
         </tr>`;
 

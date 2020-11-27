@@ -25,6 +25,8 @@
             name="produto"
             class="form-control @error('produto') is-invalid @enderror"
             value="{{ old('produto', isset($produto) ? $produto->getProduto() : null) }}"
+            maxlength="50"
+            required
         >
 
         @error('produto')
@@ -42,6 +44,8 @@
             name="unidade"
             class="form-control @error('unidade') is-invalid @enderror"
             value="{{ old('unidade', isset($produto) ? $produto->getUnidade() : null) }}"
+            maxlength="10"
+            required
         >
 
         @error('unidade')
@@ -63,6 +67,7 @@
             data-input="#fornecedor"
             data-route="fornecedores"
             value="{{ old('fornecedor_id', isset($produto) ? $produto->getFornecedor()->getId() : null) }}"
+            required
         >
 
         @error('fornecedor_id')
@@ -81,6 +86,7 @@
                 id="fornecedor"
                 value="{{ old('fornecedor', isset($produto) ? $produto->getFornecedor()->getRazaoSocial() : null) }}"
                 readonly
+                required
             >
 
             <div class="input-group-append">
@@ -124,6 +130,7 @@
             data-input="#categoria"
             data-route="categorias"
             value="{{ old('categoria_id', isset($produto) ? $produto->getCategoria()->getId() : null) }}"
+            required
         >
 
         @error('categoria_id')
@@ -142,6 +149,7 @@
                 id="categoria"
                 value="{{ old('categoria', isset($produto) ? $produto->getCategoria()->getCategoria() : null) }}"
                 readonly
+                required
             >
 
             <div class="input-group-append">
@@ -232,6 +240,9 @@
                 name="preco_venda"
                 class="form-control @error('preco_venda') is-invalid @enderror"
                 value="{{ old('preco_venda', isset($produto) ? number_format($produto->getPrecoVenda(), 2) : null) }}"
+                step=".01"
+                oninput="validity.valid || (value = '');"
+                required
             >
 
             @error('preco_venda')

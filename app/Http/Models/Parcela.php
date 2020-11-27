@@ -27,18 +27,12 @@ class Parcela extends TObject
      */
     protected $formaPagamento;
 
-    /**
-     * @var CondicaoPagamento
-     */
-    protected $condicaoPagamento;
-
     public function __construct()
     {
         $this->numero = 0;
         $this->prazo  = 0;
         $this->porcentagem = 0;
         $this->formaPagamento    = new FormaPagamento();
-        $this->condicaoPagamento = new CondicaoPagamento();
     }
 
     /**
@@ -123,26 +117,5 @@ class Parcela extends TObject
     public function setFormaPagamento(FormaPagamento $formaPagamento)
     {
         $this->formaPagamento = $formaPagamento;
-    }
-
-    /**
-     * Get the value of condicaoPagamento
-     *
-     * @return  CondicaoPagamento
-     */
-    public function getCondicaoPagamento()
-    {
-        return $this->condicaoPagamento;
-    }
-
-    /**
-     * Set the value of condicaoPagamento
-     *
-     * @param  CondicaoPagamento  $condicaoPagamento
-     *
-     */
-    public function setCondicaoPagamento(CondicaoPagamento $condicaoPagamento)
-    {
-        $this->condicaoPagamento = $condicaoPagamento;
     }
 }

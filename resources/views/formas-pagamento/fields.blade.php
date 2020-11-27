@@ -24,6 +24,8 @@
             id="forma_pagamento"
             name="forma_pagamento"
             class="form-control @error('forma_pagamento') is-invalid @enderror"
+            maxlength="50"
+            required
             value="{{ old('forma_pagamento', isset($formaPagamento) ? $formaPagamento->getFormaPagamento() : null) }}"
         >
 

@@ -25,6 +25,8 @@
             name="funcionario"
             class="form-control @error('funcionario') is-invalid @enderror"
             value="{{ old('funcionario', isset($funcionario) ? $funcionario->getNome() : null) }}"
+            maxlength="50"
+            required
         >
 
         @error('funcionario')
@@ -42,6 +44,7 @@
             name="apelido"
             class="form-control @error('apelido') is-invalid @enderror"
             value="{{ old('apelido', isset($funcionario) ? $funcionario->getApelido() : null) }}"
+            maxlength="20"
         >
 
         @error('apelido')
@@ -53,7 +56,7 @@
 
     <div class="form-group required col-xl-2">
         <label>Sexo</label>
-        <select class="form-control @error('sexo') is-invalid @enderror" name="sexo">
+        <select class="form-control @error('sexo') is-invalid @enderror" name="sexo" required>
             @empty($funcionario))
                 <option value="" selected class="d-none">Selecione</option>
                 <option value="Masculino" {{ old('sexo') == 'Masculino' ? 'selected' : '' }}>Masculino</option>
@@ -81,6 +84,8 @@
             name="endereco"
             class="form-control @error('endereco') is-invalid @enderror"
             value="{{ old('endereco', isset($funcionario) ? $funcionario->getEndereco() : null) }}"
+            maxlength="50"
+            required
         >
 
         @error('endereco')
@@ -98,6 +103,8 @@
             name="numero"
             class="form-control @error('numero') is-invalid @enderror"
             value="{{ old('numero', isset($funcionario) ? $funcionario->getNumero() : null) }}"
+            max="99999"
+            required
         >
 
         @error('numero')
@@ -115,6 +122,7 @@
             name="complemento"
             class="form-control @error('complemento') is-invalid @enderror"
             value="{{ old('complemento', isset($funcionario) ? $funcionario->getComplemento() : null) }}"
+            maxlength="50"
         >
 
         @error('complemento')
@@ -132,6 +140,8 @@
             name="bairro"
             class="form-control @error('bairro') is-invalid @enderror"
             value="{{ old('bairro', isset($funcionario) ? $funcionario->getBairro() : null) }}"
+            maxlength="50"
+            required
         >
 
         @error('bairro')
@@ -152,6 +162,7 @@
             class="form-control @error('cep') is-invalid @enderror"
             value="{{ old('cep', isset($funcionario) ? $funcionario->getCEP() : null) }}"
             placeholder="_____-___"
+            required
         >
 
         @error('cep')
@@ -234,6 +245,7 @@
             class="form-control @error('whatsapp') is-invalid @enderror"
             value="{{ old('whatsapp', isset($funcionario) ? $funcionario->getWhatsapp() : null) }}"
             placeholder="(__) _____-____"
+            required
         >
 
         @error('whatsapp')
@@ -261,7 +273,7 @@
         @enderror
     </div>
 
-    <div class="form-group col-xl-6">
+    <div class="form-group required col-xl-6">
         <label>E-mail</label>
         <input
             type="email"
@@ -269,6 +281,8 @@
             name="email"
             class="form-control @error('email') is-invalid @enderror"
             value="{{ old('email', isset($funcionario) ? $funcionario->getEmail() : null) }}"
+            maxlength="50"
+            required
         >
 
         @error('email')
@@ -322,6 +336,7 @@
             name="data_nascimento"
             class="form-control @error('data_nascimento') is-invalid @enderror"
             value="{{ old('data_nascimento', isset($funcionario) ? $funcionario->getDataNascimento() : null) }}"
+            required
         >
 
         @error('data_nascimento')
@@ -348,6 +363,9 @@
                 class="form-control @error('salario') is-invalid @enderror"
                 value="{{ old('salario', isset($funcionario) ? $funcionario->getSalario() : null) }}"
                 placeholder="0,00"
+                step=".01"
+                oninput="validity.valid || (value = '');"
+                required
             >
 
             @error('salario')
@@ -366,6 +384,7 @@
             name="data_admissao"
             class="form-control @error('data_admissao') is-invalid @enderror"
             value="{{ old('data_admissao', isset($funcionario) ? $funcionario->getDataAdmissao() : null) }}"
+            required
         >
 
         @error('data_admissao')

@@ -89,7 +89,6 @@ class DaoFornecedor implements Dao {
             return true;
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
             return false;
         }
     }

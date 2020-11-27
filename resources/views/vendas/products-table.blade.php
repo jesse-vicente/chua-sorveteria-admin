@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card @isset($venda) mt-2 @endisset">
     <div class="card-body p-0">
         <table class="table table-sm table-striped table-responsive-xl table-borderless w-100" id="produtos-table">
             @isset($venda)
@@ -22,8 +22,8 @@
                         <td class="text-center">{{ $produtoVenda->getProduto()->getUnidade() }}</td>
                         <td>{{ $produtoVenda->getProduto()->getCategoria()->getCategoria() }}</td>
                         <td class="text-center">{{ $produtoVenda->getQuantidade() }}</td>
-                        <td class="text-right">{{ 'R$ ' . number_format($produtoVenda->getProduto()->getPrecoCusto(), 2, ',', '.') }}</td>
-                        <td class="text-right">{{ 'R$ ' . number_format($produtoVenda->getQuantidade() * $produtoVenda->getProduto()->getPrecoCusto(), 2, ',', '.') }}</td>
+                        <td class="text-right">{{ 'R$ ' . number_format($produtoVenda->getProduto()->getPrecoVenda(), 2, ',', '.') }}</td>
+                        <td class="text-right">{{ 'R$ ' . number_format($produtoVenda->getQuantidade() * $produtoVenda->getProduto()->getPrecoVenda(), 2, ',', '.') }}</td>
                     </tr>
                 @empty
 
@@ -54,7 +54,7 @@
     @else
     <div class="card-footer d-flex align-items-center justify-content-between">
         <button id="remove-items" class="btn btn-danger" disabled>
-            <i class="fa fa-trash-alt mr-2"></i>Remover Itens
+            <i class="fa fa-trash-alt mr-2"></i>Remover
         </button>
 
         <strong class="text-success text-lg">

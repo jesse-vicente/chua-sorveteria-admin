@@ -25,6 +25,7 @@
             name="cliente"
             class="form-control @error('cliente') is-invalid @enderror"
             value="{{ old('cliente', isset($cliente) ? $cliente->getNome() : null) }}"
+            maxlength="50"
             required
         >
 
@@ -42,10 +43,68 @@
             id="apelido"
             name="apelido"
             class="form-control @error('apelido') is-invalid @enderror"
+            maxlength="20"
             value="{{ old('apelido', isset($cliente) ? $cliente->getApelido() : null) }}"
         >
 
         @error('apelido')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+</div>
+
+
+<div class="form-row">
+    <div class="form-group required col-xl-4">
+        <label>CPF</label>
+        <input
+            type="text"
+            id="cpf"
+            name="cpf"
+            class="form-control @error('cpf') is-invalid @enderror"
+            value="{{ old('cpf', isset($cliente) ? $cliente->getCpfCnpj() : null) }}"
+            placeholder="___.___.___-__"
+            required
+        >
+
+        @error('cpf')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+
+    <div class="form-group col-xl-4">
+        <label>RG</label>
+        <input
+            type="text"
+            id="rg"
+            name="rg"
+            class="form-control @error('rg') is-invalid @enderror"
+            value="{{ old('rg', isset($cliente) ? $cliente->getRgInscricaoEstadual() : null) }}"
+        >
+
+        @error('rg')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+
+    <div class="form-group required col-xl-4">
+        <label>Data de Nascimento</label>
+        <input
+            type="date"
+            id="data_nascimento"
+            name="data_nascimento"
+            class="form-control @error('data_nascimento') is-invalid @enderror"
+            value="{{ old('data_nascimento', isset($cliente) ? $cliente->getDataNascimento() : null) }}"
+            required
+        >
+
+        @error('data_nascimento')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
             </span>
@@ -62,6 +121,7 @@
             name="endereco"
             class="form-control @error('endereco') is-invalid @enderror"
             value="{{ old('endereco', isset($cliente) ? $cliente->getEndereco() : null) }}"
+            maxlength="50"
             required
         >
 
@@ -80,6 +140,7 @@
             name="numero"
             class="form-control @error('numero') is-invalid @enderror"
             value="{{ old('numero', isset($cliente) ? $cliente->getNumero() : null) }}"
+            max="99999"
             required
         >
 
@@ -96,6 +157,7 @@
             type="text"
             id="complemento"
             name="complemento"
+            maxlength="50"
             class="form-control @error('complemento') is-invalid @enderror"
             value="{{ old('complemento', isset($cliente) ? $cliente->getComplemento() : null) }}"
         >
@@ -113,6 +175,7 @@
             type="text"
             id="bairro"
             name="bairro"
+            maxlength="50"
             class="form-control @error('bairro') is-invalid @enderror"
             value="{{ old('bairro', isset($cliente) ? $cliente->getBairro() : null) }}"
             required
@@ -127,7 +190,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group required col-xl-2">
+    <div class="form-group col-xl-2">
         <label>CEP</label>
         <input
             type="text"
@@ -136,7 +199,6 @@
             class="form-control @error('cep') is-invalid @enderror"
             value="{{ old('cep', isset($cliente) ? $cliente->getCEP() : null) }}"
             placeholder="_____-___"
-            required
         >
 
         @error('cep')
@@ -253,67 +315,12 @@
             type="email"
             id="email"
             name="email"
+            maxlength="50"
             class="form-control @error('email') is-invalid @enderror"
             value="{{ old('email', isset($cliente) ? $cliente->getEmail() : null) }}"
         >
 
         @error('email')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-</div>
-
-<div class="form-row">
-    <div class="form-group required col-xl-4">
-        <label>CPF</label>
-        <input
-            type="text"
-            id="cpf"
-            name="cpf"
-            class="form-control @error('cpf') is-invalid @enderror"
-            value="{{ old('cpf', isset($cliente) ? $cliente->getCpfCnpj() : null) }}"
-            placeholder="___.___.___-__"
-            required
-        >
-
-        @error('cpf')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-
-    <div class="form-group col-xl-4">
-        <label>RG</label>
-        <input
-            type="text"
-            id="rg"
-            name="rg"
-            class="form-control @error('rg') is-invalid @enderror"
-            value="{{ old('rg', isset($cliente) ? $cliente->getRgInscricaoEstadual() : null) }}"
-        >
-
-        @error('rg')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-
-    <div class="form-group required col-xl-4">
-        <label>Data de Nascimento</label>
-        <input
-            type="date"
-            id="data_nascimento"
-            name="data_nascimento"
-            class="form-control @error('data_nascimento') is-invalid @enderror"
-            value="{{ old('data_nascimento', isset($cliente) ? $cliente->getDataNascimento() : null) }}"
-            required
-        >
-
-        @error('data_nascimento')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
             </span>

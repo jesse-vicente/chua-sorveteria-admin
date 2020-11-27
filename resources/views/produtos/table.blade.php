@@ -20,7 +20,12 @@
                 <td class="text-center">{{ $produto->getUnidade() }}</td>
                 <td>{{ $produto->getCategoria()->getCategoria() }}</td>
                 <td>{{ $produto->getFornecedor()->getRazaoSocial() }}</td>
-                <td class="text-center">{{ $produto->getEstoque() ?? 0 }}</td>
+                <td class="text-center">{{
+                    $produto->getUnidade() != 'KG'
+                        ? intval($produto->getEstoque())
+                        : number_format($produto->getEstoque(), 2, ',', '.') . ' Kg'
+                }}
+                </td>
                 <td class="text-right">R$ {{ number_format($produto->getPrecoVenda(), 2, ',', '.') }}</td>
                 <td class="text-center">
                     <div class="btn-group-xs">

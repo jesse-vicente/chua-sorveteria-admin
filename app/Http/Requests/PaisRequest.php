@@ -30,7 +30,7 @@ class PaisRequest extends FormRequest
                 'required',
                 'min:3',
                 'max:50',
-                'alpha',
+                'regex:/^[\pL\s\-]+$/u',
                 Rule::unique('paises')->ignore($this->request->get('id'))
             ],
 

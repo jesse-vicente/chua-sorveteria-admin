@@ -16,21 +16,21 @@
                     @method('PUT')
                     @csrf
                     @include('contas-a-receber.fields')
+
+                    <div class="d-flex align-items-center justify-content-between border-top mt-2" style="padding-top: 1.25rem !important">
+                        <div class="d-flex flex-column text-secondary">
+                            <small><b>Cadastrado em: </b>{{ isset($contaReceber) ? $contaReceber->getDataCadastro() : "__/__/____" }}</small>
+                            <small><b>Alterado em: </b>{{ isset($contaReceber) ? $contaReceber->getDataAlteracao() : "__/__/____" }}</small>
+                        </div>
+
+                        <div class="btn-group-lg">
+                            <a class="btn btn-outline-secondary" href="{{ route('contas-a-receber.index') }}">
+                                <span class="text-bold">Voltar</span>
+                            </a>
+                        </div>
+                    </div>
                 </form>
             @endif
-        </div>
-
-        <div class="card-footer">
-            <div class="d-flex align-items-center justify-content-between">
-                <div class="d-flex flex-column text-secondary">
-                    <small><b>Cadastrado em: </b>{{ isset($contaReceber) ? $contaReceber->getDataCadastro() : "__/__/____" }}</small>
-                    <small><b>Alterado em: </b>{{ isset($contaReceber) ? $contaReceber->getDataAlteracao() : "__/__/____" }}</small>
-                </div>
-
-                <a class="btn btn-lg btn-outline-secondary" href="{{ route('contas-a-receber.index') }}">
-                    <span class="text-bold">Voltar</span>
-                </a>
-            </div>
         </div>
     </div>
 </div>

@@ -1,6 +1,6 @@
-<div class="alert alert-danger pb-0" id="form-errors" style="display: none;">
-    <ul class="list-unstyled"></ul>
-</div>
+@isset($compra)
+    <input type="hidden" name="senha" id="senha">
+@endisset
 
 <div class="form-row">
     <div class="form-group required col-xl-2">
@@ -9,6 +9,8 @@
             type="number"
             id="modelo"
             name="modelo"
+            max="99"
+            oninput="validity.valid || (value = '');"
             class="form-control @error('modelo') is-invalid @enderror"
             value="{{ old('modelo', isset($compra) ? $compra->getModelo() : 55) }}"
             required
@@ -20,9 +22,11 @@
     <div class="form-group required col-xl-2">
         <label>Série</label>
         <input
-            type="text"
+            type="number"
             id="serie"
             name="serie"
+            max="999"
+            oninput="validity.valid || (value = '');"
             class="form-control @error('serie') is-invalid @enderror"
             value="{{ old('serie', isset($compra) ? $compra->getSerie() : 1) }}"
             required
@@ -37,6 +41,8 @@
             type="number"
             id="num_nota"
             name="num_nota"
+            max="999999"
+            oninput="validity.valid || (value = '');"
             class="form-control @error('num_nota') is-invalid @enderror"
             value="{{ old('num_nota', isset($compra) ? $compra->getNumeroNota() : null) }}"
             autofocus
@@ -137,7 +143,6 @@
     </div>
 </div>
 
-@empty($compra)
 <div class="d-flex mt-4">
     <hr class="flex-grow-1">
     <div class="px-4">
@@ -149,6 +154,7 @@
     <hr class="flex-grow-1">
 </div>
 
+@empty($compra)
 <div class="form-row">
     <div class="form-group col-xl-2">
         <label>Código</label>
@@ -316,7 +322,7 @@
     </div>
 
     <div class="form-group col-xl-2 d-none">
-        <label>Total à Pagar</label>
+        <label>Total da Compra</label>
 
         <div class="input-group">
             <div class="input-group-prepend">

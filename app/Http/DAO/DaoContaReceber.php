@@ -7,6 +7,8 @@ use App\Http\Dao\Dao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use Carbon\Carbon;
+
 use App\Http\Dao\DaoCliente;
 use App\Http\Dao\DaoVenda;
 use App\Http\Dao\DaoFuncionario;
@@ -14,8 +16,6 @@ use App\Http\Dao\DaoFormaPagamento;
 
 use App\Http\Models\Venda;
 use App\Http\Models\ContaReceber;
-
-use App\Http\Models\ProdutoVenda;
 
 class DaoContaReceber implements Dao {
 
@@ -32,16 +32,37 @@ class DaoContaReceber implements Dao {
         $this->daoFormaPagamento = new DaoFormaPagamento();
     }
 
-    public function all(bool $model = false) {
-        if (!$model)
-            return DB::table('contas_receber')->get();
+    public function all(bool $model = false, $filtro = array()) {
+        if ($filtro) {
+            $chave = $filtro['chave'];
+            $valor = $filtro['valor'];
 
-        $dados = DB::table('contas_receber')->get();
+            if ($valor == 'Em aberto') {
+                return DB::table('contas_receber')
+                         ->where($chave, $valor)
+                         ->where('data_cadastro', '>=', Carbon::today()->toDateTimeString())
+                         ->get()
+                         ->count();
+            } else if ($valor == 'Recebido') {
+                return DB::table('contas_receber')
+                         ->where($filtro['chave'], $filtro['valor'])
+                         ->where('data_cadastro', '>=', Carbon::today()->toDateTimeString())
+                         ->get()
+                         ->sum('valor_parcela');
+            }
+        }
+
+        $itens = DB::table('contas_receber')
+                   ->orderBy('data_cadastro', 'desc')
+                   ->get();
+
+        if (!$model)
+            return $itens;
 
         $contas = array();
 
-        foreach ($dados as $dado) {
-            $conta = $this->create(get_object_vars($dado));
+        foreach ($itens as $item) {
+            $conta = $this->create(get_object_vars($item));
             array_push($contas, $conta);
         }
 

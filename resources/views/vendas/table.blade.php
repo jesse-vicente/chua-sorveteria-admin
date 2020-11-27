@@ -1,14 +1,13 @@
-<div id="mask"></div>
-
 <div class="table-responsive">
-    <table class="table table-hover table-striped shadow-xs rounded" id="table">
+    <table class="table table-hover table-striped shadow-xs rounded table-order" id="table">
         <thead>
             <tr>
                 <th class="text-right" style="width: 8%;">Documento</th>
-                <th class="text-center" style="width: 8%;">Data Venda</th>
+                <th class="text-center" style="width: 15%;">Data</th>
                 <th>Cliente</th>
-                <th class="text-right" style="width: 8%;">Valor Total</th>
-                <th class="text-center" style="width: 8%;">Situação</th>
+                <th class="text-right" style="width: 15%;">Desconto</th>
+                <th class="text-right" style="width: 15%;">Valor Total</th>
+                <th class="text-center" style="width: 15%;">Situação</th>
                 <th class="text-center">Ações</th>
             </tr>
         </thead>
@@ -18,6 +17,7 @@
                 <td class="text-right">{{ $venda->getNumeroNota() }}</td>
                 <td class="text-center">{{ date('d/m/Y', strtotime($venda->getDataVenda())) }}</td>
                 <td>{{ $venda->getCliente() ? $venda->getCliente()->getNome() : '-' }}</td>
+                <td class="text-right">{{ 'R$ ' . number_format($venda->getDescontos(), 2, ',', '.') }}</td>
                 <td class="text-right">{{ 'R$ ' . number_format($venda->getTotalVenda(), 2, ',', '.') }}</td>
                 <td class="text-center">
                     @php
@@ -62,10 +62,11 @@
         <tfoot>
             <tr>
                 <th class="text-right" style="width: 8%;">Documento</th>
-                <th class="text-center" style="width: 8%;">Data Venda</th>
+                <th class="text-center" style="width: 15%;">Data</th>
                 <th>Cliente</th>
-                <th class="text-right" style="width: 8%;">Valor Total</th>
-                <th class="text-center" style="width: 8%;">Situação</th>
+                <th class="text-right" style="width: 15%;">Desconto</th>
+                <th class="text-right" style="width: 15%;">Valor Total</th>
+                <th class="text-center" style="width: 15%;">Situação</th>
                 <th class="text-center">Ações</th>
             </tr>
         </tfoot>

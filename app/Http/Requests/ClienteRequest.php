@@ -31,7 +31,7 @@ class ClienteRequest extends FormRequest
             'numero'                => 'required|gt:0',
             'complemento'           => 'nullable|max:50',
             'bairro'                => 'required|max:50',
-            'cep'                   => 'required|size:9',
+            'cep'                   => 'nullable|size:9',
             'cidade_id'             => 'required|exists:cidades,id',
             'condicao_pagamento_id' => 'required|exists:condicoes_pagamento,id',
             'telefone'              => 'nullable|max:15',

@@ -25,7 +25,7 @@ class FuncionarioRequest extends FormRequest
     public function rules()
     {
         return [
-            'funcionario'     => 'required|min:3|max:50',
+            'funcionario'     => 'required|min:3|max:50|regex:/^[\pL\s\-]+$/u',
             'apelido'         => 'nullable|max:50',
             'sexo'            => 'required|max:10',
             'endereco'        => 'required|max:50',
@@ -37,13 +37,19 @@ class FuncionarioRequest extends FormRequest
             'cidade'          => 'required',
             'telefone'        => 'nullable|max:15',
             'whatsapp'        => 'required|max:15',
-            'email'           => 'nullable|email|max:50',
             'rg'              => 'required',
             'salario'         => 'required|numeric|gt:0',
-            'data_nascimento' => 'required|date|date_format:Y-m-d|before:-18 years',
+            'data_nascimento' => 'required|date|date_format:Y-m-d|before:-16 years',
             'data_admissao'   => 'required|date|date_format:Y-m-d|before:tomorrow',
             'data_demissao'   => 'nullable|date|date_format:Y-m-d|after:data_admissao',
             'observacoes'     => 'nullable|min:5|max:255',
+
+            'email' => [
+                'required',
+                'email',
+                'max:50',
+                Rule::unique('funcionarios')->ignore($this->request->get('id'))
+            ],
 
             'cpf' => [
                 'required',
@@ -61,6 +67,7 @@ class FuncionarioRequest extends FormRequest
     public function messages()
     {
         return [
+            'funcionario.regex'      => 'O campo funcionário deve conter apenas letras.',
             'cidade_id.exists'       => 'Código inválido.',
             'data_nascimento.before' => 'O funcionário deve ser maior de 18 de anos.',
             'data_admissao.before'   => 'A data de admissão não pode ser uma data futura.',

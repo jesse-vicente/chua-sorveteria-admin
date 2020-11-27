@@ -16,27 +16,25 @@
             @method('DELETE')
 
             @include('funcionarios.fields')
+
+            <div class="d-flex justify-content-between border-top mt-2" style="padding-top: 1.25rem !important">
+                <div class="d-flex flex-column justify-content-center text-secondary">
+                    <small><b>Cadastrado em: </b>{{ isset($funcionario) ? $funcionario->getDataCadastro() : "__/__/____" }}</small>
+                    <small><b>Alterado em: </b>{{ isset($funcionario) ? $funcionario->getDataAlteracao() : "__/__/____" }}</small>
+                </div>
+
+                <div class="btn-group-lg">
+                    <button type="button" class="btn btn-danger mr-2" id="btn-delete">
+                        <span class="text-bold">Excluir</span>
+                    </button>
+
+                    <a class="btn btn-outline-secondary" href="{{ route('funcionarios.index') }}">
+                        <span class="text-bold">Cancelar</span>
+                    </a>
+                </div>
+            </div>
         </form>
         @endif
-    </div>
-
-    <div class="card-footer">
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex flex-column text-secondary">
-                <small><b>Cadastrado em: </b>{{ isset($funcionario) ? $funcionario->getDataCadastro() : "__/__/____" }}</small>
-                <small><b>Alterado em: </b>{{ isset($funcionario) ? $funcionario->getDataAlteracao() : "__/__/____" }}</small>
-            </div>
-
-            <div class="btn-group-lg">
-                <button type="button" class="btn btn-danger mr-2" id="btn-delete">
-                    <span class="text-bold">Excluir</span>
-                </button>
-
-                <a class="btn btn-outline-secondary" href="{{ route('funcionarios.index') }}">
-                    <span class="text-bold">Cancelar</span>
-                </a>
-            </div>
-        </div>
     </div>
 </div>
 @endsection

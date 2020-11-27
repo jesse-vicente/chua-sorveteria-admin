@@ -7,9 +7,10 @@ var adicionais = {
 const valorPago = Number($("#valor_pago").val());
 
 $(document).ready(function() {
-    $("#table-conta").DataTable({
+    const tableConta = $("#table-conta").DataTable({
         dom: "<'row options-bar'<'col-md-4'f>l>rtip",
-        bSort: false,
+        // bSort: false,
+        order: [[ 0, "desc" ]]
     });
 
     const swalInfo = Swal.mixin({
@@ -60,6 +61,11 @@ $(document).ready(function() {
                 $("form").submit();
             }
         }
+    });
+
+    $("#btn-receber").click(function(e) {
+        e.preventDefault();
+        $("form").submit();
     });
 
     $("#modelo, #serie, #num_nota, #data_emissao, #data_chegada, #fornecedor_id").change(function() {
@@ -175,10 +181,42 @@ $(document).ready(function() {
             totalTexto,
         };
 
-        if (venda)
-            dadosProduto.estoque = $("#estoque").val();
+        if (compra)
+            produtosInseridos.push(id);
+        else {
+            dadosProduto.estoque = Number($("#estoque").val());
 
-        produtosInseridos.push(id);
+            const unidadeText = unidade.toUpperCase();
+
+            if (unidadeText != "KG" && unidadeText != 'L')
+                produtosInseridos.push(id);
+            // Verifica se a quantidade não excede o estoque
+            else {
+                const qtdMaxima = dadosProduto.estoque;
+
+                produtosQuantidade.push(dadosProduto);
+
+                const qtdAtual = produtosQuantidade.reduce(function(total, item) {
+                    return total += item.qtd;
+                }, 0);
+
+                if (qtdAtual > qtdMaxima) {
+                    alertDanger.fire({
+                        title: "Erro!",
+                        text: "Quantidade indisponível.",
+                        icon: "error",
+                        showCancelButton: false,
+                        showCloseButton: true,
+                    });
+
+                    produtosQuantidade.pop();
+
+                    return;
+                }
+
+                console.table(produtosQuantidade);
+            }
+        }
 
         listarProdutos(dadosProduto);
 
@@ -197,8 +235,6 @@ $(document).ready(function() {
         const selected = $("#produtos-table tbody .selected").length;
 
         const btRemover = $("#remove-items");
-
-        console.log(btRemover.css("display"))
 
         if (selected > 1) {
             btRemover.attr("disabled", false);
@@ -222,9 +258,10 @@ $(document).ready(function() {
             cancelButtonText: "Cancelar",
         }).then((result) => {
             if (result.value) {
-                listaProdutos.rows(".selected").remove().draw(false);
+                $('#produtos-table .selected .btn-danger').click();
+                listaProdutos.rows('.selected').remove().draw(false);
                 calcularTotal();
-                $(this).attr("disabled", true);
+                $(this).attr('disabled', true);
             }
         });
     });
@@ -253,17 +290,25 @@ function alterarProduto(produto, event) {
         detalhesProduto.estoque = row.find(".produto_id").data("estoque");
     }
 
-    console.table(detalhesProduto)
-
     mostrarDetalhesProduto(detalhesProduto, true);
 }
 
 function removerProduto(produto) {
     const id = Number($(produto).parents("tr").find(".produto_id").val());
+
     const index = produtosInseridos.indexOf(id);
 
     if (index > -1)
         produtosInseridos.splice(index, 1);
+
+    // provisório
+    const qtd = Number($(produto).parents("tr").find(".produto_qtd").val());
+
+    produtosQuantidade = produtosQuantidade.filter(function(item, index) {
+        return item.qtd != qtd;
+    });
+
+    console.table(produtosQuantidade)
 
     listaProdutos.row($(produto).parents("tr")).remove().draw();
     calcularTotal();

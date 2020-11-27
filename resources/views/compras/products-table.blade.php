@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card @isset($compra) mt-2 @endisset">
     <div class="card-body p-0">
         <table class="table table-sm table-striped table-responsive-xl table-borderless w-100" id="produtos-table">
         @isset($compra)
@@ -48,17 +48,17 @@
     @isset($compra)
     <div class="card-footer d-flex align-items-center justify-content-end">
         <strong class="text-success text-lg">
-            <span class="mr-2 text-gray">Total à Pagar:</span>R$ {{ number_format($compra->getTotalCompra(), 2, ',', '.') }}
+            <span class="mr-2 text-gray">Total da Compra:</span>R$ {{ number_format($compra->getTotalCompra(), 2, ',', '.') }}
         </strong>
     </div>
     @else
     <div class="card-footer d-flex align-items-center justify-content-between">
         <button id="remove-items" class="btn btn-danger" disabled>
-            <i class="fa fa-trash-alt mr-2"></i>Remover Itens
+            <i class="fa fa-trash-alt mr-2"></i>Remover
         </button>
 
         <strong class="text-success text-lg">
-            <span class="mr-2 text-gray">Total à Pagar:</span>R$ 0,00
+            <span class="mr-2 text-gray">Total da Compra:</span>R$ 0,00
         </strong>
     </div>
     @endisset
@@ -165,8 +165,7 @@
                             id="quantidade"
                             name="quantidade"
                             class="form-control"
-                            min="1"
-                            step="1"
+                            step=".0001"
                             oninput="validity.valid || (value = '');"
                         >
                     </div>

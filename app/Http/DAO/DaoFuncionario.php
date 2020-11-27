@@ -7,7 +7,12 @@ use App\Http\Dao\Dao;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use App\User;
+
 use App\Http\Models\Funcionario;
+use Illuminate\Support\Facades\Hash;
+
+use Illuminate\Support\Facades\Auth;
 
 class DaoFuncionario implements Dao {
 
@@ -37,33 +42,33 @@ class DaoFuncionario implements Dao {
     public function create(array $dados) {
         $funcionario = new Funcionario();
 
-        if (isset($dados["id"])) {
-            $funcionario->setId($dados["id"]);
-            $funcionario->setDataCadastro($dados["data_cadastro"] ?? null);
-            $funcionario->setDataAlteracao($dados["data_alteracao"] ?? null);
+        if (isset($dados['id'])) {
+            $funcionario->setId($dados['id']);
+            $funcionario->setDataCadastro($dados['data_cadastro'] ?? null);
+            $funcionario->setDataAlteracao($dados['data_alteracao'] ?? null);
         }
 
-        $funcionario->setNome($dados["funcionario"]);
-        $funcionario->setTipo("Física");
-        $funcionario->setApelido($dados["apelido"]);
-        $funcionario->setSexo($dados["sexo"]);
-        $funcionario->setCEP($dados["cep"]);
-        $funcionario->setEndereco($dados["endereco"]);
-        $funcionario->setNumero((int) $dados["numero"]);
-        $funcionario->setComplemento($dados["complemento"]);
-        $funcionario->setBairro($dados["bairro"]);
-        $funcionario->setTelefone($dados["telefone"]);
-        $funcionario->setWhatsapp($dados["whatsapp"]);
-        $funcionario->setEmail($dados["email"]);
-        $funcionario->setCpfCnpj($dados["cpf"]);
-        $funcionario->setRgInscricaoEstadual($dados["rg"]);
-        $funcionario->setDataNascimento($dados["data_nascimento"]);
-        $funcionario->setSalario((float) $dados["salario"]);
-        $funcionario->setDataAdmissao($dados["data_admissao"]);
-        $funcionario->setDataDemissao($dados["data_demissao"]);
-        $funcionario->setObservacoes($dados["observacoes"]);
+        $funcionario->setNome($dados['funcionario']);
+        $funcionario->setTipo('Física');
+        $funcionario->setApelido($dados['apelido']);
+        $funcionario->setSexo($dados['sexo']);
+        $funcionario->setCEP($dados['cep']);
+        $funcionario->setEndereco($dados['endereco']);
+        $funcionario->setNumero((int) $dados['numero']);
+        $funcionario->setComplemento($dados['complemento']);
+        $funcionario->setBairro($dados['bairro']);
+        $funcionario->setTelefone($dados['telefone']);
+        $funcionario->setWhatsapp($dados['whatsapp']);
+        $funcionario->setEmail($dados['email']);
+        $funcionario->setCpfCnpj($dados['cpf']);
+        $funcionario->setRgInscricaoEstadual($dados['rg']);
+        $funcionario->setDataNascimento($dados['data_nascimento']);
+        $funcionario->setSalario((float) $dados['salario']);
+        $funcionario->setDataAdmissao($dados['data_admissao']);
+        $funcionario->setDataDemissao($dados['data_demissao']);
+        $funcionario->setObservacoes($dados['observacoes']);
 
-        $cidade = $this->daoCidade->findById($dados["cidade_id"], true);
+        $cidade = $this->daoCidade->findById($dados['cidade_id'], true);
         $funcionario->setCidade($cidade);
 
         return $funcionario;
@@ -76,12 +81,19 @@ class DaoFuncionario implements Dao {
             $dados = $this->getData($funcionario);
 
             DB::table('funcionarios')->insert($dados);
+
+            User::create([
+                'name' => $dados['funcionario'],
+                'email' => $dados['email'],
+                'password' => Hash::make('123456'),
+                'funcionario_id' => DB::getPdo()->lastInsertId(),
+            ]);
+
             DB::commit();
 
             return true;
         } catch (\Throwable $th) {
             DB::rollBack();
-            dd($th->getMessage());
             return false;
         }
     }
@@ -95,6 +107,8 @@ class DaoFuncionario implements Dao {
             $dados = $this->getData($funcionario);
 
             DB::table('funcionarios')->where('id', $id)->update($dados);
+
+            User::where('funcionario_id', $id)->update(['email' => $dados['email']]);
 
             DB::commit();
 
@@ -110,6 +124,9 @@ class DaoFuncionario implements Dao {
 
         try {
             DB::table('funcionarios')->delete($id);
+
+            User::where(['funcionario_id' => $id])->delete();
+
             DB::commit();
             return true;
         } catch (\Throwable $th) {
