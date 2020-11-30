@@ -15,10 +15,9 @@ $(document).ready(function() {
 
     const swalInfo = Swal.mixin({
         customClass: {
-            confirmButton: 'btn btn-success mr-2',
-            cancelButton:  'btn btn-secondary'
+            confirmButton: 'swal2-confirm swal2-styled bg-success',
+            cancelButton:  'swal2-cancel swal2-styled bg-secondary',
         },
-        buttonsStyling: false
     });
 
     if ($("#form-compra").length || $("#form-venda").length) {
@@ -28,7 +27,7 @@ $(document).ready(function() {
         bloquearCampos();
     } else if ($("#form-conta").length) {
         bloquearCampos();
-        $("#forma_pagamento_id, #data_vencimento, #data_pagamento, #juros, #multa, #desconto").attr("readonly", false);
+        $("#forma_pagamento_id, #data_vencimento, #juros, #multa, #desconto").attr("readonly", false);
         $(".btn-search[data-input='#forma_pagamento_id']").attr("disabled", false);
     }
 
@@ -37,48 +36,50 @@ $(document).ready(function() {
 
         if ($("#data_vencimento").val() !== '') {
             const vencimento = new Date($("#data_vencimento").val());
-            const hoje = new Date();
+            const emissao = new Date($("#data_emissao").val());
 
             const dia = 24 * 60 * 60 * 1000;
 
-            const prazo = Math.round(Math.abs((hoje.getTime() - vencimento.getTime()) / (dia)));
+            const prazo = Math.round(Math.abs((emissao.getTime() - vencimento.getTime()) / (dia)));
 
-            if (prazo > 1) {
+            if (prazo > 30) {
                 swalInfo.fire({
                     title: "Atenção!",
                     html: `Esta parcela vencerá daqui <b>${prazo}</b> dias. Deseja continuar?`,
                     icon: "warning",
                     showCloseButton: true,
                     showCancelButton: true,
-                    confirmButtonText: "Sim",
-                    cancelButtonText: "Não",
+                    confirmButtonText: "Continuar",
+                    cancelButtonText: "Cancelar",
                 }).then((result) => {
                     if (result.value) {
                         $("form").submit();
                     }
                 });
             } else {
-                $("form").submit();
+                $("#form-conta").submit();
             }
         }
     });
 
     $("#btn-receber").click(function(e) {
         e.preventDefault();
-        $("form").submit();
+        $("#form-conta").submit();
     });
 
-    $("#modelo, #serie, #num_nota, #data_emissao, #data_chegada, #fornecedor_id").change(function() {
-        let vazio = $("#modelo, #serie, #num_nota, #data_emissao, #data_chegada, #fornecedor_id").filter(function(index, item) {
+    $("#modelo, #serie, #num_nota, #data_emissao, #data_chegada, #ipt_fornecedor_id").change(function() {
+        let vazio = $("#modelo, #serie, #num_nota, #data_emissao, #data_chegada, #ipt_fornecedor_id").filter(function(index, item) {
             return $(item).val() === "";
         });
 
+        console.log(vazio)
+
         if (vazio.length === 0) {
-            $("#produto_id").attr("readonly", false);
-            $(".btn-search[data-input='#produto_id']").attr("disabled", false);
+            $("#ipt_produto_id").eq(0).attr("readonly", false);
+            $(".btn-search[data-input='#ipt_produto_id']").eq(0).attr("disabled", false);
         } else {
-            $("#produto_id").attr("readonly", true);
-            $(".btn-search[data-input='#produto_id']").attr("disabled", true);
+            $("#ipt_produto_id").eq(0).attr("readonly", true);
+            $(".btn-search[data-input='#ipt_produto_id']").eq(0).attr("disabled", true);
         }
     });
 
@@ -133,23 +134,6 @@ $(document).ready(function() {
     $("#descontos").keyup(function() {
         descontos = Number($(this).val());
         calcularTotal();
-    });
-
-    $("#desconto").keyup(function() {
-        const desconto = Number($(this).val());
-
-        const novoValor = valorPago - desconto;
-
-        if (desconto > valorPago || novoValor < 0) {
-            $(this).addClass("is-invalid");
-            $("#valor_pago").val(valorPago.toFixed(2));
-            $("#btn-pagar").attr("disabled", true);
-            return;
-        }
-
-        $(this).removeClass("is-invalid");
-        $("#btn-pagar").attr("disabled", false);
-        $("#valor_pago").val(novoValor.toFixed(2));
     });
 
     // Adiciona item à lista de produtos (compra e venda)
@@ -265,7 +249,62 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Contas a pagar
+    // $('#data_emissao').change(function() {
+    //     const dataEmissao = $(this).val();
+    //     const dataVencimento = $('#data_vencimento').val();
+    //     const dataPagamento = $('#data_pagamento').val();
+
+    //     console.log(dataVencimento);
+    //     console.log(dataEmissao);
+
+    //     if (dataVencimento < dataEmissao)
+    //         $('#data_vencimento').val(dataEmissao);
+
+    //     if (dataPagamento < dataEmissao)
+    //         $('#data_pagamento').val(dataEmissao);
+
+    //     $('#data_vencimento, #data_pagamento').attr('min', dataEmissao);
+    // });
+
+    $('#valor_parcela').keyup(function() {
+        const valorParcela = Number($(this).val());
+
+        const readonly = (valorParcela > 0) ? false : true;
+
+        $('#juros, #multa, #desconto').prop('readonly', readonly);
+
+        $('#desconto').attr('max', valorParcela);
+
+        calcularContaPagar(valorParcela);
+    });
+
+    $('#juros, #multa, #desconto').keyup(function() {
+        calcularContaPagar();
+    });
 });
+
+function calcularContaPagar(valorParcela = 0) {
+    const juros = Number($('#juros').val());
+    const multa = Number($('#multa').val());
+    const desconto = Number($('#desconto').val());
+
+    let total = valorParcela ? valorParcela : Number($('#valor_parcela').val());
+
+    console.log(valorParcela)
+
+    if (juros > 0)
+        total += (total * juros) / 100;
+
+    if (multa > 0)
+        total += multa;
+
+    if (desconto > 0)
+        total -= desconto;
+
+    $('#valor_pago').val(total.toFixed(2));
+}
 
 function alterarProduto(produto, event) {
     event.preventDefault();

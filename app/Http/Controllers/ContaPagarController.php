@@ -47,7 +47,14 @@ class ContaPagarController extends Controller
      */
     public function store(ContaPagarRequest $request)
     {
-        //
+        $contaPagar = $this->daoContaPagar->create($request->all());
+
+        $store = $this->daoContaPagar->store($contaPagar);
+
+        if ($store)
+            return redirect('contas-a-pagar') ->with('success', 'Registro inserido com sucesso!');
+
+        return redirect('contas-a-pagar')->with('error', 'Erro ao inserir registro.');
     }
 
     /**
@@ -76,8 +83,10 @@ class ContaPagarController extends Controller
     {
         $contaPagar = $this->daoContaPagar->findByPrimaryKey($key, true);
 
-        if ($contaPagar)
-            return view('contas-a-pagar.create', compact('contaPagar'));
+        if ($contaPagar) {
+            $compra = $contaPagar->getCompra();
+            return view('contas-a-pagar.create', compact('contaPagar', 'compra'));
+        }
 
         return redirect('contas-a-pagar')->with('error', 'Registro não encontrado.');
     }

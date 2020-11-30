@@ -61,14 +61,10 @@ class CompraController extends Controller
 
         $response = $this->daoCompra->store($compra);
 
-        if ($response->getStatusCode() == 200) {
+        if ($response->getStatusCode() == 200)
             $request->session()->flash('success', 'Registro inserido com sucesso!');
-            return $response;
-        }
-        else {
-            // $request->session()->flash('error', $response->getData()->message);
-            return $response;
-        }
+
+        return $response;
     }
 
     /**

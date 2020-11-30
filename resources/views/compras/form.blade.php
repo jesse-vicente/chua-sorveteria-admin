@@ -22,7 +22,7 @@
                 @csrf
                 @include('compras.fields')
 
-                <div class="d-flex justify-content-between border-top mt-2" style="padding-top: 1.25rem !important">
+                <div class="d-flex justify-content-between border-top mt-4" style="padding-top: 1.25rem !important">
                     <div class="d-flex flex-column justify-content-center text-secondary">
                         <small><b>Cadastrado em: </b>{{ isset($compra) ? $compra->getDataCadastro() : "__/__/____" }}</small>
                         <small><b>Alterado em: </b>{{ isset($compra) ? $compra->getDataAlteracao() : "__/__/____" }}</small>
@@ -46,3 +46,7 @@
             </form>
     </div>
 </div>
+
+@include('fornecedores.create-modal')
+@include('produtos.create-modal')
+@include('condicoes-pagamento.create-modal')

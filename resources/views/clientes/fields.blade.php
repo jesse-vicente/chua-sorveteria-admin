@@ -113,7 +113,7 @@
 </div>
 
 <div class="form-row mt-4">
-    <div class="form-group required col-xl-5">
+    <div class="form-group required col-xl-4">
         <label>Logradouro</label>
         <input
             type="text"
@@ -141,6 +141,9 @@
             class="form-control @error('numero') is-invalid @enderror"
             value="{{ old('numero', isset($cliente) ? $cliente->getNumero() : null) }}"
             max="99999"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             required
         >
 
@@ -169,7 +172,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-3">
+    <div class="form-group required col-xl-4">
         <label>Bairro</label>
         <input
             type="text"
@@ -218,6 +221,9 @@
             data-input="#cidade"
             data-route="cidades"
             value="{{ old('cidade_id', isset($cliente) ? $cliente->getCidade()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             required
         >
 
@@ -339,6 +345,9 @@
             data-input="#condicao_pagamento"
             data-route="condicoes-pagamento"
             value="{{ old('condicao_pagamento_id', isset($cliente) ? $cliente->getCondicaoPagamento()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             required
         >
 

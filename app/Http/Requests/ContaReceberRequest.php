@@ -27,7 +27,7 @@ class ContaReceberRequest extends FormRequest
             'cliente_id'         => 'nullable|exists:clientes,id',
             'forma_pagamento_id' => 'required|exists:formas_pagamento,id',
             'data_vencimento'    => 'required|date|date_format:Y-m-d|after_or_equal:data_venda',
-            'data_pagamento'     => 'required|date|date_format:Y-m-d|before_or_equal:today',
+            'data_pagamento'     => 'required|date|date_format:Y-m-d|after_or_equal:data_venda',
             'valor_pago'         => 'required|gt:0',
         ];
     }

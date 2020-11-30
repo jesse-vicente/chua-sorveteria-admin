@@ -26,10 +26,12 @@ class ContaPagarRequest extends FormRequest
         return [
             'fornecedor_id'      => 'required|exists:fornecedores,id',
             'forma_pagamento_id' => 'required|exists:formas_pagamento,id',
-            'juros'              => 'nullable|gte:0',
-            'multa'              => 'nullable|gte:0',
-            'desconto'           => 'nullable|gte:0|lt:valor_pago',
-            'data_pagamento'     => 'required|date|date_format:Y-m-d|after_or_equal:data_emissao',
+            'juros'              => 'nullable|gt:0',
+            'multa'              => 'nullable|gt:0',
+            'desconto'           => 'nullable|gt:0',
+            'data_emissao'       => 'required|date|date_format:Y-m-d|before_or_equal:data_vencimento',
+            'data_vencimento'    => 'required|date|date_format:Y-m-d|after_or_equal:data_emissao',
+            'data_pagamento'     => 'nullable|date|date_format:Y-m-d|after_or_equal:data_emissao',
             'valor_pago'         => 'nullable|gt:0',
         ];
     }

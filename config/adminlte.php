@@ -47,7 +47,8 @@ return [
 
     'logo' => '<b>Chuá </b>Sorveteria',
     'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    // 'logo_img' => 'img/chua-logo.jpg',
+    'logo_img_class' => 'brand-image img-rounded elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
     'logo_img_alt' => 'Chuá Sorveteria',
@@ -246,12 +247,12 @@ return [
 
         ['header' => 'FINANCEIRO'],
         [
-            'text'        => 'Contas à Pagar',
+            'text'        => 'Contas a Pagar',
             'url'         => 'contas-a-pagar',
             'icon'        => 'fas fa-fw fa-file-invoice-dollar',
         ],
         [
-            'text'        => 'Contas à Receber',
+            'text'        => 'Contas a Receber',
             'url'         => 'contas-a-receber',
             'icon'        => 'fas fa-fw fa-cash-register',
         ],
@@ -264,6 +265,18 @@ return [
             'text'        => 'Condições de Pagamento',
             'url'         => 'condicoes-pagamento',
             'icon'        => 'fas fa-comments-dollar',
+        ],
+
+        ['header' => 'CATEGORIAS & PRODUTOS'],
+        [
+            'text'        => 'Categorias',
+            'url'         => 'categorias',
+            'icon'        => 'fas fa-fw fa-layer-group',
+        ],
+        [
+            'text'        => 'Produtos',
+            'url'         => 'produtos',
+            'icon'        => 'fas fa-fw fa-box',
         ],
 
         ['header' => 'PESSOAS'],
@@ -281,18 +294,6 @@ return [
             'text'        => 'Funcionários',
             'url'         => 'funcionarios',
             'icon'        => 'fas fa-fw fa-address-card',
-        ],
-
-        ['header' => 'CATEGORIAS & PRODUTOS'],
-        [
-            'text'        => 'Categorias',
-            'url'         => 'categorias',
-            'icon'        => 'fas fa-fw fa-layer-group',
-        ],
-        [
-            'text'        => 'Produtos',
-            'url'         => 'produtos',
-            'icon'        => 'fas fa-fw fa-box',
         ],
 
         ['header' => 'PAÍSES, ESTADOS & CIDADES'],
@@ -522,17 +523,6 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js',
-                ],
-            ],
-        ],
-        [
-            'name' => 'Validations',
-            'active' => true,
-            'files' => [
-                [
-                    'type' => 'js',
-                    'asset' => true,
-                    'location' => '/js/validations.js',
                 ],
             ],
         ],

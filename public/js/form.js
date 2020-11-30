@@ -24,7 +24,7 @@ const venda  = $("#form-venda").length;
 const alertDanger = Swal.mixin({
     customClass: {
         confirmButton: 'swal2-confirm swal2-styled bg-danger',
-        cancelButton:  'swal2-cancel swal2-styled bg-secondary'
+        cancelButton:  'swal2-cancel swal2-styled bg-secondary',
     },
 });
 
@@ -99,7 +99,7 @@ $(document).ready(function() {
     $('#btn-cancel').click(function() {
         alertCancelDanger.fire({
             title: 'Atenção!',
-            text: 'Os dados referente a este registro serão descartados.',
+            text: (compra || venda) ?'Os dados referente a este registro serão descartados.' : 'Deseja realmente cancelar este registro?',
             icon: 'error',
             showCloseButton: true,
             confirmButtonText: 'Prosseguir com o cancelamento.',
@@ -138,7 +138,7 @@ $(document).ready(function() {
 
             alertWarning.fire({
                 title: 'Atenção!',
-                text: 'Os dados informados serão perdidos.',
+                text: 'As alterações feitas serão descartadas.',
                 icon: 'warning',
                 showCloseButton: true,
                 confirmButtonText: 'Continuar mesmo assim.',
@@ -150,17 +150,17 @@ $(document).ready(function() {
     });
 
     // Botão Excluir
-    $("#btn-delete").not(".delete").click(function() {
+    $('#btn-delete').not('.delete').click(function() {
         alertDanger.fire({
-            title: "Você tem certeza?",
-            text: "Deseja realmente excluir este registro? Esta operação não poderá ser desfeita.",
-            icon: "error",
+            title: 'Você tem certeza?',
+            text: 'Esta operação não poderá ser desfeita.',
+            icon: 'error',
             showCancelButton: true,
-            confirmButtonText: "Excluir",
-            cancelButtonText: "Cancelar",
+            confirmButtonText: 'Excluir',
+            cancelButtonText: 'Cancelar',
         }).then((result) => {
             if (result.value) {
-                $("#form-show").submit();
+                $('#form-show').submit();
             }
         });
     });
@@ -313,7 +313,9 @@ $(document).ready(function() {
 
             (dados) ? input.val(dados[chave]) : input.val("Nenhum registro encontrado.");
 
-            if (route === 'produtos') {
+            if (route === 'fornecedores' && compra) {
+                $('#limite_credito').val(Number(dados.valor_credito));
+            } else if (route === 'produtos') {
                 let detalhesProduto = {
                     'id'        : dados['id'],
                     'descricao' : dados['produto'],
@@ -331,6 +333,8 @@ $(document).ready(function() {
                 //
             } else if (route === 'formas-pagamento') {
                 //
+            } else if (route === 'fornecedores') {
+                console.table(dados)
             }
         });
     });
@@ -348,9 +352,12 @@ $(document).ready(function() {
         const id = data[0];
         const descricao = data[1];
 
+        if (field === 'fornecedor' && compra) {
+            $('#limite_credito').val(Number(data[4]))
+        }
         if (field === "forma_pagamento[]") {
-            $(".forma_pagamento_id").eq(fieldIndex).val(id);
-            $(".forma_pagamento").eq(fieldIndex).val(descricao);
+            $(".forma-pagamento-id").eq(fieldIndex).val(id);
+            $(".forma-pagamento").eq(fieldIndex).val(descricao);
         }
         else if (field === "produto") {
             if (produtoInserido(id))
@@ -427,8 +434,8 @@ $(document).ready(function() {
         inputId.val(id).change();
         inputDescricao.val(descricao).change();
 
-        inputId.removeClass('is-invalid').addClass('is-valid');
-        inputDescricao.removeClass('is-invalid').addClass('is-valid');
+        // inputId.removeClass('is-invalid').addClass('is-valid');
+        // inputDescricao.removeClass('is-invalid').addClass('is-valid');
 
         inputId.parents('.form-group').find('.is-invalid').remove();
         inputDescricao.parents('.form-group').find('.is-invalid').remove();
@@ -449,6 +456,8 @@ $(document).ready(function() {
             $("#cpf_cnpj").attr("placeholder", "___.___.___-__");
 
             $("#rg_inscricao_estadual").prev().text("RG");
+
+            $("#cpf_cnpj, #rg_inscricao_estadual").val('');
         } else if (id === "juridica") {
             $("#nome_fantasia").prev().text("Nome Fantasia");
 
@@ -459,6 +468,8 @@ $(document).ready(function() {
             $("#cpf_cnpj").attr("placeholder", "__.___.___/____-__");
 
             $("#rg_inscricao_estadual").prev().text("Inscrição Estadual");
+
+            $("#cpf_cnpj, #rg_inscricao_estadual").val('');
         }
     });
 
@@ -479,8 +490,8 @@ $(document).ready(function() {
         // else
         //     route = $(".modal.show").not("[id*='create']").attr("id").replace("modal-", "");
 
-        if (route === "formas-pagamento")
-            fieldIndex = $(this).parents("tr").index();
+        if (route === 'formas-pagamento')
+            fieldIndex = $(this).parents('tr').index();
 
         const id = Number($($(this).data("input")).val());
 
@@ -675,7 +686,7 @@ function gerarListaProdutos() {
                 selector: 'td'
             },
             language: {
-                emptyTable: "Listagem de Produtos"
+                emptyTable: 'Listagem de Produtos'
             }
         });
     }
@@ -726,23 +737,20 @@ function gerarListaDuplicatas() {
     // });
 
     // listaDuplicatas.rows.add(duplicatas).draw();
-
-    if ($("#card-duplicatas").hasClass("collapsed-card"))
-        $("#card-duplicatas .card-tools .btn").click();
 }
 
 function bloquearCampos() {
-    $(".form-control").not("#condicao_pagamento_id").attr("readonly", true);
-    $(".btn-danger, .btn-warning").not("#btn-cancel").prop("disabled", true);
-    $(".btn-search").not("#ipt-condicao-pagamento .btn-search").prop("disabled", true);
+    $('#form-compra, #forma-venda, #form-cancel, #form-conta').find('.form-group .form-control').not('#condicao_pagamento_id').attr('readonly', true);
+    $('#form-compra, #forma-venda, #form-cancel, #form-conta').find('.btn-danger, .btn-warning').not('#btn-cancel').prop('disabled', true);
+    $('#form-compra, #forma-venda, #form-cancel, #form-conta').find('.form-group .btn-search').not('#ipt-condicao-pagamento .btn-search').prop('disabled', true);
 }
 
 function desbloquearAdicionais() {
-    $("#frete, #seguro, #despesas").prop("readonly", true);
+    $('#frete, #seguro, #despesas').prop('readonly', true);
 }
 
 function desbloquearAdicionais() {
-    $("#frete, #seguro, #despesas").prop("readonly", false);
+    $('#frete, #seguro, #despesas').prop('readonly', false);
 }
 
 function calcularAdicionais() {

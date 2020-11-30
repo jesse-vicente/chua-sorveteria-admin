@@ -25,7 +25,7 @@ class Cliente extends Pessoa
     /**
      * @var float
      */
-    protected $valorCredito;
+    protected $limiteCredito;
 
     public function __construct()
     {

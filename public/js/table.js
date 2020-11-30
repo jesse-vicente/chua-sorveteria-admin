@@ -23,6 +23,9 @@ $(document).ready(function() {
                             id="forma_pagamento_id[]"
                             data-input="#forma_pagamento[]"
                             data-route="formas-pagamento"
+                            min="1"
+                            step="1"
+                            oninput="validity.valid || (value = '');"
                             required
                         >
                     </div>
@@ -61,7 +64,8 @@ $(document).ready(function() {
                     class="form-control prazo"
                     name="prazo[]"
                     min="1"
-                    max="180"
+                    step="1"
+                    oninput="validity.valid || (value = '');"
                     required
                 >
             </td>
@@ -70,13 +74,15 @@ $(document).ready(function() {
                     type="number"
                     class="form-control porcentagem"
                     name="porcentagem[]"
-                    min="0"
+                    min="1"
                     max="100"
+                    step=".01"
+                    oninput="validity.valid || (value = '');"
                     required
                 >
             </td>
             <td class="text-center">
-                <div class="btn-group-sm">
+                <div class="btn-group-sm py-1">
                     <button type="button" class="btn btn-success add" title="Adicionar">
                         <i class="fa fa-check"></i>
                     </button>
@@ -93,8 +99,11 @@ $(document).ready(function() {
     var parcelas = Number($("#total_parcelas").val());
 
     $('#parcelas-table').DataTable({
-        "dom": '<"row d-none"<"col-md-4"f>l>rtip',
+        dom: '<"row d-none"<"col-md-4"f>l>rtip',
         bSort: false,
+        language: {
+            emptyTable: 'Nenhuma parcela adicionada'
+        }
     });
 
     // table.clear().draw();
@@ -109,10 +118,10 @@ $(document).ready(function() {
         if (getPercentualAtual() === 100) {
             Swal.fire({
                 title: "Erro!",
-                text: "Não é possível adicionar mais parcelas, percentual (100%).",
+                text: "Não é possível adicionar mais parcelas.",
                 icon: "error",
                 showCloseButton: true,
-                showConfirmButton: false,
+                confirmButtonText: 'Ok',
             });
 
             return false;
@@ -149,9 +158,9 @@ $(document).ready(function() {
 	// Add row on add button click
 	$(document).on("click", ".add", function() {
 		let empty = false;
-        let input = $(this).parents("tr").find(".form-control");
+        const inputs = $(this).parents("tr").find(".form-control");
 
-        input.each(function(){
+        inputs.each(function(){
 			if(!$(this).val()){
 				$(this).addClass("is-invalid");
 				empty = true;
@@ -163,21 +172,22 @@ $(document).ready(function() {
         $(this).parents("tr").find(".is-invalid").first().focus();
 
 		if (!empty) {
-
             if (getPercentualAtual() > 100) {
                 Swal.fire({
                     title: "Erro!",
                     text: "O percentual das parcelas não podem exceder a 100%.",
                     icon: "error",
                     showCloseButton: true,
-                    showConfirmButton: false,
+                    confirmButtonText: 'Ok',
                 });
 
                 return false;
             }
 
-			input.each(function() {
+			inputs.each(function() {
                 $(this).attr("readonly", true);
+
+                $(this).parents('.input-group').find('.btn-search').prop('disabled', true);
             });
 
             $(this).hide();
@@ -203,24 +213,29 @@ $(document).ready(function() {
 
 	// Edit row on edit button click
 	$(document).on("click", ".edit", function() {
-        $(this).parents("tr").find("btn-search, .form-control").not(".numero-parcela").each(function() {
-            $(this).attr("readonly", false);
+        $(this).parents("tr").find(".btn-search, .form-control").not(".numero-parcela").each(function() {
+            $(this).prop("readonly", false);
+            $(this).prop("disabled", false);
         });
 
         $(this).parents("tr").find(".add, .edit").toggle();
 
-        $(".add-new").attr("disabled", "disabled");
+        $(".add-new").prop("disabled", "disabled");
     });
 
 	// Delete row on delete button click
 	$(document).on("click", ".delete", function() {
         const tr = $(this).parents("tr");
 
-        tr.prev().find(".btn").removeAttr("disabled");
+        // tr.prev().find(".btn").removeAttr("disabled");
 
         tr.remove();
 
         $("#total_parcelas").val(--parcelas);
+
+        $("#parcelas-table tr").each(function() {
+            $(this).find('.numero-parcela').val($(this).index() + 1);
+        })
 
         $(".add-new").removeAttr("disabled");
     });
@@ -232,14 +247,14 @@ $(document).ready(function() {
         }
     });
 
-    $("#form-condicao-pagamento").submit(function(e) {
+    $('#form-condicao-pagamento').submit(function(e) {
         if (parcelas > 0 && getPercentualAtual() !== 100) {
             Swal.fire({
-                title: "Erro!",
-                text: "O percentual das parcelas devem fechar em 100%.",
-                icon: "error",
+                title: 'Erro!',
+                text: 'O percentual das parcelas devem somar 100%.',
+                icon: 'error',
                 showCloseButton: true,
-                showConfirmButton: false,
+                confirmButtonText: 'Ok',
             });
 
             e.preventDefault();

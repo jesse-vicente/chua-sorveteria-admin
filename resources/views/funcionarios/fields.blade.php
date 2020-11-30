@@ -75,8 +75,64 @@
     </div>
 </div>
 
+<div class="form-row">
+    <div class="form-group required col-xl-3">
+        <label>CPF</label>
+        <input
+            type="text"
+            id="cpf"
+            name="cpf"
+            class="form-control @error('cpf') is-invalid @enderror"
+            value="{{ old('cpf', isset($funcionario) ? $funcionario->getCpfCnpj() : null) }}"
+            placeholder="___.___.___-__"
+            required
+        >
+
+        @error('cpf')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+
+    <div class="form-group required col-xl-3">
+        <label>RG</label>
+        <input
+            type="text"
+            id="rg" name="rg"
+            class="form-control @error('rg') is-invalid @enderror"
+            value="{{ old('rg', isset($funcionario) ? $funcionario->getRgInscricaoEstadual() : null) }}"
+            required
+        >
+
+        @error('rg')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+
+    <div class="form-group required col-xl-3">
+        <label>Data de Nascimento</label>
+        <input
+            type="date"
+            id="data_nascimento"
+            name="data_nascimento"
+            class="form-control @error('data_nascimento') is-invalid @enderror"
+            value="{{ old('data_nascimento', isset($funcionario) ? $funcionario->getDataNascimento() : null) }}"
+            required
+        >
+
+        @error('data_nascimento')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+</div>
+
 <div class="form-row mt-4">
-    <div class="form-group required col-xl-5">
+    <div class="form-group required col-xl-4">
         <label>Logradouro</label>
         <input
             type="text"
@@ -103,7 +159,10 @@
             name="numero"
             class="form-control @error('numero') is-invalid @enderror"
             value="{{ old('numero', isset($funcionario) ? $funcionario->getNumero() : null) }}"
+            min="1"
             max="99999"
+            step="1"
+            oninput="validity.valid || (value = '');"
             required
         >
 
@@ -132,7 +191,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-3">
+    <div class="form-group required col-xl-4">
         <label>Bairro</label>
         <input
             type="text"
@@ -182,6 +241,10 @@
             data-input="#cidade"
             data-route="cidades"
             value="{{ old('cidade_id', isset($funcionario) ? $funcionario->getCidade()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
+            required
         >
 
         @error('cidade_id')
@@ -286,60 +349,6 @@
         >
 
         @error('email')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-</div>
-
-<div class="form-row">
-    <div class="form-group required col-xl-3">
-        <label>CPF</label>
-        <input
-            type="text"
-            id="cpf"
-            name="cpf"
-            class="form-control @error('cpf') is-invalid @enderror"
-            value="{{ old('cpf', isset($funcionario) ? $funcionario->getCpfCnpj() : null) }}"
-            placeholder="___.___.___-__"
-        >
-
-        @error('cpf')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-
-    <div class="form-group required col-xl-3">
-        <label>RG</label>
-        <input
-            type="text"
-            id="rg" name="rg"
-            class="form-control @error('rg') is-invalid @enderror"
-            value="{{ old('rg', isset($funcionario) ? $funcionario->getRgInscricaoEstadual() : null) }}"
-        >
-
-        @error('rg')
-            <span class="invalid-feedback" role="alert">
-                <strong>{{ $message }}</strong>
-            </span>
-        @enderror
-    </div>
-
-    <div class="form-group required col-xl-3">
-        <label>Data de Nascimento</label>
-        <input
-            type="date"
-            id="data_nascimento"
-            name="data_nascimento"
-            class="form-control @error('data_nascimento') is-invalid @enderror"
-            value="{{ old('data_nascimento', isset($funcionario) ? $funcionario->getDataNascimento() : null) }}"
-            required
-        >
-
-        @error('data_nascimento')
             <span class="invalid-feedback" role="alert">
                 <strong>{{ $message }}</strong>
             </span>

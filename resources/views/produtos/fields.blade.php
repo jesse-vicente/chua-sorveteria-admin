@@ -44,6 +44,7 @@
             name="unidade"
             class="form-control @error('unidade') is-invalid @enderror"
             value="{{ old('unidade', isset($produto) ? $produto->getUnidade() : null) }}"
+            placeholder="UN"
             maxlength="10"
             required
         >
@@ -57,7 +58,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-2">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -67,6 +68,9 @@
             data-input="#fornecedor"
             data-route="fornecedores"
             value="{{ old('fornecedor_id', isset($produto) ? $produto->getFornecedor()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             required
         >
 
@@ -120,7 +124,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group col-xl-2">
+    <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -130,6 +134,9 @@
             data-input="#categoria"
             data-route="categorias"
             value="{{ old('categoria_id', isset($produto) ? $produto->getCategoria()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             required
         >
 
@@ -202,7 +209,7 @@
     </div>
 
     <div class="form-group col-xl-3">
-        <label>Preço Custo</label>
+        <label>Preço de Custo</label>
 
         <div class="input-group">
             <div class="input-group-prepend">
@@ -215,6 +222,7 @@
                 name="preco_custo"
                 class="form-control @error('preco_custo') is-invalid @enderror"
                 value="{{ old('preco_custo', isset($produto) ? number_format($produto->getPrecoCusto(), 2) : null) }}"
+                placeholder="0,00"
                 readonly
             >
 
@@ -227,7 +235,7 @@
     </div>
 
     <div class="form-group required col-xl-3">
-        <label>Preço Venda</label>
+        <label>Preço de Venda</label>
 
         <div class="input-group">
             <div class="input-group-prepend">
@@ -240,6 +248,7 @@
                 name="preco_venda"
                 class="form-control @error('preco_venda') is-invalid @enderror"
                 value="{{ old('preco_venda', isset($produto) ? number_format($produto->getPrecoVenda(), 2) : null) }}"
+                placeholder="0,00"
                 step=".01"
                 oninput="validity.valid || (value = '');"
                 required
@@ -254,7 +263,7 @@
     </div>
 
     <div class="form-group col-xl-4">
-        <label>Custo Última Compra</label>
+        <label>Custo Últ. Compra</label>
 
         <div class="input-group">
             <div class="input-group-prepend">
@@ -267,6 +276,7 @@
                 name="custo_ultima_compra"
                 class="form-control @error('custo_ultima_compra') is-invalid @enderror"
                 value="{{ old('custo_ultima_compra', isset($produto) ? number_format($produto->getCustoUltimaCompra(), 2) : null) }}"
+                placeholder="0,00"
                 readonly
             >
 

@@ -55,6 +55,7 @@ class CompraRequest extends FormRequest
             // 'condicao_pagamento'    => 'required',
 
             'total_compra' => 'gt:0',
+            'total_compra' => 'lte:limite_credito',
         ];
     }
 
@@ -65,6 +66,9 @@ class CompraRequest extends FormRequest
     */
     public function messages()
     {
+        $totalCompra = number_format($this->request->get('total_compra'), 2, ',', '.');
+        $limiteCredito = number_format($this->request->get('limite_credito'), 2, ',', '.');
+
         return [
             'modelo.required' => 'Informe o modelo da nota.',
             'modelo.gt'       => 'O modelo da nota deve ser maior que 0.',
@@ -86,7 +90,8 @@ class CompraRequest extends FormRequest
             'condicao_pagamento_id.exists' => 'Código da condição de pagamento inválido.',
             'condicao_pagamento_id.required' => 'Informe a condição de pagamento.',
 
-            'total_compra.gt' => 'Selecione o(s) produto(s) da compra.'
+            'total_compra.gt' => 'Selecione o(s) produto(s) da compra.',
+            'total_compra.lte' => "O total da compra (R$ $totalCompra) é maior que o limite de crédito permitido (R$ $limiteCredito).",
         ];
     }
 }

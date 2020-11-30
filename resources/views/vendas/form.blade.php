@@ -1,4 +1,4 @@
-<div class="card col-xl-7 p-0 mx-auto">
+<div class="card col-xl-6 p-0 mx-auto">
     <div class="card-header">
         <div class="d-flex align-items-center">
             @isset($venda)
@@ -33,14 +33,19 @@
                         <button type="submit" class="btn btn-success mr-2">
                             <span class="text-bold">Salvar</span>
                         </button>
+
+                        <a class="btn btn-outline-secondary" href="{{ route('vendas.index') }}">
+                            <span class="text-bold">Cancelar</span>
+                        </a>
                     @else
                         <button type="button" class="btn btn-danger mr-2" id="btn-cancel">
                             <span class="text-bold">Cancelar Venda</span>
                         </button>
-                    @endempty
+
                         <a class="btn btn-outline-secondary" href="{{ route('vendas.index') }}">
                             <span class="text-bold">Voltar</span>
                         </a>
+                    @endempty
                     </div>
                 </div>
             </form>

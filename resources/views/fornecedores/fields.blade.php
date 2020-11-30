@@ -1,19 +1,19 @@
-@if (!isset($fornecedor))
-<div class="form-group">
-    <label>Pessoa</label>
-    <div class="form-row mx-0">
-        <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="juridica" name="tipo_pessoa" class="custom-control-input" value="Jurídica" required checked>
-            <label class="custom-control-label" for="juridica">Jurídica</label>
-        </div>
+@empty($fornecedor)
+    <div class="form-group">
+        <label>Pessoa</label>
+        <div class="form-row mx-0">
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="juridica" name="tipo_pessoa" class="custom-control-input" value="Jurídica" required checked>
+                <label class="custom-control-label" for="juridica">Jurídica</label>
+            </div>
 
-        <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="fisica" name="tipo_pessoa" class="custom-control-input" value="Física" required>
-            <label class="custom-control-label" for="fisica">Física</label>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="fisica" name="tipo_pessoa" class="custom-control-input" value="Física" required>
+                <label class="custom-control-label" for="fisica">Física</label>
+            </div>
         </div>
     </div>
-</div>
-@endif
+@endempty
 
 <div class="form-row">
     <div class="form-group col-xl-1">
@@ -66,11 +66,44 @@
             <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
         @enderror
     </div>
+</div>
 
+<div class="form-row">
+    <div class="form-group required col-xl-3">
+        <label>CNPJ</label>
+        <input
+            type="text"
+            id="cpf_cnpj"
+            name="cpf_cnpj"
+            class="form-control @error('cpf_cnpj') is-invalid @enderror"
+            value="{{ old('cpf_cnpj', isset($fornecedor) ? $fornecedor->getCpfCnpj() : null) }}"
+            placeholder="__.___.___/____-__"
+            required
+        >
+
+        @error('cpf_cnpj')
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
+        @enderror
+    </div>
+
+    <div class="form-group col-xl-3">
+        <label>Inscrição Estadual</label>
+        <input
+            type="text"
+            id="rg_inscricao_estadual"
+            name="rg_inscricao_estadual"
+            class="form-control @error('rg_inscricao_estadual') is-invalid @enderror"
+            value="{{ old('rg_inscricao_estadual', isset($fornecedor) ? $fornecedor->getRgInscricaoEstadual() : null) }}"
+        >
+
+        @error('rg_inscricao_estadual')
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
+        @enderror
+    </div>
 </div>
 
 <div class="form-row mt-4">
-    <div class="form-group required col-xl-5">
+    <div class="form-group required col-xl-4">
         <label>Logradouro</label>
         <input
             type="text"
@@ -95,6 +128,9 @@
             name="numero"
             class="form-control @error('numero') is-invalid @enderror"
             value="{{ old('numero', isset($fornecedor) ? $fornecedor->getNumero() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             required
         >
 
@@ -118,7 +154,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-3">
+    <div class="form-group required col-xl-4">
         <label>Bairro</label>
         <input
             type="text"
@@ -153,7 +189,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-2">
+    <div class="form-group required col-xl-1">
         <label>Código</label>
 
         <input
@@ -164,6 +200,9 @@
             data-input="#cidade"
             data-route="cidades"
             value="{{ old('cidade_id', isset($fornecedor) ? $fornecedor->getCidade()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             required
         >
 
@@ -172,7 +211,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-8">
+    <div class="form-group required col-xl-9">
         <label>Cidade</label>
         <div class="input-group">
             <input
@@ -216,7 +255,7 @@
 </div>
 
 <div class="form-row mt-4">
-    <div class="form-group required col-xl-3">
+    <div class="form-group col-xl-3">
         <label>WhatsApp</label>
         <input
             type="text"
@@ -225,7 +264,6 @@
             class="form-control @error('whatsapp') is-invalid @enderror"
             value="{{ old('whatsapp', isset($fornecedor) ? $fornecedor->getWhatsapp() : null) }}"
             placeholder="(__) _____-____"
-            required
         >
 
         @error('whatsapp')
@@ -298,66 +336,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group required col-xl-4">
-        <label>CNPJ</label>
-        <input
-            type="text"
-            id="cpf_cnpj"
-            name="cpf_cnpj"
-            class="form-control @error('cpf_cnpj') is-invalid @enderror"
-            value="{{ old('cpf_cnpj', isset($fornecedor) ? $fornecedor->getCpfCnpj() : null) }}"
-            placeholder="__.___.___/____-__"
-            required
-        >
-
-        @error('cpf_cnpj')
-            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
-        @enderror
-    </div>
-
-    <div class="form-group col-xl-4">
-        <label>Inscrição Estadual</label>
-        <input
-            type="text"
-            id="rg_inscricao_estadual"
-            name="rg_inscricao_estadual"
-            class="form-control @error('rg_inscricao_estadual') is-invalid @enderror"
-            value="{{ old('rg_inscricao_estadual', isset($fornecedor) ? $fornecedor->getRgInscricaoEstadual() : null) }}"
-        >
-
-        @error('rg_inscricao_estadual')
-            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
-        @enderror
-    </div>
-
-    <div class="form-group col-xl-4">
-        <label>Limite de Crédito</label>
-
-        <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">R$</span>
-            </div>
-
-            <input
-                type="number"
-                id="valor_credito"
-                name="valor_credito"
-                class="form-control @error('valor_credito') is-invalid @enderror"
-                value="{{ old('valor_credito', isset($fornecedor) ? $fornecedor->getValorCredito() : null) }}"
-                placeholder="0,00"
-            >
-
-            @error('valor_credito')
-            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
-        @enderror
-        </div>
-
-
-    </div>
-</div>
-
-<div class="form-row mt-4">
-    <div class="form-group required col-xl-2">
+    <div class="form-group required col-xl-1">
         <label>Código</label>
         <input
             type="number"
@@ -367,6 +346,9 @@
             data-input="#condicao_pagamento"
             data-route="condicoes-pagamento"
             value="{{ old('condicao_pagamento_id', isset($fornecedor) ? $fornecedor->getCondicaoPagamento()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             required
         >
 
@@ -375,7 +357,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-10">
+    <div class="form-group required col-xl-9">
         <label>Condição de Pagamento</label>
         <div class="input-group">
 
@@ -415,6 +397,29 @@
                     @include('condicoes-pagamento.search')
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="form-group col-xl-2">
+        <label>Limite de Crédito</label>
+
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">R$</span>
+            </div>
+
+            <input
+                type="number"
+                id="valor_credito"
+                name="valor_credito"
+                class="form-control @error('valor_credito') is-invalid @enderror"
+                value="{{ old('valor_credito', isset($fornecedor) ? $fornecedor->getLimiteCredito() : null) }}"
+                placeholder="0,00"
+            >
+
+            @error('valor_credito')
+            <strong class="invalid-feedback" role="alert">{{ $message }}</strong>
+        @enderror
         </div>
     </div>
 </div>

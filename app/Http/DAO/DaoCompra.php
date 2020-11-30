@@ -434,6 +434,7 @@ class DaoCompra implements Dao {
                 'modelo'             => $compra->getModelo(),
                 'fornecedor_id'      => $compra->getFornecedor()->getId(),
                 /*'funcionario_id'   => $compra->getFuncionario()->getId(),*/
+                'data_emissao'       => $duplicata->getDataEmissao(),
                 'forma_pagamento_id' => $duplicata->getFormaPagamento()->getId(),
                 'parcela'            => $duplicata->getParcela(),
                 'valor_parcela'      => $duplicata->getValorParcela(),

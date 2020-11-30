@@ -13,6 +13,7 @@
             oninput="validity.valid || (value = '');"
             class="form-control @error('modelo') is-invalid @enderror"
             value="{{ old('modelo', isset($contaReceber) ? $contaReceber->getVenda()->getModelo() : 55) }}"
+            required
         >
 
         <span class="invalid-feedback" role="alert" ref="modelo"></span>
@@ -28,6 +29,7 @@
             oninput="validity.valid || (value = '');"
             class="form-control @error('serie') is-invalid @enderror"
             value="{{ old('serie', isset($contaReceber) ? $contaReceber->getVenda()->getSerie() : 1) }}"
+            required
         >
 
     </div>
@@ -42,6 +44,7 @@
             oninput="validity.valid || (value = '');"
             class="form-control @error('num_nota') is-invalid @enderror"
             value="{{ old('num_nota', isset($contaReceber) ? $contaReceber->getVenda()->getNumeroNota() : null) }}"
+            required
         >
 
     </div>
@@ -54,6 +57,7 @@
             name="data_venda"
             class="form-control @error('data_venda') is-invalid @enderror"
             value="{{ old('data_venda', isset($contaReceber) ? $contaReceber->getVenda()->getDataVenda() : date('Y-m-d')) }}"
+            required
         >
 
     </div>
@@ -61,7 +65,7 @@
 </div>
 
 <div class="form-row">
-    <div class="form-group required col-xl-2">
+    <div class="form-group col-xl-2">
         <label>Código</label>
         <input
             type="number"
@@ -73,6 +77,10 @@
             @isset($contaReceber)
                 value="{{ old('cliente_id', $contaReceber->getCliente() ? $contaReceber->getCliente()->getId() : null) }}"
             @endisset
+
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
         >
 
         @error('cliente_id')
@@ -82,7 +90,7 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-9">
+    <div class="form-group col-xl-9">
         <label>Cliente</label>
         <div class="input-group">
             <input
@@ -138,6 +146,10 @@
             data-input="#forma_pagamento"
             data-route="formas-pagamento"
             value="{{ old('forma_pagamento_id', isset($contaReceber) ? $contaReceber->getFormaPagamento()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
+            required
         >
 
         @error('forma_pagamento_id')
@@ -157,6 +169,7 @@
                 id="forma_pagamento"
                 value="{{ old('forma_pagamento', isset($contaReceber) ? $contaReceber->getFormaPagamento()->getFormaPagamento() : null) }}"
                 readonly
+                required
             >
 
             <div class="input-group-append">
@@ -198,6 +211,7 @@
             name="parcela"
             class="form-control @error('parcela') is-invalid @enderror"
             value="{{ old('parcela', isset($contaReceber) ? $contaReceber->getParcela() : null) }}"
+            required
         >
 
         <span class="invalid-feedback" role="alert" ref="parcela"></span>
@@ -218,6 +232,7 @@
                 placeholder="0,00"
                 class="form-control @error('valor_parcela') is-invalid @enderror"
                 value="{{ old('valor_parcela', isset($contaReceber) ? number_format($contaReceber->getValorParcela(), 2) : null) }}"
+                required
             >
 
             @error('valor_parcela')
@@ -229,13 +244,23 @@
     </div>
 
     <div class="form-group required col-xl-3">
-        <label>Data Vencimento</label>
+        <label>Data de Vencimento</label>
         <input
             type="date"
             id="data_vencimento"
             name="data_vencimento"
             class="form-control @error('data_vencimento') is-invalid @enderror"
             value="{{ old('data_vencimento', isset($contaReceber) ? $contaReceber->getDataVencimento() : date('Y-m-d')) }}"
+
+            @isset($contaReceber)
+                value="{{ old('data_emissao', $contaReceber->getDataVencimento()) }}"
+                min="{{ $contaReceber->getVenda()->getDataVenda() }}"
+            @else
+                value="{{ old('data_emissao', null) }}"
+                min="{{ date('Y-m-d') }}"
+            @endisset
+
+            required
         >
 
         @error('data_vencimento')
@@ -246,7 +271,7 @@
     </div>
 
     <div class="form-group required col-xl-3">
-        <label>Data Pagamento</label>
+        <label>Data de Recebimento</label>
         <input
             type="date"
             id="data_pagamento"
@@ -280,6 +305,7 @@
                 class="form-control @error('valor_pago') is-invalid @enderror"
                 readonly
                 value="{{ number_format($contaReceber->getValorParcela(), 2) }}"
+                required
             >
 
             @error('valor_pago')

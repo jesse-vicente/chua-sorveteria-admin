@@ -35,7 +35,7 @@ class FornecedorRequest extends FormRequest
             'cidade_id'             => 'required|exists:cidades,id',
             'condicao_pagamento_id' => 'required|exists:condicoes_pagamento,id',
             'telefone'              => 'nullable|max:15',
-            'whatsapp'              => 'required|max:15',
+            'whatsapp'              => 'nullable|max:15',
             'email'                 => 'nullable|email|max:50',
             'website'               => 'nullable|url|max:50',
             'contato'               => 'nullable|max:20',

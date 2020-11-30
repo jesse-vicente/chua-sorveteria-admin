@@ -12,7 +12,7 @@
                     @endif
                 @else
                     <i class="fa fa-plus"></i>
-                    <h3 class="ml-3 mb-0">Cadastrar Conta à Receber</h3>
+                    <h3 class="ml-3 mb-0">Cadastrar Conta a Receber</h3>
                 @endif
             </div>
         </div>
@@ -44,11 +44,11 @@
                         <div class="btn-group-lg">
                             @if ($contaReceber->getStatus() == 'Recebido')
                             <button type="button" class="btn btn-danger mr-2" id="btn-cancel">
-                                <span class="text-bold">Cancelar</span>
+                                <span class="text-bold">Cancelar Recebimento</span>
                             </button>
                             @else
                             <button type="button" class="btn btn-success mr-2" id="btn-receber">
-                                <span class="text-bold">Confirmar</span>
+                                <span class="text-bold">Confirmar Recebimento</span>
                             </button>
                             @endif
                             <a class="btn btn-outline-secondary" href="{{ route('contas-a-receber.index') }}">
@@ -70,3 +70,5 @@
         </div>
     </div>
 </div>
+
+@include('formas-pagamento.create-modal')

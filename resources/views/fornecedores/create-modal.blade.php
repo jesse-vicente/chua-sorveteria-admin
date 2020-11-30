@@ -1,5 +1,5 @@
 <div id="modal-fornecedores-create" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header align-items-center py-2 bg-dark">
                 <h3 class="modal-title">Cadastrar Fornecedor</h3>
@@ -25,3 +25,4 @@
 </div>
 
 @include('cidades.create-modal')
+@include('condicoes-pagamento.create-modal')

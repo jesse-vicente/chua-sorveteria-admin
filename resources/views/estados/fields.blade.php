@@ -67,6 +67,9 @@
             data-input="#pais"
             data-route="paises"
             value="{{ old('pais_id', isset($estado) ? $estado->getPais()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             required
         >
 

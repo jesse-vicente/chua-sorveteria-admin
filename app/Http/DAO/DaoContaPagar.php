@@ -71,15 +71,27 @@ class DaoContaPagar implements Dao {
             $conta->setDataAlteracao($dados['data_alteracao'] ?? null);
         }
 
-        if (isset($dados['status']))
-            $conta->setStatus($dados['status']);
+        $status = $dados['status'] ?? 'Em aberto';
+        $conta->setStatus($status);
 
         // Dados nota
-        $key = $dados['num_nota'] . '-' . $dados['serie'] . '-' . $dados['modelo'] . '-' . $dados['fornecedor_id'];
+        $numero = $dados['num_nota'];
+        $serie = $dados['serie'];
+        $modelo = $dados['modelo'];
+        $fornecedorId = $dados['fornecedor_id'];
+
+        $key = "$numero-$serie-$modelo-$fornecedorId";
 
         $compra = $this->daoCompra->findByPrimaryKey($key, true);
 
-        $conta->setCompra($compra);
+        if ($compra)
+            $conta->setCompra($compra);
+
+        $conta->setNumeroNota($numero);
+        $conta->setModelo($modelo);
+        $conta->setSerie($serie);
+
+        $conta->setDataEmissao($dados['data_emissao']);;
 
         $juros        = floatval($dados['juros']) ?? null;
         $multa        = floatval($dados['multa']) ?? null;
@@ -127,12 +139,15 @@ class DaoContaPagar implements Dao {
         try {
             $dadosContasPagar = $this->getData($contaPagar);
 
+            // dd($dadosContasPagar);
+
             DB::table('contas_pagar')->insert($dadosContasPagar);
 
             DB::commit();
             return true;
         } catch (\Throwable $th) {
             DB::rollBack();
+            dd($th->getMessage());
             return false;
         }
     }
@@ -146,25 +161,31 @@ class DaoContaPagar implements Dao {
 
             $compra = $contaPagar->getCompra();
 
-            $compraPk = $compra->getPrimaryKey();
+            if ($compra) {
+                $compraPk = $compra->getPrimaryKey();
 
-            DB::table('compras')
-              ->where('num_nota',      $compraPk->numero)
-              ->where('serie',         $compraPk->serie)
-              ->where('modelo',        $compraPk->modelo)
-              ->where('fornecedor_id', $compraPk->idFornecedor)
-              ->update(['status' => $request->status == 'Pago' ? 'Ativo' : 'Emitido']);
+                DB::table('compras')
+                  ->where('num_nota',      $compraPk->numero)
+                  ->where('serie',         $compraPk->serie)
+                  ->where('modelo',        $compraPk->modelo)
+                  ->where('fornecedor_id', $compraPk->idFornecedor)
+                  ->update(['status' => $request->status == 'Pago' ? 'Ativo' : 'Emitido']);
+            }
 
             $dadosContaPagar = $this->getData($contaPagar);
 
-            if ($contaPagar->getStatus() == 'Em aberto')
+            if ($contaPagar->getStatus() == 'Em aberto') {
+                $dadosContaPagar['juros'] = null;
+                $dadosContaPagar['multa'] = null;
+                $dadosContaPagar['desconto'] = null;
                 $dadosContaPagar['valor_pago'] = null;
+            }
 
             DB::table('contas_pagar')
-              ->where('num_nota',      $compraPk->numero)
-              ->where('serie',         $compraPk->serie)
-              ->where('modelo',        $compraPk->modelo)
-              ->where('fornecedor_id', $compraPk->idFornecedor)
+              ->where('num_nota',      $contaPagar->getNumeroNota())
+              ->where('serie',         $contaPagar->getSerie())
+              ->where('modelo',        $contaPagar->getModelo())
+              ->where('fornecedor_id', $contaPagar->getFornecedor()->getId())
               ->where('parcela',       $contaPagar->getParcela())
               ->update($dadosContaPagar);
 
@@ -172,6 +193,7 @@ class DaoContaPagar implements Dao {
             return true;
         } catch (\Throwable $th) {
             DB::rollBack();
+            dd($th->getMessage());
             return false;
         }
     }
@@ -217,7 +239,6 @@ class DaoContaPagar implements Dao {
                          ->where('num_nota', $numero)
                          ->where('serie', $serie)
                          ->where('modelo', $modelo)
-                         ->where('modelo', $modelo)
                          ->where('fornecedor_id', $fornecedor)
                          ->where('parcela', $parcela)
                          ->first();
@@ -236,16 +257,19 @@ class DaoContaPagar implements Dao {
     }
 
     public function getData(ContaPagar $contaPagar) {
+        $compra = $contaPagar->getCompra();
+
         $dados = array(
-            'modelo'             => $contaPagar->getCompra()->getModelo(),
-            'serie'              => $contaPagar->getCompra()->getSerie(),
-            'num_nota'           => $contaPagar->getCompra()->getNumeroNota(),
+            'modelo'             => $compra ? $compra->getModelo() : $contaPagar->getModelo(),
+            'serie'              => $compra ? $compra->getSerie() : $contaPagar->getSerie(),
+            'num_nota'           => $compra ? $compra->getNumeroNota() : $contaPagar->getNumeroNota(),
             'status'             => $contaPagar->getStatus(),
             'fornecedor_id'      => $contaPagar->getFornecedor()->getId(),
             //'funcionario_id'     => $contaPagar->getFuncionario()->getId(),
             'forma_pagamento_id' => $contaPagar->getFormaPagamento()->getId(),
             'parcela'            => $contaPagar->getParcela(),
             'valor_parcela'      => $contaPagar->getValorParcela(),
+            'data_emissao'       => $contaPagar->getDataEmissao(),
             'data_vencimento'    => $contaPagar->getDataVencimento(),
             'data_pagamento'     => $contaPagar->getDataPagamento(),
             'juros'              => $contaPagar->getJuros(),

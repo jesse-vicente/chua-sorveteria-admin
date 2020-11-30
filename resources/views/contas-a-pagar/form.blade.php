@@ -12,7 +12,7 @@
                     @endif
                 @else
                     <i class="fa fa-plus"></i>
-                    <h3 class="ml-3 mb-0">Cadastrar Conta à Pagar</h3>
+                    <h3 class="ml-3 mb-0">Cadastrar Conta a Pagar</h3>
                 @endif
             </div>
         </div>
@@ -20,8 +20,12 @@
         <div class="card-body">
             @isset($contaPagar)
                 @php
-                    $novoStatus = $contaPagar->getStatus() == 'Pago' ? 'Em aberto' : 'Pago';
-                    $idForm     = $novoStatus == 'Pago' ? 'form-conta' : 'form-cancel';
+                    if ($contaPagar->getCompra())
+                        $novoStatus = $contaPagar->getStatus() == 'Pago' ? 'Em aberto' : 'Pago';
+                    else
+                        $novoStatus = $contaPagar->getStatus() == 'Pago' ? 'Cancelado' : 'Pago';
+
+                    $idForm = $novoStatus == 'Pago' ? 'form-conta' : 'form-cancel';
                 @endphp
 
                 <form method="POST" id="{{ $idForm }}" action="{{ route('contas-a-pagar.update', $contaPagar->getPrimaryKeyStr()) }}">
@@ -44,15 +48,15 @@
                         <div class="btn-group-lg">
                             @if ($contaPagar->getStatus() == 'Pago')
                             <button type="button" class="btn btn-danger mr-2" id="btn-cancel">
-                                <span class="text-bold">Cancelar</span>
+                                <span class="text-bold">Cancelar Pagamento</span>
                             </button>
                             @else
                             <button type="button" class="btn btn-success mr-2" id="btn-pagar">
-                                <span class="text-bold">Confirmar</span>
+                                <span class="text-bold">Confirmar Pagamento</span>
                             </button>
                             @endif
                             <a class="btn btn-outline-secondary" href="{{ route('contas-a-pagar.index') }}">
-                                <span class="text-bold">Cancelar</span>
+                                <span class="text-bold">Voltar</span>
                             </a>
                         </div>
                         @else
@@ -61,7 +65,7 @@
                                 <span class="text-bold">Salvar</span>
                             </button>
                             <a class="btn btn-outline-secondary" href="{{ route('contas-a-pagar.index') }}">
-                                <span class="text-bold">Cancelar</span>
+                                <span class="text-bold">Voltar</span>
                             </a>
                         </div>
                         @endisset
@@ -70,3 +74,6 @@
         </div>
     </div>
 </div>
+
+@include('fornecedores.create-modal')
+@include('formas-pagamento.create-modal')

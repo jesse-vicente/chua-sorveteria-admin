@@ -20,11 +20,12 @@
                 <td class="text-center">{{ $produto->getUnidade() }}</td>
                 <td>{{ $produto->getCategoria()->getCategoria() }}</td>
                 <td>{{ $produto->getFornecedor()->getRazaoSocial() }}</td>
-                <td class="text-center">{{
-                    $produto->getUnidade() != 'KG'
-                        ? intval($produto->getEstoque())
-                        : number_format($produto->getEstoque(), 2, ',', '.') . ' Kg'
-                }}
+                <td class="text-center">
+                    @if (strtoupper($produto->getUnidade()) == 'KG' || strtoupper($produto->getUnidade()) == 'L')
+                        {{ number_format($produto->getEstoque(), 2, ',', '.') . ' ' . ucfirst(strtolower($produto->getUnidade())) }}
+                    @else
+                        {{ intval($produto->getEstoque()) }}
+                    @endif
                 </td>
                 <td class="text-right">R$ {{ number_format($produto->getPrecoVenda(), 2, ',', '.') }}</td>
                 <td class="text-center">

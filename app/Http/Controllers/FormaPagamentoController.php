@@ -61,6 +61,25 @@ class FormaPagamentoController extends Controller
         return redirect('formas-pagamento')->with('error', 'Erro ao inserir registro.');
     }
 
+    public function save(FormaPagamentoRequest $request)
+    {
+        $formaPagamento = $this->daoFormaPagamento->create($request->all());
+
+        $store = $this->daoFormaPagamento->store($formaPagamento);
+
+        if ($store) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Registro inserido com sucesso!'
+            ]);
+        }
+
+        return response()->json([
+            'error' => true,
+            'message' => 'Erro ao inserir registro!'
+        ]);
+    }
+
     /**
      * Display the specified resource.
      *

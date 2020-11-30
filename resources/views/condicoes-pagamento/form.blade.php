@@ -1,4 +1,4 @@
-<div class="card col-xl-7 mx-auto">
+<div class="card col-xl-8 mx-auto">
     <div class="card-header">
         <div class="d-flex align-items-center">
             @isset($condicaoPagamento)
@@ -41,3 +41,5 @@
             </form>
     </div>
 </div>
+
+@include('formas-pagamento.create-modal')

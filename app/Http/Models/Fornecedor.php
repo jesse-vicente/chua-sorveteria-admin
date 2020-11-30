@@ -34,7 +34,7 @@ class Fornecedor extends Pessoa
     /**
      * @var float
      */
-    protected $valorCredito;
+    protected $limiteCredito;
 
     public function __construct()
     {
@@ -43,7 +43,7 @@ class Fornecedor extends Pessoa
         $this->webSite           = '';
         $this->contato           = '';
         $this->condicaoPagamento = new CondicaoPagamento();
-        $this->valorCredito      = 0;
+        $this->limiteCredito      = 0;
     }
 
     /**
@@ -152,23 +152,23 @@ class Fornecedor extends Pessoa
     }
 
     /**
-     * Get the value of valorCredito
+     * Get the value of limiteCredito
      *
      * @return  float
      */
-    public function getValorCredito()
+    public function getLimiteCredito()
     {
-        return $this->valorCredito ?? null;
+        return $this->limiteCredito ?? null;
     }
 
     /**
-     * Set the value of valorCredito
+     * Set the value of limiteCredito
      *
-     * @param  float  $valorCredito
+     * @param  float  $limiteCredito
      *
      */
-    public function setValorCredito(float $valorCredito = null)
+    public function setLimiteCredito(float $limiteCredito = null)
     {
-        $this->valorCredito = $valorCredito;
+        $this->limiteCredito = $limiteCredito;
     }
 }

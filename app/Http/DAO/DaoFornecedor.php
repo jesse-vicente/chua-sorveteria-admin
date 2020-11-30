@@ -25,7 +25,7 @@ class DaoFornecedor implements Dao {
 
     public function all(bool $model = false) {
         if (!$model)
-            return DB::table('fornecedores')->get(['id', 'fornecedor', 'telefone', 'whatsapp']);
+            return DB::table('fornecedores')->get(['id', 'fornecedor', 'telefone', 'whatsapp', 'valor_credito']);
 
         $dados = DB::table('fornecedores')->get();
 
@@ -65,7 +65,7 @@ class DaoFornecedor implements Dao {
         $fornecedor->setContato($dados["contato"]);
         $fornecedor->setCpfCnpj($dados["cpf_cnpj"]);
         $fornecedor->setRgInscricaoEstadual($dados["rg_inscricao_estadual"]);
-        $fornecedor->setValorCredito((float) $dados["valor_credito"]);
+        $fornecedor->setLimiteCredito((float) $dados["valor_credito"]);
         $fornecedor->setObservacoes($dados["observacoes"]);
 
         $cidade = $this->daoCidade->findById($dados["cidade_id"], true);
@@ -127,7 +127,7 @@ class DaoFornecedor implements Dao {
 
     public function findById(int $id, bool $model = false) {
         if (!$model)
-            return DB::table('fornecedores')->get(['id', 'fornecedor', 'telefone', 'whatsapp'])->where('id', $id)->first();
+            return DB::table('fornecedores')->get(['id', 'fornecedor', 'telefone', 'whatsapp', 'valor_credito'])->where('id', $id)->first();
 
         $dados = DB::table('fornecedores')->where('id', $id)->first();
 
@@ -157,7 +157,7 @@ class DaoFornecedor implements Dao {
             'cpf_cnpj'              => $fornecedor->getCpfCnpj(),
             'rg_inscricao_estadual' => $fornecedor->getRgInscricaoEstadual(),
             'condicao_pagamento_id' => $fornecedor->getCondicaoPagamento()->getId(),
-            'valor_credito'         => $fornecedor->getValorCredito(),
+            'valor_credito'         => $fornecedor->getLimiteCredito(),
             'observacoes'           => $fornecedor->getObservacoes(),
         ];
 

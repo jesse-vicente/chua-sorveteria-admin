@@ -8,8 +8,25 @@ use App\Http\Models\FormaPagamento;
 
 use App\Http\Models\Funcionario;
 
+use Illuminate\Support\Carbon;
+
 class ContaPagar extends TObject
 {
+    /**
+     * @var int
+     */
+    protected $numeroNota;
+
+    /**
+     * @var int
+     */
+    protected $serie;
+
+    /**
+     * @var int
+     */
+    protected $modelo;
+
     /**
      * @var Compra
      */
@@ -39,6 +56,11 @@ class ContaPagar extends TObject
      * @var float
      */
     protected $valorParcela;
+
+    /**
+     * @var string
+     */
+    protected $dataEmissao;
 
     /**
      * @var string
@@ -74,6 +96,75 @@ class ContaPagar extends TObject
      * @var string
      */
     protected $status;
+
+    /**
+     * @var string
+     */
+    protected $dataCancelamento;
+
+
+    /**
+     * Get the value of numeroNota
+     *
+     * @return  int
+     */
+    public function getNumeroNota()
+    {
+        return $this->numeroNota;
+    }
+
+    /**
+     * Set the value of numeroNota
+     *
+     * @param  int  $numeroNota
+     *
+     */
+    public function setNumeroNota(int $numeroNota)
+    {
+        $this->numeroNota = $numeroNota;
+    }
+
+    /**
+     * Get the value of serie
+     *
+     * @return  int
+     */
+    public function getSerie()
+    {
+        return $this->serie;
+    }
+
+    /**
+     * Set the value of serie
+     *
+     * @param  int  $serie
+     *
+     */
+    public function setSerie(int $serie)
+    {
+        $this->serie = $serie;
+    }
+
+    /**
+     * Get the value of modelo
+     *
+     * @return  int
+     */
+    public function getModelo()
+    {
+        return $this->modelo;
+    }
+
+    /**
+     * Set the value of modelo
+     *
+     * @param  int  $modelo
+     *
+     */
+    public function setModelo(int $modelo)
+    {
+        $this->modelo = $modelo;
+    }
 
     /**
      * Get the value of compra
@@ -199,6 +290,27 @@ class ContaPagar extends TObject
     public function setValorParcela(float $valorParcela)
     {
         $this->valorParcela = $valorParcela;
+    }
+
+    /**
+     * Get the value of dataEmissao
+     *
+     * @return  string
+     */
+    public function getDataEmissao()
+    {
+        return $this->dataEmissao;
+    }
+
+    /**
+     * Set the value of dataEmissao
+     *
+     * @param  string  $dataEmissao
+     *
+     */
+    public function setDataEmissao(string $dataEmissao = null)
+    {
+        $this->dataEmissao = $dataEmissao;
     }
 
     /**
@@ -349,12 +461,32 @@ class ContaPagar extends TObject
     }
 
     /**
+     * Get the value of dataCancelamento
+     *
+     * @return  string
+     */
+    public function getDataCancelamento()
+    {
+        if ($this->dataCancelamento) {
+            return Carbon::parse($this->dataCancelamento)->toDate()->format('d/m/Y');
+            // $hora = Carbon::parse($this->dataCancelamento)->toTimeString('minute');
+        }
+
+        return '-';
+    }
+
+    /**
      * Get the value of primaryKey
      *
      * @return  string
      */
     public function getPrimaryKeyStr()
     {
-        return $this->compra->getPrimaryKeyStr() . '-' . $this->getParcela();
+        $compra = $this->compra;
+
+        if ($compra)
+            return $this->compra->getPrimaryKeyStr() . '-' . $this->parcela;
+
+        return $this->numeroNota . '-' . $this->serie . '-' . $this->modelo . '-' . $this->getFornecedor()->getId() . '-' . $this->parcela;
     }
 }

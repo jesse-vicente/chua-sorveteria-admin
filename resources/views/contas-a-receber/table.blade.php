@@ -45,16 +45,27 @@
                 </td>
                 <td class="text-center">
                     <div class="btn-group-xs">
+                        <a
+                            href="{{ route('contas-a-receber.show', $conta->getPrimaryKeyStr()) }}"
+                            class="btn btn-info"
+                            data-toggle="tooltip"
+                            data-placement="left"
+                            title="Visualizar"
+                        >
+                            <i class="fa fa-eye"></i>
+                        </a>
+
                         @if ($conta->getStatus() == 'Em aberto')
                             <a
                                 href="{{ route('contas-a-receber.edit', $conta->getPrimaryKeyStr()) }}"
                                 class="btn btn-success"
                                 data-toggle="tooltip"
                                 data-placement="left"
-                                title="Receber"
+                                title="Confirmar Recebimento"
                             >
                                 <i class="fa fa-check"></i>
                             </a>
+
                         @elseif ($conta->getStatus() == 'Recebido')
                             <a
                                 href="{{ route('contas-a-receber.edit', $conta->getPrimaryKeyStr()) }}"
@@ -66,15 +77,6 @@
                                 <i class="fa fa-ban"></i>
                             </a>
                         @endif
-                        <a
-                            href="{{ route('contas-a-receber.show', $conta->getPrimaryKeyStr()) }}"
-                            class="btn btn-info"
-                            data-toggle="tooltip"
-                            data-placement="left"
-                            title="Visualizar"
-                        >
-                            <i class="fa fa-eye"></i>
-                        </a>
                     </div>
                 </td>
             </tr>

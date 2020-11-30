@@ -1,5 +1,7 @@
 @isset($compra)
     <input type="hidden" name="senha" id="senha">
+@else
+    <input type="hidden" name="limite_credito" id="limite_credito">
 @endisset
 
 <div class="form-row">
@@ -88,10 +90,13 @@
             type="number"
             class="form-control @error('fornecedor_id') is-invalid @enderror"
             name="fornecedor_id"
-            id="fornecedor_id"
+            id="ipt_fornecedor_id"
             data-input="#fornecedor"
             data-route="fornecedores"
             value="{{ old('fornecedor_id', isset($compra) ? $compra->getFornecedor()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             required
         >
 
@@ -162,9 +167,12 @@
             type="number"
             class="form-control @error('produto_id') is-invalid @enderror"
             name="produto_id"
-            id="produto_id"
+            id="ipt_produto_id"
             data-input="#produto"
             data-route="produtos"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             readonly
         >
     </div>
@@ -183,7 +191,7 @@
                 <button
                     class="btn btn-primary btn-search"
                     type="button"
-                    data-input="#produto_id"
+                    data-input="#ipt_produto_id"
                     data-route="produtos"
                     data-toggle="modal"
                     data-target="#modal-produtos"
@@ -352,14 +360,14 @@
     <hr class="flex-grow-1">
     <div class="px-4">
         <h4 class="text-gray">
-            <i class="fa fa-handshake mr-1"></i>
-            Contas à Pagar
+            <i class="fa fa-file-invoice-dollar mr-1"></i>
+            Contas a Pagar
         </h4>
     </div>
     <hr class="flex-grow-1">
 </div>
 
-<div class="form-row">
+<div class="form-row mt-2">
     <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
@@ -370,6 +378,9 @@
             data-input="#condicao_pagamento"
             data-route="condicoes-pagamento"
             value="{{ old('condicao_pagamento_id', isset($compra) ? $compra->getCondicaoPagamento()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             readonly
             required
         >

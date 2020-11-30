@@ -5,6 +5,7 @@
             <th>Fornecedor</th>
             <th>Telefone / WhatsApp</th>
             <th>WhatsApp</th>
+            <th>Limite de Crédito</th>
         </tr>
     </thead>
 </table>

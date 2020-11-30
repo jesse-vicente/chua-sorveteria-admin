@@ -12,7 +12,12 @@
             max="99"
             oninput="validity.valid || (value = '');"
             class="form-control @error('modelo') is-invalid @enderror"
-            value="{{ old('modelo', isset($contaPagar) ? $contaPagar->getCompra()->getModelo() : 55) }}"
+            @isset($compra)
+                value="{{ old('modelo', $compra->getModelo()) }}"
+            @else
+                value="{{ old('modelo', isset($contaPagar) ? $contaPagar->getModelo() : 55) }}"
+            @endisset
+            required
         >
 
         <span class="invalid-feedback" role="alert" ref="modelo"></span>
@@ -27,7 +32,12 @@
             max="999"
             oninput="validity.valid || (value = '');"
             class="form-control @error('serie') is-invalid @enderror"
-            value="{{ old('serie', isset($contaPagar) ? $contaPagar->getCompra()->getSerie() : 1) }}"
+            @isset($compra)
+                value="{{ old('serie', $compra->getSerie()) }}"
+            @else
+                value="{{ old('serie', isset($contaPagar) ? $contaPagar->getSerie() : 1) }}"
+            @endisset
+            required
         >
 
     </div>
@@ -38,10 +48,17 @@
             type="number"
             id="num_nota"
             name="num_nota"
+            min="1"
             max="999999"
+            step="1"
             oninput="validity.valid || (value = '');"
             class="form-control @error('num_nota') is-invalid @enderror"
-            value="{{ old('num_nota', isset($contaPagar) ? $contaPagar->getCompra()->getNumeroNota() : null) }}"
+            @isset($compra)
+                value="{{ old('num_nota', $compra->getNumeroNota()) }}"
+            @else
+                value="{{ old('num_nota', isset($contaPagar) ? $contaPagar->getNumeroNota() : null) }}"
+            @endisset
+            required
         >
 
     </div>
@@ -53,9 +70,26 @@
             id="data_emissao"
             name="data_emissao"
             class="form-control @error('data_emissao') is-invalid @enderror"
-            value="{{ old('data_emissao', isset($contaPagar) ? $contaPagar->getCompra()->getDataEmissao() : date('Y-m-d')) }}"
+
+            @isset($compra)
+                value="{{ old('data_emissao', $compra->getDataEmissao()) }}"
+            @elseif (isset($contaPagar))
+                value="{{ old('data_emissao', $contaPagar->getDataEmissao()) }}"
+            @else
+                value="{{ old('data_emissao', date('Y-m-d')) }}"
+                min="{{ date('Y-m-d') }}"
+                max="{{ date('Y-m-d') }}"
+            @endisset
+
+            readonly
+            required
         >
 
+        @error('data_emissao')
+        <span class="invalid-feedback" role="alert">
+            <strong>{{ $message }}</strong>
+        </span>
+        @enderror
     </div>
 
 </div>
@@ -71,6 +105,10 @@
             data-input="#fornecedor"
             data-route="fornecedores"
             value="{{ old('fornecedor_id', isset($contaPagar) ? $contaPagar->getFornecedor()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
+            required
         >
 
         @error('fornecedor_id')
@@ -134,6 +172,7 @@
             data-input="#forma_pagamento"
             data-route="formas-pagamento"
             value="{{ old('forma_pagamento_id', isset($contaPagar) ? $contaPagar->getFormaPagamento()->getId() : null) }}"
+            required
         >
 
         @error('forma_pagamento_id')
@@ -192,8 +231,11 @@
             type="number"
             id="parcela"
             name="parcela"
+            min="1"
+            oninput="validity.valid || (value = '');"
             class="form-control @error('parcela') is-invalid @enderror"
             value="{{ old('parcela', isset($contaPagar) ? $contaPagar->getParcela() : null) }}"
+            required
         >
 
         <span class="invalid-feedback" role="alert" ref="parcela"></span>
@@ -212,8 +254,12 @@
                 id="valor_parcela"
                 name="valor_parcela"
                 placeholder="0,00"
+                step=".01"
+                min="1"
+                oninput="validity.valid || (value = '');"
                 class="form-control @error('valor_parcela') is-invalid @enderror"
                 value="{{ old('valor_parcela', isset($contaPagar) ? $contaPagar->getValorParcela() : null) }}"
+                required
             >
 
             @error('valor_parcela')
@@ -225,13 +271,22 @@
     </div>
 
     <div class="form-group required col-xl-3">
-        <label>Data Vencimento</label>
+        <label>Data de Vencimento</label>
         <input
             type="date"
             id="data_vencimento"
             name="data_vencimento"
             class="form-control @error('data_vencimento') is-invalid @enderror"
-            value="{{ old('data_vencimento', isset($contaPagar) ? $contaPagar->getDataVencimento() : date('Y-m-d')) }}"
+
+            @isset($contaPagar)
+                value="{{ old('data_emissao', $contaPagar->getDataVencimento()) }}"
+                min="{{ $contaPagar->getDataEmissao() }}"
+            @else
+                value="{{ old('data_emissao', null) }}"
+                min="{{ date('Y-m-d') }}"
+            @endisset
+
+            required
         >
 
         @error('data_vencimento')
@@ -241,14 +296,21 @@
         @enderror
     </div>
 
-    <div class="form-group required col-xl-3">
-        <label>Data Pagamento</label>
+    <div class="form-group col-xl-3">
+        <label>Data de Pagamento</label>
         <input
             type="date"
             id="data_pagamento"
             name="data_pagamento"
             class="form-control @error('data_pagamento') is-invalid @enderror"
-            value="{{ old('data_pagamento', isset($contaPagar) ? $contaPagar->getDataPagamento() : date('Y-m-d')) }}"
+
+            @isset($contaPagar)
+                value="{{ old('data_pagamento', $contaPagar->getDataPagamento() ? $contaPagar->getDataPagamento() : $contaPagar->getDataEmissao()) }}"
+                min="{{ $contaPagar->getDataEmissao() }}"
+            @else
+                value="{{ old('data_pagamento', null) }}"
+                readonly
+            @endisset
         >
 
         @error('data_pagamento')
@@ -269,7 +331,12 @@
                 id="juros"
                 name="juros"
                 placeholder="0"
+                step=".01"
+                min="0.01"
+                max="100"
+                oninput="validity.valid || (value = '');"
                 class="form-control @error('juros') is-invalid @enderror"
+                readonly
                 @isset($contaPagar)
                     value="{{ old('juros', $contaPagar->getJuros() ? $contaPagar->getJuros() : null) }}"
                 @endisset
@@ -300,7 +367,10 @@
                 id="multa"
                 name="multa"
                 placeholder="0,00"
+                step=".01"
+                oninput="validity.valid || (value = '');"
                 class="form-control @error('multa') is-invalid @enderror"
+                readonly
                 @isset($contaPagar)
                     value="{{ old('multa', $contaPagar->getMulta() ? $contaPagar->getMulta() : null) }}"
                 @endisset
@@ -327,9 +397,14 @@
                 id="desconto"
                 name="desconto"
                 placeholder="0,00"
+                step=".01"
+                min="0,01"
+                oninput="validity.valid || (value = '');"
+                readonly
                 class="form-control @error('desconto') is-invalid @enderror"
 
                 @isset($contaPagar)
+                    max="{{ $contaPagar->getValorPago() }}"
                     value="{{ old('desconto', $contaPagar->getDesconto() ? $contaPagar->getDesconto() : null) }}"
                 @endisset
 
@@ -360,14 +435,17 @@
                 placeholder="0,00"
                 class="form-control @error('valor_pago') is-invalid @enderror"
                 step=".01"
-
+                required
                 readonly
+
                 @isset($contaPagar)
                     @if ($contaPagar->getStatus() == 'Em aberto')
                         value="{{ $contaPagar->getValorParcela() }}"
                     @else
                         value="{{ old('valor_pago', $contaPagar->getValorPago() ? $contaPagar->getValorPago() : null) }}"
                     @endif
+                @else
+                    value=""
                 @endisset
             >
 

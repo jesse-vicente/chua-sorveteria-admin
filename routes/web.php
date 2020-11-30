@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('/paises/save', 'PaisController@save')->name('paises.save');
     Route::post('/estados/save', 'EstadoController@save')->name('estados.save');
     Route::post('/cidades/save', 'CidadeController@save')->name('cidades.save');
+    Route::post('/formas-pagamento/save', 'FormaPagamentoController@save')->name('formas-pagamento.save');
     Route::post('/condicoes-pagamento/save', 'CondicaoPagamentoController@save')->name('condicoes-pagamento.save');
     Route::post('/categorias/save', 'CategoriaController@save')->name('categorias.save');
     Route::post('/produtos/save', 'ProdutoController@save')->name('produtos.save');

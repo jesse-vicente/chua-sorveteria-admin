@@ -6,7 +6,7 @@
         <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
                 <i class="fa fa-list"></i>
-                <h4 class="ml-3 mb-0">Contas à Receber</h4>
+                <h4 class="ml-3 mb-0">Contas a Receber</h4>
             </div>
 
             <!-- <div class="float-right">

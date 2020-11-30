@@ -78,6 +78,10 @@
             @isset($venda)
                 value="{{ old('cliente_id', $venda->getCliente() ? $venda->getCliente()->getId() : null) }}"
             @endisset
+
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
         >
 
         <span class="invalid-feedback" role="alert" ref="cliente_id"></span>
@@ -150,6 +154,9 @@
             id="produto_id"
             data-input="#produto"
             data-route="produtos"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
         >
     </div>
 
@@ -199,7 +206,7 @@
 @include('vendas.products-table')
 
 <div class="form-row mt-2">
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-3">
         <label>Descontos</label>
 
         <div class="input-group">
@@ -226,8 +233,8 @@
         </div>
     </div>
 
-    <div class="form-group col-xl-2">
-        <label>Total Produtos</label>
+    <div class="form-group col-xl-3">
+        <label>Total de Produtos</label>
 
         <div class="input-group">
             <div class="input-group-prepend">
@@ -248,7 +255,7 @@
         </div>
     </div>
 
-    <div class="form-group col-xl-2">
+    <div class="form-group col-xl-3">
         <label>Total da Venda</label>
 
         <div class="input-group">
@@ -275,7 +282,18 @@
     </div>
 </div>
 
-<div class="form-row mt-4">
+<div class="d-flex mt-4">
+    <hr class="flex-grow-1">
+    <div class="px-4">
+        <h4 class="text-gray">
+            <i class="fa fa-cash-register mr-1"></i>
+            Contas a Receber
+        </h4>
+    </div>
+    <hr class="flex-grow-1">
+</div>
+
+<div class="form-row mt-2">
     <div class="form-group required col-xl-2">
         <label>Código</label>
         <input
@@ -286,6 +304,9 @@
             data-input="#condicao_pagamento"
             data-route="condicoes-pagamento"
             value="{{ old('condicao_pagamento_id', isset($venda) ? $venda->getCondicaoPagamento()->getId() : null) }}"
+            min="1"
+            step="1"
+            oninput="validity.valid || (value = '');"
             readonly
         >
 

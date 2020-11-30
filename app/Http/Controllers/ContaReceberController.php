@@ -96,17 +96,18 @@ class ContaReceberController extends Controller
             $user = Auth::user();
 
             if (Hash::check($request->senha, $user->password)) {
-                $update = $this->daoContaPagar->update($request, $key);
+                $update = $this->daoContaReceber->update($request, $key);
 
                 if ($update)
-                    return redirect('contas-a-pagar') ->with('success', 'Registro cancelado com sucesso!');
+                    return redirect('contas-a-receber') ->with('success', 'Registro cancelado com sucesso!');
 
-                return redirect('contas-a-pagar')->with('error', 'Erro ao cancelar registro.');
-            } else {
-                return redirect()->back()->with('error', 'Senha inválida.');
+                return redirect('contas-a-receber')->with('error', 'Erro ao cancelar registro.');
             }
+
+            return redirect()->back()->with('error', 'Senha inválida.');
         }
 
+        // Recebimento
         $update = $this->daoContaReceber->update($request, $key);
 
         if ($update)

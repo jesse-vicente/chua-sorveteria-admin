@@ -6,7 +6,7 @@
         <div class="card-header">
             <div class="d-flex align-items-center">
                 <i class="fa fa-eye"></i>
-                <h3 class="ml-3 mb-0">Visualizar Conta à Receber</h3>
+                <h3 class="ml-3 mb-0">Visualizar Conta a Receber</h3>
             </div>
         </div>
 
