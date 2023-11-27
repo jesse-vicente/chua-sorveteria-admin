@@ -23,9 +23,6 @@ Este aplicação Laravel foi desenvolvida para a empresa Chuá Sorveteria e tem 
 - ✔ Cadastro de contas a pagar
 - ✔ Cadastro de contas a receber
 
-## 🚀 Demo
-http://boiling-hamlet-06443.herokuapp.com
-
 ## 🛠 Tecnologias
 
 As principais tecnologias utilizadas neste projeto foram as seguintes:
